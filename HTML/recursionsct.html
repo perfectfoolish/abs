@@ -1,0 +1,399 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Recursion: a script calling itself</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Miscellany"
+HREF="miscellany.html"><LINK
+REL="PREVIOUS"
+TITLE="Tests and Comparisons: Alternatives"
+HREF="testsandcomparisons.html"><LINK
+REL="NEXT"
+TITLE="Colorizing Scripts"
+HREF="colorizing.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="testsandcomparisons.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 36. Miscellany</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="colorizing.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RECURSIONSCT"
+></A
+>36.4. Recursion: a script calling itself</H1
+><P
+><A
+NAME="SCRIPTRECURSION"
+></A
+></P
+><P
+>Can a script <A
+HREF="localvar.html#RECURSIONREF"
+>recursively</A
+>
+	  call itself? Indeed.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RECURSE"
+></A
+><P
+><B
+>Example 36-8. A (useless) script that recursively calls itself</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# recurse.sh
+   3&nbsp;
+   4&nbsp;#  Can a script recursively call itself?
+   5&nbsp;#  Yes, but is this of any practical use?
+   6&nbsp;#  (See the following.)
+   7&nbsp;
+   8&nbsp;RANGE=10
+   9&nbsp;MAXVAL=9
+  10&nbsp;
+  11&nbsp;i=$RANDOM
+  12&nbsp;let "i %= $RANGE"  # Generate a random number between 0 and $RANGE - 1.
+  13&nbsp;
+  14&nbsp;if [ "$i" -lt "$MAXVAL" ]
+  15&nbsp;then
+  16&nbsp;  echo "i = $i"
+  17&nbsp;  ./$0             #  Script recursively spawns a new instance of itself.
+  18&nbsp;fi                 #  Each child script does the same, until
+  19&nbsp;                   #+ a generated $i equals $MAXVAL.
+  20&nbsp;
+  21&nbsp;#  Using a "while" loop instead of an "if/then" test causes problems.
+  22&nbsp;#  Explain why.
+  23&nbsp;
+  24&nbsp;exit 0
+  25&nbsp;
+  26&nbsp;# Note:
+  27&nbsp;# ----
+  28&nbsp;# This script must have execute permission for it to work properly.
+  29&nbsp;# This is the case even if it is invoked by an "sh" command.
+  30&nbsp;# Explain why.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="PBOOK"
+></A
+><P
+><B
+>Example 36-9. A (useful) script that recursively calls itself</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# pb.sh: phone book
+   3&nbsp;
+   4&nbsp;# Written by Rick Boivie, and used with permission.
+   5&nbsp;# Modifications by ABS Guide author.
+   6&nbsp;
+   7&nbsp;MINARGS=1     #  Script needs at least one argument.
+   8&nbsp;DATAFILE=./phonebook
+   9&nbsp;              #  A data file in current working directory
+  10&nbsp;              #+ named "phonebook" must exist.
+  11&nbsp;PROGNAME=$0
+  12&nbsp;E_NOARGS=70   #  No arguments error.
+  13&nbsp;
+  14&nbsp;if [ $# -lt $MINARGS ]; then
+  15&nbsp;      echo "Usage: "$PROGNAME" data-to-look-up"
+  16&nbsp;      exit $E_NOARGS
+  17&nbsp;fi      
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;if [ $# -eq $MINARGS ]; then
+  21&nbsp;      grep $1 "$DATAFILE"
+  22&nbsp;      # 'grep' prints an error message if $DATAFILE not present.
+  23&nbsp;else
+  24&nbsp;      ( shift; "$PROGNAME" $* ) | grep $1
+  25&nbsp;      # Script recursively calls itself.
+  26&nbsp;fi
+  27&nbsp;
+  28&nbsp;exit 0        #  Script exits here.
+  29&nbsp;              #  Therefore, it's o.k. to put
+  30&nbsp;              #+ non-hashmarked comments and data after this point.
+  31&nbsp;
+  32&nbsp;# ------------------------------------------------------------------------
+  33&nbsp;Sample "phonebook" datafile:
+  34&nbsp;
+  35&nbsp;John Doe        1555 Main St., Baltimore, MD 21228          (410) 222-3333
+  36&nbsp;Mary Moe        9899 Jones Blvd., Warren, NH 03787          (603) 898-3232
+  37&nbsp;Richard Roe     856 E. 7th St., New York, NY 10009          (212) 333-4567
+  38&nbsp;Sam Roe         956 E. 8th St., New York, NY 10009          (212) 444-5678
+  39&nbsp;Zoe Zenobia     4481 N. Baker St., San Francisco, SF 94338  (415) 501-1631
+  40&nbsp;# ------------------------------------------------------------------------
+  41&nbsp;
+  42&nbsp;$bash pb.sh Roe
+  43&nbsp;Richard Roe     856 E. 7th St., New York, NY 10009          (212) 333-4567
+  44&nbsp;Sam Roe         956 E. 8th St., New York, NY 10009          (212) 444-5678
+  45&nbsp;
+  46&nbsp;$bash pb.sh Roe Sam
+  47&nbsp;Sam Roe         956 E. 8th St., New York, NY 10009          (212) 444-5678
+  48&nbsp;
+  49&nbsp;#  When more than one argument is passed to this script,
+  50&nbsp;#+ it prints *only* the line(s) containing all the arguments.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="USRMNT"
+></A
+><P
+><B
+>Example 36-10. Another (useful) script that recursively calls itself</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# usrmnt.sh, written by Anthony Richardson
+   3&nbsp;# Used in ABS Guide with permission.
+   4&nbsp;
+   5&nbsp;# usage:       usrmnt.sh
+   6&nbsp;# description: mount device, invoking user must be listed in the
+   7&nbsp;#              MNTUSERS group in the /etc/sudoers file.
+   8&nbsp;
+   9&nbsp;# ----------------------------------------------------------
+  10&nbsp;#  This is a usermount script that reruns itself using sudo.
+  11&nbsp;#  A user with the proper permissions only has to type
+  12&nbsp;
+  13&nbsp;#   usermount /dev/fd0 /mnt/floppy
+  14&nbsp;
+  15&nbsp;# instead of
+  16&nbsp;
+  17&nbsp;#   sudo usermount /dev/fd0 /mnt/floppy
+  18&nbsp;
+  19&nbsp;#  I use this same technique for all of my
+  20&nbsp;#+ sudo scripts, because I find it convenient.
+  21&nbsp;# ----------------------------------------------------------
+  22&nbsp;
+  23&nbsp;#  If SUDO_COMMAND variable is not set we are not being run through
+  24&nbsp;#+ sudo, so rerun ourselves. Pass the user's real and group id . . .
+  25&nbsp;
+  26&nbsp;if [ -z "$SUDO_COMMAND" ]
+  27&nbsp;then
+  28&nbsp;   mntusr=$(id -u) grpusr=$(id -g) sudo $0 $*
+  29&nbsp;   exit 0
+  30&nbsp;fi
+  31&nbsp;
+  32&nbsp;# We will only get here if we are being run by sudo.
+  33&nbsp;/bin/mount $* -o uid=$mntusr,gid=$grpusr
+  34&nbsp;
+  35&nbsp;exit 0
+  36&nbsp;
+  37&nbsp;# Additional notes (from the author of this script): 
+  38&nbsp;# -------------------------------------------------
+  39&nbsp;
+  40&nbsp;# 1) Linux allows the "users" option in the /etc/fstab
+  41&nbsp;#    file so that any user can mount removable media.
+  42&nbsp;#    But, on a server, I like to allow only a few
+  43&nbsp;#    individuals access to removable media.
+  44&nbsp;#    I find using sudo gives me more control.
+  45&nbsp;
+  46&nbsp;# 2) I also find sudo to be more convenient than
+  47&nbsp;#    accomplishing this task through groups.
+  48&nbsp;
+  49&nbsp;# 3) This method gives anyone with proper permissions
+  50&nbsp;#    root access to the mount command, so be careful
+  51&nbsp;#    about who you allow access.
+  52&nbsp;#    You can get finer control over which access can be mounted
+  53&nbsp;#    by using this same technique in separate mntfloppy, mntcdrom,
+  54&nbsp;#    and mntsamba scripts.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Too many levels of recursion can exhaust the
+	  script's stack space, causing a segfault.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="testsandcomparisons.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="colorizing.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Tests and Comparisons: Alternatives</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><SPAN
+CLASS="QUOTE"
+>"Colorizing"</SPAN
+> Scripts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

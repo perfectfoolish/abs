@@ -1,0 +1,658 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Redirecting Code Blocks</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="I/O Redirection"
+HREF="io-redirection.html"><LINK
+REL="PREVIOUS"
+TITLE="I/O Redirection"
+HREF="io-redirection.html"><LINK
+REL="NEXT"
+TITLE="Applications"
+HREF="redirapps.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="io-redirection.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 20. I/O Redirection</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="redirapps.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="REDIRCB"
+></A
+>20.2. Redirecting Code Blocks</H1
+><P
+><A
+NAME="REDIRREF"
+></A
+>Blocks of code, such as <A
+HREF="loops.html#WHILELOOPREF"
+>while</A
+>, <A
+HREF="loops.html#UNTILLOOPREF"
+>until</A
+>, and <A
+HREF="loops.html#FORLOOPREF1"
+>for</A
+> loops, even <A
+HREF="tests.html#IFTHEN"
+>if/then</A
+> test blocks can also incorporate
+	  redirection of <TT
+CLASS="FILENAME"
+>stdin</TT
+>.  Even a function may
+	  use this form of redirection (see <A
+HREF="functions.html#REALNAME"
+>Example 24-11</A
+>).
+	  The <SPAN
+CLASS="TOKEN"
+>&#60;</SPAN
+> operator at the end of the code block
+	  accomplishes this.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="REDIR2"
+></A
+><P
+><B
+>Example 20-5. Redirected <I
+CLASS="FIRSTTERM"
+>while</I
+> loop</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# redir2.sh
+   3&nbsp;
+   4&nbsp;if [ -z "$1" ]
+   5&nbsp;then
+   6&nbsp;  Filename=names.data       # Default, if no filename specified.
+   7&nbsp;else
+   8&nbsp;  Filename=$1
+   9&nbsp;fi  
+  10&nbsp;#+ Filename=${1:-names.data}
+  11&nbsp;#  can replace the above test (parameter substitution).
+  12&nbsp;
+  13&nbsp;count=0
+  14&nbsp;
+  15&nbsp;echo
+  16&nbsp;
+  17&nbsp;while [ "$name" != Smith ]  # Why is variable $name in quotes?
+  18&nbsp;do
+  19&nbsp;  read name                 # Reads from $Filename, rather than stdin.
+  20&nbsp;  echo $name
+  21&nbsp;  let "count += 1"
+  22&nbsp;done &#60;"$Filename"           # Redirects stdin to file $Filename. 
+  23&nbsp;#    ^^^^^^^^^^^^
+  24&nbsp;
+  25&nbsp;echo; echo "$count names read"; echo
+  26&nbsp;
+  27&nbsp;exit 0
+  28&nbsp;
+  29&nbsp;#  Note that in some older shell scripting languages,
+  30&nbsp;#+ the redirected loop would run as a subshell.
+  31&nbsp;#  Therefore, $count would return 0, the initialized value outside the loop.
+  32&nbsp;#  Bash and ksh avoid starting a subshell *whenever possible*,
+  33&nbsp;#+ so that this script, for example, runs correctly.
+  34&nbsp;#  (Thanks to Heiner Steven for pointing this out.)
+  35&nbsp;
+  36&nbsp;#  However . . .
+  37&nbsp;#  Bash *can* sometimes start a subshell in a PIPED "while-read" loop,
+  38&nbsp;#+ as distinct from a REDIRECTED "while" loop.
+  39&nbsp;
+  40&nbsp;abc=hi
+  41&nbsp;echo -e "1\n2\n3" | while read l
+  42&nbsp;     do abc="$l"
+  43&nbsp;        echo $abc
+  44&nbsp;     done
+  45&nbsp;echo $abc
+  46&nbsp;
+  47&nbsp;#  Thanks, Bruno de Oliveira Schneider, for demonstrating this
+  48&nbsp;#+ with the above snippet of code.
+  49&nbsp;#  And, thanks, Brian Onn, for correcting an annotation error.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="REDIR2A"
+></A
+><P
+><B
+>Example 20-6. Alternate form of redirected <I
+CLASS="FIRSTTERM"
+>while</I
+> loop</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;# This is an alternate form of the preceding script.
+   4&nbsp;
+   5&nbsp;#  Suggested by Heiner Steven
+   6&nbsp;#+ as a workaround in those situations when a redirect loop
+   7&nbsp;#+ runs as a subshell, and therefore variables inside the loop
+   8&nbsp;# +do not keep their values upon loop termination.
+   9&nbsp;
+  10&nbsp;
+  11&nbsp;if [ -z "$1" ]
+  12&nbsp;then
+  13&nbsp;  Filename=names.data     # Default, if no filename specified.
+  14&nbsp;else
+  15&nbsp;  Filename=$1
+  16&nbsp;fi  
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;exec 3&#60;&#38;0                 # Save stdin to file descriptor 3.
+  20&nbsp;exec 0&#60;"$Filename"        # Redirect standard input.
+  21&nbsp;
+  22&nbsp;count=0
+  23&nbsp;echo
+  24&nbsp;
+  25&nbsp;
+  26&nbsp;while [ "$name" != Smith ]
+  27&nbsp;do
+  28&nbsp;  read name               # Reads from redirected stdin ($Filename).
+  29&nbsp;  echo $name
+  30&nbsp;  let "count += 1"
+  31&nbsp;done                      #  Loop reads from file $Filename
+  32&nbsp;                          #+ because of line 20.
+  33&nbsp;
+  34&nbsp;#  The original version of this script terminated the "while" loop with
+  35&nbsp;#+      done &#60;"$Filename" 
+  36&nbsp;#  Exercise:
+  37&nbsp;#  Why is this unnecessary?
+  38&nbsp;
+  39&nbsp;
+  40&nbsp;exec 0&#60;&#38;3                 # Restore old stdin.
+  41&nbsp;exec 3&#60;&#38;-                 # Close temporary fd 3.
+  42&nbsp;
+  43&nbsp;echo; echo "$count names read"; echo
+  44&nbsp;
+  45&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="REDIR3"
+></A
+><P
+><B
+>Example 20-7. Redirected <I
+CLASS="FIRSTTERM"
+>until</I
+> loop</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Same as previous example, but with "until" loop.
+   3&nbsp;
+   4&nbsp;if [ -z "$1" ]
+   5&nbsp;then
+   6&nbsp;  Filename=names.data         # Default, if no filename specified.
+   7&nbsp;else
+   8&nbsp;  Filename=$1
+   9&nbsp;fi  
+  10&nbsp;
+  11&nbsp;# while [ "$name" != Smith ]
+  12&nbsp;until [ "$name" = Smith ]     # Change  !=  to =.
+  13&nbsp;do
+  14&nbsp;  read name                   # Reads from $Filename, rather than stdin.
+  15&nbsp;  echo $name
+  16&nbsp;done &#60;"$Filename"             # Redirects stdin to file $Filename. 
+  17&nbsp;#    ^^^^^^^^^^^^
+  18&nbsp;
+  19&nbsp;# Same results as with "while" loop in previous example.
+  20&nbsp;
+  21&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="REDIR4"
+></A
+><P
+><B
+>Example 20-8. Redirected <I
+CLASS="FIRSTTERM"
+>for</I
+> loop</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;if [ -z "$1" ]
+   4&nbsp;then
+   5&nbsp;  Filename=names.data          # Default, if no filename specified.
+   6&nbsp;else
+   7&nbsp;  Filename=$1
+   8&nbsp;fi  
+   9&nbsp;
+  10&nbsp;line_count=`wc $Filename | awk '{ print $1 }'`
+  11&nbsp;#           Number of lines in target file.
+  12&nbsp;#
+  13&nbsp;#  Very contrived and kludgy, nevertheless shows that
+  14&nbsp;#+ it's possible to redirect stdin within a "for" loop...
+  15&nbsp;#+ if you're clever enough.
+  16&nbsp;#
+  17&nbsp;# More concise is     line_count=$(wc -l &#60; "$Filename")
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;for name in `seq $line_count`  # Recall that "seq" prints sequence of numbers.
+  21&nbsp;# while [ "$name" != Smith ]   --   more complicated than a "while" loop   --
+  22&nbsp;do
+  23&nbsp;  read name                    # Reads from $Filename, rather than stdin.
+  24&nbsp;  echo $name
+  25&nbsp;  if [ "$name" = Smith ]       # Need all this extra baggage here.
+  26&nbsp;  then
+  27&nbsp;    break
+  28&nbsp;  fi  
+  29&nbsp;done &#60;"$Filename"              # Redirects stdin to file $Filename. 
+  30&nbsp;#    ^^^^^^^^^^^^
+  31&nbsp;
+  32&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>We can modify the previous example to also redirect the output of
+        the loop.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="REDIR4A"
+></A
+><P
+><B
+>Example 20-9. Redirected <I
+CLASS="FIRSTTERM"
+>for</I
+> loop (both
+	  <TT
+CLASS="FILENAME"
+>stdin</TT
+> and <TT
+CLASS="FILENAME"
+>stdout</TT
+>
+	  redirected)</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;if [ -z "$1" ]
+   4&nbsp;then
+   5&nbsp;  Filename=names.data          # Default, if no filename specified.
+   6&nbsp;else
+   7&nbsp;  Filename=$1
+   8&nbsp;fi  
+   9&nbsp;
+  10&nbsp;Savefile=$Filename.new         # Filename to save results in.
+  11&nbsp;FinalName=Jonah                # Name to terminate "read" on.
+  12&nbsp;
+  13&nbsp;line_count=`wc $Filename | awk '{ print $1 }'`  # Number of lines in target file.
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;for name in `seq $line_count`
+  17&nbsp;do
+  18&nbsp;  read name
+  19&nbsp;  echo "$name"
+  20&nbsp;  if [ "$name" = "$FinalName" ]
+  21&nbsp;  then
+  22&nbsp;    break
+  23&nbsp;  fi  
+  24&nbsp;done &#60; "$Filename" &#62; "$Savefile"     # Redirects stdin to file $Filename,
+  25&nbsp;#    ^^^^^^^^^^^^^^^^^^^^^^^^^^^       and saves it to backup file.
+  26&nbsp;
+  27&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="REDIR5"
+></A
+><P
+><B
+>Example 20-10. Redirected <I
+CLASS="FIRSTTERM"
+>if/then</I
+> test</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;if [ -z "$1" ]
+   4&nbsp;then
+   5&nbsp;  Filename=names.data   # Default, if no filename specified.
+   6&nbsp;else
+   7&nbsp;  Filename=$1
+   8&nbsp;fi  
+   9&nbsp;
+  10&nbsp;TRUE=1
+  11&nbsp;
+  12&nbsp;if [ "$TRUE" ]          # if true    and   if :   also work.
+  13&nbsp;then
+  14&nbsp; read name
+  15&nbsp; echo $name
+  16&nbsp;fi &#60;"$Filename"
+  17&nbsp;#  ^^^^^^^^^^^^
+  18&nbsp;
+  19&nbsp;# Reads only first line of file.
+  20&nbsp;# An "if/then" test has no way of iterating unless embedded in a loop.
+  21&nbsp;
+  22&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="NAMESDATA"
+></A
+><P
+><B
+>Example 20-11. Data file <I
+CLASS="FIRSTTERM"
+>names.data</I
+> for above
+	examples</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;Aristotle
+   2&nbsp;Arrhenius
+   3&nbsp;Belisarius
+   4&nbsp;Capablanca
+   5&nbsp;Dickens
+   6&nbsp;Euler
+   7&nbsp;Goethe
+   8&nbsp;Hegel
+   9&nbsp;Jonah
+  10&nbsp;Laplace
+  11&nbsp;Maroczy
+  12&nbsp;Purcell
+  13&nbsp;Schmidt
+  14&nbsp;Schopenhauer
+  15&nbsp;Semmelweiss
+  16&nbsp;Smith
+  17&nbsp;Steinmetz
+  18&nbsp;Tukhashevsky
+  19&nbsp;Turing
+  20&nbsp;Venn
+  21&nbsp;Warshawski
+  22&nbsp;Znosko-Borowski
+  23&nbsp;
+  24&nbsp;#  This is a data file for
+  25&nbsp;#+ "redir2.sh", "redir3.sh", "redir4.sh", "redir4a.sh", "redir5.sh".</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Redirecting the <TT
+CLASS="FILENAME"
+>stdout</TT
+> of a code
+	block has the effect of saving its output to a file. See <A
+HREF="special-chars.html#RPMCHECK"
+>Example 3-2</A
+>.</P
+><P
+><A
+HREF="here-docs.html#HEREDOCREF"
+>Here documents</A
+>
+        are a special case of redirected code blocks. That being the case,
+	it should be possible to feed the output of a <I
+CLASS="FIRSTTERM"
+>here
+	document</I
+> into the <TT
+CLASS="FILENAME"
+>stdin</TT
+> for a
+	<I
+CLASS="FIRSTTERM"
+>while loop</I
+>.</P
+><P
+>	    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# This example by Albert Siersema
+   2&nbsp;# Used with permission (thanks!).
+   3&nbsp;
+   4&nbsp;function doesOutput()
+   5&nbsp; # Could be an external command too, of course.
+   6&nbsp; # Here we show you can use a function as well.
+   7&nbsp;{
+   8&nbsp;  ls -al *.jpg | awk '{print $5,$9}'
+   9&nbsp;}
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;nr=0          #  We want the while loop to be able to manipulate these and
+  13&nbsp;totalSize=0   #+ to be able to see the changes after the 'while' finished.
+  14&nbsp;
+  15&nbsp;while read fileSize fileName ; do
+  16&nbsp;  echo "$fileName is $fileSize bytes"
+  17&nbsp;  let nr++
+  18&nbsp;  totalSize=$((totalSize+fileSize))   # Or: "let totalSize+=fileSize"
+  19&nbsp;done&#60;&#60;EOF
+  20&nbsp;$(doesOutput)
+  21&nbsp;EOF
+  22&nbsp;
+  23&nbsp;echo "$nr files totaling $totalSize bytes"</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="io-redirection.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="redirapps.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>I/O Redirection</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io-redirection.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Applications</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

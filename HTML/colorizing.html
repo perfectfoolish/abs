@@ -1,0 +1,1545 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Colorizing Scripts</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Miscellany"
+HREF="miscellany.html"><LINK
+REL="PREVIOUS"
+TITLE="Recursion: a script calling itself"
+HREF="recursionsct.html"><LINK
+REL="NEXT"
+TITLE="Optimizations"
+HREF="optimizations.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="recursionsct.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 36. Miscellany</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="optimizations.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COLORIZING"
+></A
+>36.5. <SPAN
+CLASS="QUOTE"
+>"Colorizing"</SPAN
+> Scripts</H1
+><P
+><A
+NAME="COLORIZINGREF"
+></A
+></P
+><P
+>The ANSI
+	   <A
+NAME="AEN20186"
+HREF="#FTN.AEN20186"
+>[1]</A
+>
+	   escape sequences set screen attributes, such as bold
+	   text, and color of foreground and background. <A
+HREF="dosbatch.html#DOSBATCH1"
+>DOS batch files</A
+> commonly used
+	   ANSI escape codes for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>color</I
+></SPAN
+> output,
+	   and so can Bash scripts.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX30A"
+></A
+><P
+><B
+>Example 36-11. A <SPAN
+CLASS="QUOTE"
+>"colorized"</SPAN
+> address database</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# ex30a.sh: "Colorized" version of ex30.sh.
+   3&nbsp;#            Crude address database
+   4&nbsp;
+   5&nbsp;
+   6&nbsp;clear                                   # Clear the screen.
+   7&nbsp;
+   8&nbsp;echo -n "          "
+   9&nbsp;echo -e '\E[37;44m'"\033[1mContact List\033[0m"
+  10&nbsp;                                        # White on blue background
+  11&nbsp;echo; echo
+  12&nbsp;echo -e "\033[1mChoose one of the following persons:\033[0m"
+  13&nbsp;                                        # Bold
+  14&nbsp;tput sgr0                               # Reset attributes.
+  15&nbsp;echo "(Enter only the first letter of name.)"
+  16&nbsp;echo
+  17&nbsp;echo -en '\E[47;34m'"\033[1mE\033[0m"   # Blue
+  18&nbsp;tput sgr0                               # Reset colors to "normal."
+  19&nbsp;echo "vans, Roland"                     # "[E]vans, Roland"
+  20&nbsp;echo -en '\E[47;35m'"\033[1mJ\033[0m"   # Magenta
+  21&nbsp;tput sgr0
+  22&nbsp;echo "ambalaya, Mildred"
+  23&nbsp;echo -en '\E[47;32m'"\033[1mS\033[0m"   # Green
+  24&nbsp;tput sgr0
+  25&nbsp;echo "mith, Julie"
+  26&nbsp;echo -en '\E[47;31m'"\033[1mZ\033[0m"   # Red
+  27&nbsp;tput sgr0
+  28&nbsp;echo "ane, Morris"
+  29&nbsp;echo
+  30&nbsp;
+  31&nbsp;read person
+  32&nbsp;
+  33&nbsp;case "$person" in
+  34&nbsp;# Note variable is quoted.
+  35&nbsp;
+  36&nbsp;  "E" | "e" )
+  37&nbsp;  # Accept upper or lowercase input.
+  38&nbsp;  echo
+  39&nbsp;  echo "Roland Evans"
+  40&nbsp;  echo "4321 Flash Dr."
+  41&nbsp;  echo "Hardscrabble, CO 80753"
+  42&nbsp;  echo "(303) 734-9874"
+  43&nbsp;  echo "(303) 734-9892 fax"
+  44&nbsp;  echo "revans@zzy.net"
+  45&nbsp;  echo "Business partner &#38; old friend"
+  46&nbsp;  ;;
+  47&nbsp;
+  48&nbsp;  "J" | "j" )
+  49&nbsp;  echo
+  50&nbsp;  echo "Mildred Jambalaya"
+  51&nbsp;  echo "249 E. 7th St., Apt. 19"
+  52&nbsp;  echo "New York, NY 10009"
+  53&nbsp;  echo "(212) 533-2814"
+  54&nbsp;  echo "(212) 533-9972 fax"
+  55&nbsp;  echo "milliej@loisaida.com"
+  56&nbsp;  echo "Girlfriend"
+  57&nbsp;  echo "Birthday: Feb. 11"
+  58&nbsp;  ;;
+  59&nbsp;
+  60&nbsp;# Add info for Smith &#38; Zane later.
+  61&nbsp;
+  62&nbsp;          * )
+  63&nbsp;   # Default option.	  
+  64&nbsp;   # Empty input (hitting RETURN) fits here, too.
+  65&nbsp;   echo
+  66&nbsp;   echo "Not yet in database."
+  67&nbsp;  ;;
+  68&nbsp;
+  69&nbsp;esac
+  70&nbsp;
+  71&nbsp;tput sgr0                               # Reset colors to "normal."
+  72&nbsp;
+  73&nbsp;echo
+  74&nbsp;
+  75&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="DRAW-BOX"
+></A
+><P
+><B
+>Example 36-12. Drawing a box</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Draw-box.sh: Drawing a box using ASCII characters.
+   3&nbsp;
+   4&nbsp;# Script by Stefano Palmeri, with minor editing by document author.
+   5&nbsp;# Minor edits suggested by Jim Angstadt.
+   6&nbsp;# Used in the ABS Guide with permission.
+   7&nbsp;
+   8&nbsp;
+   9&nbsp;######################################################################
+  10&nbsp;###  draw_box function doc  ###
+  11&nbsp;
+  12&nbsp;#  The "draw_box" function lets the user
+  13&nbsp;#+ draw a box in a terminal.       
+  14&nbsp;#
+  15&nbsp;#  Usage: draw_box ROW COLUMN HEIGHT WIDTH [COLOR] 
+  16&nbsp;#  ROW and COLUMN represent the position        
+  17&nbsp;#+ of the upper left angle of the box you're going to draw.
+  18&nbsp;#  ROW and COLUMN must be greater than 0
+  19&nbsp;#+ and less than current terminal dimension.
+  20&nbsp;#  HEIGHT is the number of rows of the box, and must be &#62; 0. 
+  21&nbsp;#  HEIGHT + ROW must be &#60;= than current terminal height. 
+  22&nbsp;#  WIDTH is the number of columns of the box and must be &#62; 0.
+  23&nbsp;#  WIDTH + COLUMN must be &#60;= than current terminal width.
+  24&nbsp;#
+  25&nbsp;# E.g.: If your terminal dimension is 20x80,
+  26&nbsp;#  draw_box 2 3 10 45 is good
+  27&nbsp;#  draw_box 2 3 19 45 has bad HEIGHT value (19+2 &#62; 20)
+  28&nbsp;#  draw_box 2 3 18 78 has bad WIDTH value (78+3 &#62; 80)
+  29&nbsp;#
+  30&nbsp;#  COLOR is the color of the box frame.
+  31&nbsp;#  This is the 5th argument and is optional.
+  32&nbsp;#  0=black 1=red 2=green 3=tan 4=blue 5=purple 6=cyan 7=white.
+  33&nbsp;#  If you pass the function bad arguments,
+  34&nbsp;#+ it will just exit with code 65,
+  35&nbsp;#+ and no messages will be printed on stderr.
+  36&nbsp;#
+  37&nbsp;#  Clear the terminal before you start to draw a box.
+  38&nbsp;#  The clear command is not contained within the function.
+  39&nbsp;#  This allows the user to draw multiple boxes, even overlapping ones.
+  40&nbsp;
+  41&nbsp;###  end of draw_box function doc  ### 
+  42&nbsp;######################################################################
+  43&nbsp;
+  44&nbsp;draw_box(){
+  45&nbsp;
+  46&nbsp;#=============#
+  47&nbsp;HORZ="-"
+  48&nbsp;VERT="|"
+  49&nbsp;CORNER_CHAR="+"
+  50&nbsp;
+  51&nbsp;MINARGS=4
+  52&nbsp;E_BADARGS=65
+  53&nbsp;#=============#
+  54&nbsp;
+  55&nbsp;
+  56&nbsp;if [ $# -lt "$MINARGS" ]; then          # If args are less than 4, exit.
+  57&nbsp;    exit $E_BADARGS
+  58&nbsp;fi
+  59&nbsp;
+  60&nbsp;# Looking for non digit chars in arguments.
+  61&nbsp;# Probably it could be done better (exercise for the reader?).
+  62&nbsp;if echo $@ | tr -d [:blank:] | tr -d [:digit:] | grep . &#38;&#62; /dev/null; then
+  63&nbsp;   exit $E_BADARGS
+  64&nbsp;fi
+  65&nbsp;
+  66&nbsp;BOX_HEIGHT=`expr $3 - 1`   #  -1 correction needed because angle char "+"
+  67&nbsp;BOX_WIDTH=`expr $4 - 1`    #+ is a part of both box height and width.
+  68&nbsp;T_ROWS=`tput lines`        #  Define current terminal dimension 
+  69&nbsp;T_COLS=`tput cols`         #+ in rows and columns.
+  70&nbsp;         
+  71&nbsp;if [ $1 -lt 1 ] || [ $1 -gt $T_ROWS ]; then    #  Start checking if arguments
+  72&nbsp;   exit $E_BADARGS                             #+ are correct.
+  73&nbsp;fi
+  74&nbsp;if [ $2 -lt 1 ] || [ $2 -gt $T_COLS ]; then
+  75&nbsp;   exit $E_BADARGS
+  76&nbsp;fi
+  77&nbsp;if [ `expr $1 + $BOX_HEIGHT + 1` -gt $T_ROWS ]; then
+  78&nbsp;   exit $E_BADARGS
+  79&nbsp;fi
+  80&nbsp;if [ `expr $2 + $BOX_WIDTH + 1` -gt $T_COLS ]; then
+  81&nbsp;   exit $E_BADARGS
+  82&nbsp;fi
+  83&nbsp;if [ $3 -lt 1 ] || [ $4 -lt 1 ]; then
+  84&nbsp;   exit $E_BADARGS
+  85&nbsp;fi                                 # End checking arguments.
+  86&nbsp;
+  87&nbsp;plot_char(){                       # Function within a function.
+  88&nbsp;   echo -e "\E[${1};${2}H"$3
+  89&nbsp;}
+  90&nbsp;
+  91&nbsp;echo -ne "\E[3${5}m"               # Set box frame color, if defined.
+  92&nbsp;
+  93&nbsp;# start drawing the box
+  94&nbsp;
+  95&nbsp;count=1                                         #  Draw vertical lines using
+  96&nbsp;for (( r=$1; count&#60;=$BOX_HEIGHT; r++)); do      #+ plot_char function.
+  97&nbsp;  plot_char $r $2 $VERT
+  98&nbsp;  let count=count+1
+  99&nbsp;done 
+ 100&nbsp;
+ 101&nbsp;count=1
+ 102&nbsp;c=`expr $2 + $BOX_WIDTH`
+ 103&nbsp;for (( r=$1; count&#60;=$BOX_HEIGHT; r++)); do
+ 104&nbsp;  plot_char $r $c $VERT
+ 105&nbsp;  let count=count+1
+ 106&nbsp;done 
+ 107&nbsp;
+ 108&nbsp;count=1                                        #  Draw horizontal lines using
+ 109&nbsp;for (( c=$2; count&#60;=$BOX_WIDTH; c++)); do      #+ plot_char function.
+ 110&nbsp;  plot_char $1 $c $HORZ
+ 111&nbsp;  let count=count+1
+ 112&nbsp;done 
+ 113&nbsp;
+ 114&nbsp;count=1
+ 115&nbsp;r=`expr $1 + $BOX_HEIGHT`
+ 116&nbsp;for (( c=$2; count&#60;=$BOX_WIDTH; c++)); do
+ 117&nbsp;  plot_char $r $c $HORZ
+ 118&nbsp;  let count=count+1
+ 119&nbsp;done 
+ 120&nbsp;
+ 121&nbsp;plot_char $1 $2 $CORNER_CHAR                   # Draw box angles.
+ 122&nbsp;plot_char $1 `expr $2 + $BOX_WIDTH` $CORNER_CHAR
+ 123&nbsp;plot_char `expr $1 + $BOX_HEIGHT` $2 $CORNER_CHAR
+ 124&nbsp;plot_char `expr $1 + $BOX_HEIGHT` `expr $2 + $BOX_WIDTH` $CORNER_CHAR
+ 125&nbsp;
+ 126&nbsp;echo -ne "\E[0m"             #  Restore old colors.
+ 127&nbsp;
+ 128&nbsp;P_ROWS=`expr $T_ROWS - 1`    #  Put the prompt at bottom of the terminal.
+ 129&nbsp;
+ 130&nbsp;echo -e "\E[${P_ROWS};1H"
+ 131&nbsp;}      
+ 132&nbsp;
+ 133&nbsp;
+ 134&nbsp;# Now, let's try drawing a box.
+ 135&nbsp;clear                       # Clear the terminal.
+ 136&nbsp;R=2      # Row
+ 137&nbsp;C=3      # Column
+ 138&nbsp;H=10     # Height
+ 139&nbsp;W=45     # Width 
+ 140&nbsp;col=1    # Color (red)
+ 141&nbsp;draw_box $R $C $H $W $col   # Draw the box.
+ 142&nbsp;
+ 143&nbsp;exit 0
+ 144&nbsp;
+ 145&nbsp;# Exercise:
+ 146&nbsp;# --------
+ 147&nbsp;# Add the option of printing text within the drawn box.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>The simplest, and perhaps most useful ANSI escape sequence is
+	  bold text, <B
+CLASS="COMMAND"
+>\033[1m ... \033[0m</B
+>. The
+	  <SPAN
+CLASS="TOKEN"
+>\033</SPAN
+> represents an <A
+HREF="escapingsection.html#ESCP"
+>escape</A
+>, the <SPAN
+CLASS="QUOTE"
+>"[1"</SPAN
+> turns on the
+	  bold attribute, while the <SPAN
+CLASS="QUOTE"
+>"[0"</SPAN
+> switches it off. The
+	  <SPAN
+CLASS="QUOTE"
+>"m"</SPAN
+> terminates each term of the escape sequence.
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo -e "\033[1mThis is bold text.\033[0m"</B
+></TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	</P
+><P
+>A similar escape sequence switches on the underline
+	  attribute (on an <I
+CLASS="FIRSTTERM"
+>rxvt</I
+> and an
+	  <I
+CLASS="FIRSTTERM"
+>aterm</I
+>).
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo -e "\033[4mThis is underlined text.\033[0m"</B
+></TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>With an <B
+CLASS="COMMAND"
+>echo</B
+>, the
+	  <TT
+CLASS="OPTION"
+>-e</TT
+> option enables the escape
+	  sequences.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Other escape sequences change the text and/or background
+	  color.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo -e '\E[34;47mThis prints in blue.'; tput sgr0</B
+></TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo -e '\E[33;44m'"yellow text on blue background"; tput sgr0</B
+></TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo -e '\E[1;33;44m'"BOLD yellow text on blue background"; tput sgr0</B
+></TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>It's usually advisable to set the
+	  <I
+CLASS="FIRSTTERM"
+>bold</I
+> attribute for light-colored foreground
+	  text.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>The <B
+CLASS="COMMAND"
+>tput sgr0</B
+> restores the
+		terminal settings to normal. Omitting this lets all
+	        subsequent output from that particular terminal remain
+	        blue.</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Since <B
+CLASS="COMMAND"
+>tput sgr0</B
+> fails to restore
+	        terminal settings under certain circumstances,
+		<B
+CLASS="COMMAND"
+>echo -ne \E[0m</B
+> may be a better choice.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+><A
+NAME="COLORIZTEMPL"
+></A
+></P
+><TABLE
+CLASS="SIDEBAR"
+BORDER="1"
+CELLPADDING="5"
+><TR
+><TD
+><DIV
+CLASS="SIDEBAR"
+><A
+NAME="AEN20238"
+></A
+><P
+>Use the following template for writing colored text on a colored
+	background.</P
+><P
+>	  <TT
+CLASS="USERINPUT"
+><B
+>echo -e '\E[COLOR1;COLOR2mSome text goes here.'</B
+></TT
+>
+        </P
+><P
+>The <SPAN
+CLASS="QUOTE"
+>"\E["</SPAN
+> begins the escape sequence.
+	  The semicolon-separated numbers <SPAN
+CLASS="QUOTE"
+>"COLOR1"</SPAN
+> and
+	  <SPAN
+CLASS="QUOTE"
+>"COLOR2"</SPAN
+> specify a foreground and a background
+	  color, according to the table below. (The order of the
+	  numbers does not matter, since the foreground and background
+	  numbers fall in non-overlapping ranges.) The <SPAN
+CLASS="QUOTE"
+>"m"</SPAN
+>
+	  terminates the escape sequence, and the text begins immediately
+	  after that.</P
+><P
+>Note also that <A
+HREF="variables.html#SNGLQUO"
+>single quotes</A
+>
+	  enclose the remainder of the command sequence following the
+	  <B
+CLASS="COMMAND"
+>echo -e</B
+>.</P
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>The numbers in the following table work for an
+	  <I
+CLASS="FIRSTTERM"
+>rxvt</I
+> terminal. Results may vary for other
+	  terminal emulators.</P
+><P
+><A
+NAME="COLORIZTABLE"
+></A
+></P
+><DIV
+CLASS="TABLE"
+><HR><A
+NAME="AEN20254"
+></A
+><P
+><B
+>Table 36-1. Numbers representing colors in Escape Sequences</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Color</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Foreground</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Background</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>black</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>30</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>40</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>red</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>31</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>41</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>green</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>32</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>42</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>yellow</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>33</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>43</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>blue</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>34</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>44</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>magenta</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>35</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>45</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>cyan</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>36</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>46</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>white</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>37</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>47</TD
+></TR
+></TBODY
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="COLORECHO"
+></A
+><P
+><B
+>Example 36-13. Echoing colored text</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# color-echo.sh: Echoing text messages in color.
+   3&nbsp;
+   4&nbsp;# Modify this script for your own purposes.
+   5&nbsp;# It's easier than hand-coding color.
+   6&nbsp;
+   7&nbsp;black='\E[30;47m'
+   8&nbsp;red='\E[31;47m'
+   9&nbsp;green='\E[32;47m'
+  10&nbsp;yellow='\E[33;47m'
+  11&nbsp;blue='\E[34;47m'
+  12&nbsp;magenta='\E[35;47m'
+  13&nbsp;cyan='\E[36;47m'
+  14&nbsp;white='\E[37;47m'
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;alias Reset="tput sgr0"      #  Reset text attributes to normal
+  18&nbsp;                             #+ without clearing screen.
+  19&nbsp;
+  20&nbsp;
+  21&nbsp;cecho ()                     # Color-echo.
+  22&nbsp;                             # Argument $1 = message
+  23&nbsp;                             # Argument $2 = color
+  24&nbsp;{
+  25&nbsp;local default_msg="No message passed."
+  26&nbsp;                             # Doesn't really need to be a local variable.
+  27&nbsp;
+  28&nbsp;message=${1:-$default_msg}   # Defaults to default message.
+  29&nbsp;color=${2:-$black}           # Defaults to black, if not specified.
+  30&nbsp;
+  31&nbsp;  echo -e "$color"
+  32&nbsp;  echo "$message"
+  33&nbsp;  Reset                      # Reset to normal.
+  34&nbsp;
+  35&nbsp;  return
+  36&nbsp;}  
+  37&nbsp;
+  38&nbsp;
+  39&nbsp;# Now, let's try it out.
+  40&nbsp;# ----------------------------------------------------
+  41&nbsp;cecho "Feeling blue..." $blue
+  42&nbsp;cecho "Magenta looks more like purple." $magenta
+  43&nbsp;cecho "Green with envy." $green
+  44&nbsp;cecho "Seeing red?" $red
+  45&nbsp;cecho "Cyan, more familiarly known as aqua." $cyan
+  46&nbsp;cecho "No color passed (defaults to black)."
+  47&nbsp;       # Missing $color argument.
+  48&nbsp;cecho "\"Empty\" color passed (defaults to black)." ""
+  49&nbsp;       # Empty $color argument.
+  50&nbsp;cecho
+  51&nbsp;       # Missing $message and $color arguments.
+  52&nbsp;cecho "" ""
+  53&nbsp;       # Empty $message and $color arguments.
+  54&nbsp;# ----------------------------------------------------
+  55&nbsp;
+  56&nbsp;echo
+  57&nbsp;
+  58&nbsp;exit 0
+  59&nbsp;
+  60&nbsp;# Exercises:
+  61&nbsp;# ---------
+  62&nbsp;# 1) Add the "bold" attribute to the 'cecho ()' function.
+  63&nbsp;# 2) Add options for colored backgrounds.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="HORSERACEREF"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="HORSERACE"
+></A
+><P
+><B
+>Example 36-14. A <SPAN
+CLASS="QUOTE"
+>"horserace"</SPAN
+> game</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# horserace.sh: Very simple horserace simulation.
+   3&nbsp;# Author: Stefano Palmeri
+   4&nbsp;# Used with permission.
+   5&nbsp;
+   6&nbsp;################################################################
+   7&nbsp;#  Goals of the script:
+   8&nbsp;#  playing with escape sequences and terminal colors.
+   9&nbsp;#
+  10&nbsp;#  Exercise:
+  11&nbsp;#  Edit the script to make it run less randomly,
+  12&nbsp;#+ set up a fake betting shop . . .     
+  13&nbsp;#  Um . . . um . . . it's starting to remind me of a movie . . .
+  14&nbsp;#
+  15&nbsp;#  The script gives each horse a random handicap.
+  16&nbsp;#  The odds are calculated upon horse handicap
+  17&nbsp;#+ and are expressed in European(?) style.
+  18&nbsp;#  E.g., odds=3.75 means that if you bet $1 and win,
+  19&nbsp;#+ you receive $3.75.
+  20&nbsp;# 
+  21&nbsp;#  The script has been tested with a GNU/Linux OS,
+  22&nbsp;#+ using xterm and rxvt, and konsole.
+  23&nbsp;#  On a machine with an AMD 900 MHz processor,
+  24&nbsp;#+ the average race time is 75 seconds.    
+  25&nbsp;#  On faster computers the race time would be lower.
+  26&nbsp;#  So, if you want more suspense, reset the USLEEP_ARG variable.
+  27&nbsp;#
+  28&nbsp;#  Script by Stefano Palmeri.
+  29&nbsp;################################################################
+  30&nbsp;
+  31&nbsp;E_RUNERR=65
+  32&nbsp;
+  33&nbsp;# Check if md5sum and bc are installed. 
+  34&nbsp;if ! which bc &#38;&#62; /dev/null; then
+  35&nbsp;   echo bc is not installed.  
+  36&nbsp;   echo "Can\'t run . . . "
+  37&nbsp;   exit $E_RUNERR
+  38&nbsp;fi
+  39&nbsp;if ! which md5sum &#38;&#62; /dev/null; then
+  40&nbsp;   echo md5sum is not installed.  
+  41&nbsp;   echo "Can\'t run . . . "
+  42&nbsp;   exit $E_RUNERR
+  43&nbsp;fi
+  44&nbsp;
+  45&nbsp;#  Set the following variable to slow down script execution.
+  46&nbsp;#  It will be passed as the argument for usleep (man usleep)  
+  47&nbsp;#+ and is expressed in microseconds (500000 = half a second).
+  48&nbsp;USLEEP_ARG=0  
+  49&nbsp;
+  50&nbsp;#  Clean up the temp directory, restore terminal cursor and 
+  51&nbsp;#+ terminal colors -- if script interrupted by Ctl-C.
+  52&nbsp;trap 'echo -en "\E[?25h"; echo -en "\E[0m"; stty echo;\
+  53&nbsp;tput cup 20 0; rm -fr  $HORSE_RACE_TMP_DIR'  TERM EXIT
+  54&nbsp;#  See the chapter on debugging for an explanation of 'trap.'
+  55&nbsp;
+  56&nbsp;# Set a unique (paranoid) name for the temp directory the script needs.
+  57&nbsp;HORSE_RACE_TMP_DIR=$HOME/.horserace-`date +%s`-`head -c10 /dev/urandom \
+  58&nbsp;| md5sum | head -c30`
+  59&nbsp;
+  60&nbsp;# Create the temp directory and move right in.
+  61&nbsp;mkdir $HORSE_RACE_TMP_DIR
+  62&nbsp;cd $HORSE_RACE_TMP_DIR
+  63&nbsp;
+  64&nbsp;
+  65&nbsp;#  This function moves the cursor to line $1 column $2 and then prints $3.
+  66&nbsp;#  E.g.: "move_and_echo 5 10 linux" is equivalent to
+  67&nbsp;#+ "tput cup 4 9; echo linux", but with one command instead of two.
+  68&nbsp;#  Note: "tput cup" defines 0 0 the upper left angle of the terminal,
+  69&nbsp;#+ echo defines 1 1 the upper left angle of the terminal.
+  70&nbsp;move_and_echo() {
+  71&nbsp;          echo -ne "\E[${1};${2}H""$3" 
+  72&nbsp;}
+  73&nbsp;
+  74&nbsp;# Function to generate a pseudo-random number between 1 and 9. 
+  75&nbsp;random_1_9 ()
+  76&nbsp;{
+  77&nbsp;    head -c10 /dev/urandom | md5sum | tr -d [a-z] | tr -d 0 | cut -c1 
+  78&nbsp;}
+  79&nbsp;
+  80&nbsp;#  Two functions that simulate "movement," when drawing the horses. 
+  81&nbsp;draw_horse_one() {
+  82&nbsp;               echo -n " "//$MOVE_HORSE//
+  83&nbsp;}
+  84&nbsp;draw_horse_two(){
+  85&nbsp;              echo -n " "\\\\$MOVE_HORSE\\\\ 
+  86&nbsp;}   
+  87&nbsp;
+  88&nbsp;
+  89&nbsp;# Define current terminal dimension.
+  90&nbsp;N_COLS=`tput cols`
+  91&nbsp;N_LINES=`tput lines`
+  92&nbsp;
+  93&nbsp;# Need at least a 20-LINES X 80-COLUMNS terminal. Check it.
+  94&nbsp;if [ $N_COLS -lt 80 ] || [ $N_LINES -lt 20 ]; then
+  95&nbsp;   echo "`basename $0` needs a 80-cols X 20-lines terminal."
+  96&nbsp;   echo "Your terminal is ${N_COLS}-cols X ${N_LINES}-lines."
+  97&nbsp;   exit $E_RUNERR
+  98&nbsp;fi
+  99&nbsp;
+ 100&nbsp;
+ 101&nbsp;# Start drawing the race field.
+ 102&nbsp;
+ 103&nbsp;# Need a string of 80 chars. See below.
+ 104&nbsp;BLANK80=`seq -s "" 100 | head -c80`
+ 105&nbsp;
+ 106&nbsp;clear
+ 107&nbsp;
+ 108&nbsp;# Set foreground and background colors to white.
+ 109&nbsp;echo -ne '\E[37;47m'
+ 110&nbsp;
+ 111&nbsp;# Move the cursor on the upper left angle of the terminal.
+ 112&nbsp;tput cup 0 0 
+ 113&nbsp;
+ 114&nbsp;# Draw six white lines.
+ 115&nbsp;for n in `seq 5`; do
+ 116&nbsp;      echo $BLANK80   # Use the 80 chars string to colorize the terminal.
+ 117&nbsp;done
+ 118&nbsp;
+ 119&nbsp;# Sets foreground color to black. 
+ 120&nbsp;echo -ne '\E[30m'
+ 121&nbsp;
+ 122&nbsp;move_and_echo 3 1 "START  1"            
+ 123&nbsp;move_and_echo 3 75 FINISH
+ 124&nbsp;move_and_echo 1 5 "|"
+ 125&nbsp;move_and_echo 1 80 "|"
+ 126&nbsp;move_and_echo 2 5 "|"
+ 127&nbsp;move_and_echo 2 80 "|"
+ 128&nbsp;move_and_echo 4 5 "|  2"
+ 129&nbsp;move_and_echo 4 80 "|"
+ 130&nbsp;move_and_echo 5 5 "V  3"
+ 131&nbsp;move_and_echo 5 80 "V"
+ 132&nbsp;
+ 133&nbsp;# Set foreground color to red. 
+ 134&nbsp;echo -ne '\E[31m'
+ 135&nbsp;
+ 136&nbsp;# Some ASCII art.
+ 137&nbsp;move_and_echo 1 8 "..@@@..@@@@@...@@@@@.@...@..@@@@..."
+ 138&nbsp;move_and_echo 2 8 ".@...@...@.......@...@...@.@......."
+ 139&nbsp;move_and_echo 3 8 ".@@@@@...@.......@...@@@@@.@@@@...."
+ 140&nbsp;move_and_echo 4 8 ".@...@...@.......@...@...@.@......."
+ 141&nbsp;move_and_echo 5 8 ".@...@...@.......@...@...@..@@@@..."
+ 142&nbsp;move_and_echo 1 43 "@@@@...@@@...@@@@..@@@@..@@@@."
+ 143&nbsp;move_and_echo 2 43 "@...@.@...@.@.....@.....@....."
+ 144&nbsp;move_and_echo 3 43 "@@@@..@@@@@.@.....@@@@...@@@.."
+ 145&nbsp;move_and_echo 4 43 "@..@..@...@.@.....@.........@."
+ 146&nbsp;move_and_echo 5 43 "@...@.@...@..@@@@..@@@@.@@@@.."
+ 147&nbsp;
+ 148&nbsp;
+ 149&nbsp;# Set foreground and background colors to green.
+ 150&nbsp;echo -ne '\E[32;42m'
+ 151&nbsp;
+ 152&nbsp;# Draw  eleven green lines.
+ 153&nbsp;tput cup 5 0
+ 154&nbsp;for n in `seq 11`; do
+ 155&nbsp;      echo $BLANK80
+ 156&nbsp;done
+ 157&nbsp;
+ 158&nbsp;# Set foreground color to black. 
+ 159&nbsp;echo -ne '\E[30m'
+ 160&nbsp;tput cup 5 0
+ 161&nbsp;
+ 162&nbsp;# Draw the fences. 
+ 163&nbsp;echo "++++++++++++++++++++++++++++++++++++++\
+ 164&nbsp;++++++++++++++++++++++++++++++++++++++++++"
+ 165&nbsp;
+ 166&nbsp;tput cup 15 0
+ 167&nbsp;echo "++++++++++++++++++++++++++++++++++++++\
+ 168&nbsp;++++++++++++++++++++++++++++++++++++++++++"
+ 169&nbsp;
+ 170&nbsp;# Set foreground and background colors to white.
+ 171&nbsp;echo -ne '\E[37;47m'
+ 172&nbsp;
+ 173&nbsp;# Draw three white lines.
+ 174&nbsp;for n in `seq 3`; do
+ 175&nbsp;      echo $BLANK80
+ 176&nbsp;done
+ 177&nbsp;
+ 178&nbsp;# Set foreground color to black.
+ 179&nbsp;echo -ne '\E[30m'
+ 180&nbsp;
+ 181&nbsp;# Create 9 files to stores handicaps.
+ 182&nbsp;for n in `seq 10 7 68`; do
+ 183&nbsp;      touch $n
+ 184&nbsp;done  
+ 185&nbsp;
+ 186&nbsp;# Set the first type of "horse" the script will draw.
+ 187&nbsp;HORSE_TYPE=2
+ 188&nbsp;
+ 189&nbsp;#  Create position-file and odds-file for every "horse".
+ 190&nbsp;#+ In these files, store the current position of the horse,
+ 191&nbsp;#+ the type and the odds.
+ 192&nbsp;for HN in `seq 9`; do
+ 193&nbsp;      touch horse_${HN}_position
+ 194&nbsp;      touch odds_${HN}
+ 195&nbsp;      echo \-1 &#62; horse_${HN}_position
+ 196&nbsp;      echo $HORSE_TYPE &#62;&#62;  horse_${HN}_position
+ 197&nbsp;      # Define a random handicap for horse.
+ 198&nbsp;       HANDICAP=`random_1_9`
+ 199&nbsp;      # Check if the random_1_9 function returned a good value.
+ 200&nbsp;      while ! echo $HANDICAP | grep [1-9] &#38;&#62; /dev/null; do
+ 201&nbsp;                HANDICAP=`random_1_9`
+ 202&nbsp;      done
+ 203&nbsp;      # Define last handicap position for horse. 
+ 204&nbsp;      LHP=`expr $HANDICAP \* 7 + 3`
+ 205&nbsp;      for FILE in `seq 10 7 $LHP`; do
+ 206&nbsp;            echo $HN &#62;&#62; $FILE
+ 207&nbsp;      done   
+ 208&nbsp;     
+ 209&nbsp;      # Calculate odds.
+ 210&nbsp;      case $HANDICAP in 
+ 211&nbsp;              1) ODDS=`echo $HANDICAP \* 0.25 + 1.25 | bc`
+ 212&nbsp;                                 echo $ODDS &#62; odds_${HN}
+ 213&nbsp;              ;;
+ 214&nbsp;              2 | 3) ODDS=`echo $HANDICAP \* 0.40 + 1.25 | bc`
+ 215&nbsp;                                       echo $ODDS &#62; odds_${HN}
+ 216&nbsp;              ;;
+ 217&nbsp;              4 | 5 | 6) ODDS=`echo $HANDICAP \* 0.55 + 1.25 | bc`
+ 218&nbsp;                                             echo $ODDS &#62; odds_${HN}
+ 219&nbsp;              ;; 
+ 220&nbsp;              7 | 8) ODDS=`echo $HANDICAP \* 0.75 + 1.25 | bc`
+ 221&nbsp;                                       echo $ODDS &#62; odds_${HN}
+ 222&nbsp;              ;; 
+ 223&nbsp;              9) ODDS=`echo $HANDICAP \* 0.90 + 1.25 | bc`
+ 224&nbsp;                                  echo $ODDS &#62; odds_${HN}
+ 225&nbsp;      esac
+ 226&nbsp;
+ 227&nbsp;
+ 228&nbsp;done
+ 229&nbsp;
+ 230&nbsp;
+ 231&nbsp;# Print odds.
+ 232&nbsp;print_odds() {
+ 233&nbsp;tput cup 6 0
+ 234&nbsp;echo -ne '\E[30;42m'
+ 235&nbsp;for HN in `seq 9`; do
+ 236&nbsp;      echo "#$HN odds-&#62;" `cat odds_${HN}`
+ 237&nbsp;done
+ 238&nbsp;}
+ 239&nbsp;
+ 240&nbsp;# Draw the horses at starting line.
+ 241&nbsp;draw_horses() {
+ 242&nbsp;tput cup 6 0
+ 243&nbsp;echo -ne '\E[30;42m'
+ 244&nbsp;for HN in `seq 9`; do
+ 245&nbsp;      echo /\\$HN/\\"                               "
+ 246&nbsp;done
+ 247&nbsp;}
+ 248&nbsp;
+ 249&nbsp;print_odds
+ 250&nbsp;
+ 251&nbsp;echo -ne '\E[47m'
+ 252&nbsp;# Wait for a enter key press to start the race.
+ 253&nbsp;# The escape sequence '\E[?25l' disables the cursor.
+ 254&nbsp;tput cup 17 0
+ 255&nbsp;echo -e '\E[?25l'Press [enter] key to start the race...
+ 256&nbsp;read -s
+ 257&nbsp;
+ 258&nbsp;#  Disable normal echoing in the terminal.
+ 259&nbsp;#  This avoids key presses that might "contaminate" the screen
+ 260&nbsp;#+ during the race.  
+ 261&nbsp;stty -echo
+ 262&nbsp;
+ 263&nbsp;# --------------------------------------------------------
+ 264&nbsp;# Start the race.
+ 265&nbsp;
+ 266&nbsp;draw_horses
+ 267&nbsp;echo -ne '\E[37;47m'
+ 268&nbsp;move_and_echo 18 1 $BLANK80
+ 269&nbsp;echo -ne '\E[30m'
+ 270&nbsp;move_and_echo 18 1 Starting...
+ 271&nbsp;sleep 1
+ 272&nbsp;
+ 273&nbsp;# Set the column of the finish line.
+ 274&nbsp;WINNING_POS=74
+ 275&nbsp;
+ 276&nbsp;# Define the time the race started.
+ 277&nbsp;START_TIME=`date +%s`
+ 278&nbsp;
+ 279&nbsp;# COL variable needed by following "while" construct.
+ 280&nbsp;COL=0    
+ 281&nbsp;
+ 282&nbsp;while [ $COL -lt $WINNING_POS ]; do
+ 283&nbsp;                   
+ 284&nbsp;          MOVE_HORSE=0     
+ 285&nbsp;          
+ 286&nbsp;          # Check if the random_1_9 function has returned a good value.
+ 287&nbsp;          while ! echo $MOVE_HORSE | grep [1-9] &#38;&#62; /dev/null; do
+ 288&nbsp;                MOVE_HORSE=`random_1_9`
+ 289&nbsp;          done
+ 290&nbsp;          
+ 291&nbsp;          # Define old type and position of the "randomized horse".
+ 292&nbsp;          HORSE_TYPE=`cat  horse_${MOVE_HORSE}_position | tail -n 1`
+ 293&nbsp;          COL=$(expr `cat  horse_${MOVE_HORSE}_position | head -n 1`)
+ 294&nbsp;          
+ 295&nbsp;          ADD_POS=1
+ 296&nbsp;          # Check if the current position is an handicap position. 
+ 297&nbsp;          if seq 10 7 68 | grep -w $COL &#38;&#62; /dev/null; then
+ 298&nbsp;                if grep -w $MOVE_HORSE $COL &#38;&#62; /dev/null; then
+ 299&nbsp;                      ADD_POS=0
+ 300&nbsp;                      grep -v -w  $MOVE_HORSE $COL &#62; ${COL}_new
+ 301&nbsp;                      rm -f $COL
+ 302&nbsp;                      mv -f ${COL}_new $COL
+ 303&nbsp;                      else ADD_POS=1
+ 304&nbsp;                fi 
+ 305&nbsp;          else ADD_POS=1
+ 306&nbsp;          fi
+ 307&nbsp;          COL=`expr $COL + $ADD_POS`
+ 308&nbsp;          echo $COL &#62;  horse_${MOVE_HORSE}_position  # Store new position.
+ 309&nbsp;                            
+ 310&nbsp;         # Choose the type of horse to draw.         
+ 311&nbsp;          case $HORSE_TYPE in 
+ 312&nbsp;                1) HORSE_TYPE=2; DRAW_HORSE=draw_horse_two
+ 313&nbsp;                ;;
+ 314&nbsp;                2) HORSE_TYPE=1; DRAW_HORSE=draw_horse_one 
+ 315&nbsp;          esac       
+ 316&nbsp;          echo $HORSE_TYPE &#62;&#62;  horse_${MOVE_HORSE}_position
+ 317&nbsp;          # Store current type.
+ 318&nbsp;         
+ 319&nbsp;          # Set foreground color to black and background to green.
+ 320&nbsp;          echo -ne '\E[30;42m'
+ 321&nbsp;          
+ 322&nbsp;          # Move the cursor to new horse position.
+ 323&nbsp;          tput cup `expr $MOVE_HORSE + 5` \
+ 324&nbsp;	  `cat  horse_${MOVE_HORSE}_position | head -n 1` 
+ 325&nbsp;          
+ 326&nbsp;          # Draw the horse.
+ 327&nbsp;          $DRAW_HORSE
+ 328&nbsp;           usleep $USLEEP_ARG
+ 329&nbsp;          
+ 330&nbsp;           # When all horses have gone beyond field line 15, reprint odds.
+ 331&nbsp;           touch fieldline15
+ 332&nbsp;           if [ $COL = 15 ]; then
+ 333&nbsp;             echo $MOVE_HORSE &#62;&#62; fieldline15  
+ 334&nbsp;           fi
+ 335&nbsp;           if [ `wc -l fieldline15 | cut -f1 -d " "` = 9 ]; then
+ 336&nbsp;               print_odds
+ 337&nbsp;               : &#62; fieldline15
+ 338&nbsp;           fi           
+ 339&nbsp;          
+ 340&nbsp;          # Define the leading horse.
+ 341&nbsp;          HIGHEST_POS=`cat *position | sort -n | tail -1`          
+ 342&nbsp;          
+ 343&nbsp;          # Set background color to white.
+ 344&nbsp;          echo -ne '\E[47m'
+ 345&nbsp;          tput cup 17 0
+ 346&nbsp;          echo -n Current leader: `grep -w $HIGHEST_POS *position | cut -c7`\
+ 347&nbsp;	  "                              "
+ 348&nbsp;
+ 349&nbsp;done  
+ 350&nbsp;
+ 351&nbsp;# Define the time the race finished.
+ 352&nbsp;FINISH_TIME=`date +%s`
+ 353&nbsp;
+ 354&nbsp;# Set background color to green and enable blinking text.
+ 355&nbsp;echo -ne '\E[30;42m'
+ 356&nbsp;echo -en '\E[5m'
+ 357&nbsp;
+ 358&nbsp;# Make the winning horse blink.
+ 359&nbsp;tput cup `expr $MOVE_HORSE + 5` \
+ 360&nbsp;`cat  horse_${MOVE_HORSE}_position | head -n 1`
+ 361&nbsp;$DRAW_HORSE
+ 362&nbsp;
+ 363&nbsp;# Disable blinking text.
+ 364&nbsp;echo -en '\E[25m'
+ 365&nbsp;
+ 366&nbsp;# Set foreground and background color to white.
+ 367&nbsp;echo -ne '\E[37;47m'
+ 368&nbsp;move_and_echo 18 1 $BLANK80
+ 369&nbsp;
+ 370&nbsp;# Set foreground color to black.
+ 371&nbsp;echo -ne '\E[30m'
+ 372&nbsp;
+ 373&nbsp;# Make winner blink.
+ 374&nbsp;tput cup 17 0
+ 375&nbsp;echo -e "\E[5mWINNER: $MOVE_HORSE\E[25m""  Odds: `cat odds_${MOVE_HORSE}`"\
+ 376&nbsp;"  Race time: `expr $FINISH_TIME - $START_TIME` secs"
+ 377&nbsp;
+ 378&nbsp;# Restore cursor and old colors.
+ 379&nbsp;echo -en "\E[?25h"
+ 380&nbsp;echo -en "\E[0m"
+ 381&nbsp;
+ 382&nbsp;# Restore echoing.
+ 383&nbsp;stty echo
+ 384&nbsp;
+ 385&nbsp;# Remove race temp directory.
+ 386&nbsp;rm -rf $HORSE_RACE_TMP_DIR
+ 387&nbsp;
+ 388&nbsp;tput cup 19 0
+ 389&nbsp;
+ 390&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>See also <A
+HREF="contributed-scripts.html#HASHEXAMPLE"
+>Example A-21</A
+>, <A
+HREF="contributed-scripts.html#HOMEWORK"
+>Example A-44</A
+>, <A
+HREF="contributed-scripts.html#SHOWALLC"
+>Example A-52</A
+>, and <A
+HREF="contributed-scripts.html#PETALS"
+>Example A-40</A
+>.</P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>There is, however, a major problem with all
+	  this. <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ANSI escape sequences are emphatically
+          <A
+HREF="portabilityissues.html"
+>non-portable</A
+>.</I
+></SPAN
+>
+          What works fine on some terminal emulators (or the
+          console) may work differently, or not at all, on others.
+          A <SPAN
+CLASS="QUOTE"
+>"colorized"</SPAN
+> script that looks stunning on the
+          script author's machine may produce unreadable output on
+          someone else's. This somewhat compromises the usefulness of
+          colorizing scripts, and possibly relegates this technique
+          to the status of a gimmick. Colorized scripts are probably
+          inappropriate in a commercial setting, i.e., your supervisor
+          might disapprove.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Alister's <A
+HREF="http://code.google.com/p/ansi-color/"
+TARGET="_top"
+>          ansi-color</A
+> utility (based on <A
+HREF="http://bash.deta.in/color-1.1.tar.gz"
+TARGET="_top"
+>Moshe
+          Jacobson's color utility</A
+> considerably simplifies using
+          ANSI escape sequences. It substitutes a clean and logical
+          syntax for the clumsy constructs just discussed.</P
+><P
+>Henry/teikedvl has likewise created a utility (<A
+HREF="http://scriptechocolor.sourceforge.net/"
+TARGET="_top"
+>http://scriptechocolor.sourceforge.net/</A
+>) to simplify creation of colorized scripts.</P
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN20186"
+HREF="colorizing.html#AEN20186"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><SPAN
+CLASS="ACRONYM"
+>ANSI</SPAN
+> is, of course, the
+	     acronym for the American National Standards
+	     Institute. This august body establishes and maintains
+	     various technical and industrial standards.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="recursionsct.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="optimizations.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Recursion: a script calling itself</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Optimizations</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

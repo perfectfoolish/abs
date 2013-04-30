@@ -1,0 +1,2293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Communications Commands</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="External Filters, Programs and Commands"
+HREF="external.html"><LINK
+REL="PREVIOUS"
+TITLE="File and Archiving Commands"
+HREF="filearchiv.html"><LINK
+REL="NEXT"
+TITLE="Terminal Control Commands"
+HREF="terminalccmds.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="filearchiv.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 16. External Filters, Programs and Commands</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="terminalccmds.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="COMMUNICATIONS"
+></A
+>16.6. Communications Commands</H1
+><P
+>Certain of the following commands find use in
+	  network data transfer and analysis, as well as in
+	  <A
+HREF="writingscripts.html#CSPAMMERS"
+>chasing spammers</A
+>.</P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="COMMUNINFO1"
+></A
+>Information and Statistics</B
+></P
+><DL
+><DT
+><A
+NAME="HOSTREF"
+></A
+><B
+CLASS="COMMAND"
+>host</B
+></DT
+><DD
+><P
+>Searches for information about an Internet host by name or
+	      IP address, using DNS.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>host surfacemail.com</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>surfacemail.com. has address 202.92.42.236</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></DD
+><DT
+><A
+NAME="IPCALCREF"
+></A
+><B
+CLASS="COMMAND"
+>ipcalc</B
+></DT
+><DD
+><P
+>Displays IP information for a host.
+	      With the <TT
+CLASS="OPTION"
+>-h</TT
+> option,
+	      <B
+CLASS="COMMAND"
+>ipcalc</B
+> does a reverse DNS lookup, finding
+	      the name of the host (server) from the IP address.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ipcalc -h 202.92.42.236</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>HOSTNAME=surfacemail.com</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></DD
+><DT
+><A
+NAME="NSLOOKUPREF"
+></A
+><B
+CLASS="COMMAND"
+>nslookup</B
+></DT
+><DD
+><P
+>Do an Internet <SPAN
+CLASS="QUOTE"
+>"name server lookup"</SPAN
+>
+	      on a host by IP address. This is essentially equivalent
+	      to <B
+CLASS="COMMAND"
+>ipcalc -h</B
+> or <B
+CLASS="COMMAND"
+>dig -x
+	      </B
+>. The command may be run either interactively
+	      or noninteractively, i.e., from within a script.</P
+><P
+>The <B
+CLASS="COMMAND"
+>nslookup</B
+> command has allegedly
+	      been <SPAN
+CLASS="QUOTE"
+>"deprecated,"</SPAN
+> but it is still useful.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>nslookup -sil 66.97.104.180</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>nslookup kuhleersparnis.ch
+ Server:         135.116.137.2
+ Address:        135.116.137.2#53
+
+ Non-authoritative answer:
+ Name:   kuhleersparnis.ch</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+></DD
+><DT
+><A
+NAME="DIGREF"
+></A
+><B
+CLASS="COMMAND"
+>dig</B
+></DT
+><DD
+><P
+><B
+CLASS="COMMAND"
+>D</B
+>omain <B
+CLASS="COMMAND"
+>I</B
+>nformation
+	      <B
+CLASS="COMMAND"
+>G</B
+>roper. Similar to
+	      <B
+CLASS="COMMAND"
+>nslookup</B
+>, <I
+CLASS="FIRSTTERM"
+>dig</I
+> does
+	      an Internet <I
+CLASS="FIRSTTERM"
+>name server lookup</I
+> on a host.
+	      May be run from the command-line or from within a script.</P
+><P
+>Some interesting options to <I
+CLASS="FIRSTTERM"
+>dig</I
+> are
+	      <TT
+CLASS="OPTION"
+>+time=N</TT
+> for setting a query timeout to
+	      <TT
+CLASS="PARAMETER"
+><I
+>N</I
+></TT
+> seconds, <TT
+CLASS="OPTION"
+>+nofail</TT
+> for
+	      continuing to query servers until a reply is received, and
+	      <TT
+CLASS="OPTION"
+>-x</TT
+> for doing a reverse address lookup.</P
+><P
+>Compare the output of <B
+CLASS="COMMAND"
+>dig -x</B
+> with
+	      <B
+CLASS="COMMAND"
+>ipcalc -h</B
+> and
+	      <B
+CLASS="COMMAND"
+>nslookup</B
+>.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>dig -x 81.9.6.2</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>;; Got answer:
+ ;; -&#62;&#62;HEADER&#60;&#60;- opcode: QUERY, status: NXDOMAIN, id: 11649
+ ;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 0
+
+ ;; QUESTION SECTION:
+ ;2.6.9.81.in-addr.arpa.         IN      PTR
+
+ ;; AUTHORITY SECTION:
+ 6.9.81.in-addr.arpa.    3600    IN      SOA     ns.eltel.net. noc.eltel.net.
+ 2002031705 900 600 86400 3600
+
+ ;; Query time: 537 msec
+ ;; SERVER: 135.116.137.2#53(135.116.137.2)
+ ;; WHEN: Wed Jun 26 08:35:24 2002
+ ;; MSG SIZE  rcvd: 91</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+><P
+><A
+NAME="SPAMLOOKUP_0"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="SPAMLOOKUP"
+></A
+><P
+><B
+>Example 16-40. Finding out where to report a spammer</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# spam-lookup.sh: Look up abuse contact to report a spammer.
+   3&nbsp;# Thanks, Michael Zick.
+   4&nbsp;
+   5&nbsp;# Check for command-line arg.
+   6&nbsp;ARGCOUNT=1
+   7&nbsp;E_WRONGARGS=85
+   8&nbsp;if [ $# -ne "$ARGCOUNT" ]
+   9&nbsp;then
+  10&nbsp;  echo "Usage: `basename $0` domain-name"
+  11&nbsp;  exit $E_WRONGARGS
+  12&nbsp;fi
+  13&nbsp;
+  14&nbsp;
+  15&nbsp;dig +short $1.contacts.abuse.net -c in -t txt
+  16&nbsp;# Also try:
+  17&nbsp;#     dig +nssearch $1
+  18&nbsp;#     Tries to find "authoritative name servers" and display SOA records.
+  19&nbsp;
+  20&nbsp;# The following also works:
+  21&nbsp;#     whois -h whois.abuse.net $1
+  22&nbsp;#           ^^ ^^^^^^^^^^^^^^^  Specify host.  
+  23&nbsp;#     Can even lookup multiple spammers with this, i.e."
+  24&nbsp;#     whois -h whois.abuse.net $spamdomain1 $spamdomain2 . . .
+  25&nbsp;
+  26&nbsp;
+  27&nbsp;#  Exercise:
+  28&nbsp;#  --------
+  29&nbsp;#  Expand the functionality of this script
+  30&nbsp;#+ so that it automatically e-mails a notification
+  31&nbsp;#+ to the responsible ISP's contact address(es).
+  32&nbsp;#  Hint: use the "mail" command.
+  33&nbsp;
+  34&nbsp;exit $?
+  35&nbsp;
+  36&nbsp;# spam-lookup.sh chinatietong.com
+  37&nbsp;#                A known spam domain.
+  38&nbsp;
+  39&nbsp;# "crnet_mgr@chinatietong.com"
+  40&nbsp;# "crnet_tec@chinatietong.com"
+  41&nbsp;# "postmaster@chinatietong.com"
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;#  For a more elaborate version of this script,
+  45&nbsp;#+ see the SpamViz home page, http://www.spamviz.net/index.html.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="ISSPAMMER_0"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ISSPAMMER"
+></A
+><P
+><B
+>Example 16-41. Analyzing a spam domain</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#! /bin/bash
+   2&nbsp;# is-spammer.sh: Identifying spam domains
+   3&nbsp;
+   4&nbsp;# $Id: is-spammer, v 1.4 2004/09/01 19:37:52 mszick Exp $
+   5&nbsp;# Above line is RCS ID info.
+   6&nbsp;#
+   7&nbsp;#  This is a simplified version of the "is_spammer.bash
+   8&nbsp;#+ script in the Contributed Scripts appendix.
+   9&nbsp;
+  10&nbsp;# is-spammer &#60;domain.name&#62;
+  11&nbsp;
+  12&nbsp;# Uses an external program: 'dig'
+  13&nbsp;# Tested with version: 9.2.4rc5
+  14&nbsp;
+  15&nbsp;# Uses functions.
+  16&nbsp;# Uses IFS to parse strings by assignment into arrays.
+  17&nbsp;# And even does something useful: checks e-mail blacklists.
+  18&nbsp;
+  19&nbsp;# Use the domain.name(s) from the text body:
+  20&nbsp;# http://www.good_stuff.spammer.biz/just_ignore_everything_else
+  21&nbsp;#                       ^^^^^^^^^^^
+  22&nbsp;# Or the domain.name(s) from any e-mail address:
+  23&nbsp;# Really_Good_Offer@spammer.biz
+  24&nbsp;#
+  25&nbsp;# as the only argument to this script.
+  26&nbsp;#(PS: have your Inet connection running)
+  27&nbsp;#
+  28&nbsp;# So, to invoke this script in the above two instances:
+  29&nbsp;#       is-spammer.sh spammer.biz
+  30&nbsp;
+  31&nbsp;
+  32&nbsp;# Whitespace == :Space:Tab:Line Feed:Carriage Return:
+  33&nbsp;WSP_IFS=$'\x20'$'\x09'$'\x0A'$'\x0D'
+  34&nbsp;
+  35&nbsp;# No Whitespace == Line Feed:Carriage Return
+  36&nbsp;No_WSP=$'\x0A'$'\x0D'
+  37&nbsp;
+  38&nbsp;# Field separator for dotted decimal ip addresses
+  39&nbsp;ADR_IFS=${No_WSP}'.'
+  40&nbsp;
+  41&nbsp;# Get the dns text resource record.
+  42&nbsp;# get_txt &#60;error_code&#62; &#60;list_query&#62;
+  43&nbsp;get_txt() {
+  44&nbsp;
+  45&nbsp;    # Parse $1 by assignment at the dots.
+  46&nbsp;    local -a dns
+  47&nbsp;    IFS=$ADR_IFS
+  48&nbsp;    dns=( $1 )
+  49&nbsp;    IFS=$WSP_IFS
+  50&nbsp;    if [ "${dns[0]}" == '127' ]
+  51&nbsp;    then
+  52&nbsp;        # See if there is a reason.
+  53&nbsp;        echo $(dig +short $2 -t txt)
+  54&nbsp;    fi
+  55&nbsp;}
+  56&nbsp;
+  57&nbsp;# Get the dns address resource record.
+  58&nbsp;# chk_adr &#60;rev_dns&#62; &#60;list_server&#62;
+  59&nbsp;chk_adr() {
+  60&nbsp;    local reply
+  61&nbsp;    local server
+  62&nbsp;    local reason
+  63&nbsp;
+  64&nbsp;    server=${1}${2}
+  65&nbsp;    reply=$( dig +short ${server} )
+  66&nbsp;
+  67&nbsp;    # If reply might be an error code . . .
+  68&nbsp;    if [ ${#reply} -gt 6 ]
+  69&nbsp;    then
+  70&nbsp;        reason=$(get_txt ${reply} ${server} )
+  71&nbsp;        reason=${reason:-${reply}}
+  72&nbsp;    fi
+  73&nbsp;    echo ${reason:-' not blacklisted.'}
+  74&nbsp;}
+  75&nbsp;
+  76&nbsp;# Need to get the IP address from the name.
+  77&nbsp;echo 'Get address of: '$1
+  78&nbsp;ip_adr=$(dig +short $1)
+  79&nbsp;dns_reply=${ip_adr:-' no answer '}
+  80&nbsp;echo ' Found address: '${dns_reply}
+  81&nbsp;
+  82&nbsp;# A valid reply is at least 4 digits plus 3 dots.
+  83&nbsp;if [ ${#ip_adr} -gt 6 ]
+  84&nbsp;then
+  85&nbsp;    echo
+  86&nbsp;    declare query
+  87&nbsp;
+  88&nbsp;    # Parse by assignment at the dots.
+  89&nbsp;    declare -a dns
+  90&nbsp;    IFS=$ADR_IFS
+  91&nbsp;    dns=( ${ip_adr} )
+  92&nbsp;    IFS=$WSP_IFS
+  93&nbsp;
+  94&nbsp;    # Reorder octets into dns query order.
+  95&nbsp;    rev_dns="${dns[3]}"'.'"${dns[2]}"'.'"${dns[1]}"'.'"${dns[0]}"'.'
+  96&nbsp;
+  97&nbsp;# See: http://www.spamhaus.org (Conservative, well maintained)
+  98&nbsp;    echo -n 'spamhaus.org says: '
+  99&nbsp;    echo $(chk_adr ${rev_dns} 'sbl-xbl.spamhaus.org')
+ 100&nbsp;
+ 101&nbsp;# See: http://ordb.org (Open mail relays)
+ 102&nbsp;    echo -n '   ordb.org  says: '
+ 103&nbsp;    echo $(chk_adr ${rev_dns} 'relays.ordb.org')
+ 104&nbsp;
+ 105&nbsp;# See: http://www.spamcop.net/ (You can report spammers here)
+ 106&nbsp;    echo -n ' spamcop.net says: '
+ 107&nbsp;    echo $(chk_adr ${rev_dns} 'bl.spamcop.net')
+ 108&nbsp;
+ 109&nbsp;# # # other blacklist operations # # #
+ 110&nbsp;
+ 111&nbsp;# See: http://cbl.abuseat.org.
+ 112&nbsp;    echo -n ' abuseat.org says: '
+ 113&nbsp;    echo $(chk_adr ${rev_dns} 'cbl.abuseat.org')
+ 114&nbsp;
+ 115&nbsp;# See: http://dsbl.org/usage (Various mail relays)
+ 116&nbsp;    echo
+ 117&nbsp;    echo 'Distributed Server Listings'
+ 118&nbsp;    echo -n '       list.dsbl.org says: '
+ 119&nbsp;    echo $(chk_adr ${rev_dns} 'list.dsbl.org')
+ 120&nbsp;
+ 121&nbsp;    echo -n '   multihop.dsbl.org says: '
+ 122&nbsp;    echo $(chk_adr ${rev_dns} 'multihop.dsbl.org')
+ 123&nbsp;
+ 124&nbsp;    echo -n 'unconfirmed.dsbl.org says: '
+ 125&nbsp;    echo $(chk_adr ${rev_dns} 'unconfirmed.dsbl.org')
+ 126&nbsp;
+ 127&nbsp;else
+ 128&nbsp;    echo
+ 129&nbsp;    echo 'Could not use that address.'
+ 130&nbsp;fi
+ 131&nbsp;
+ 132&nbsp;exit 0
+ 133&nbsp;
+ 134&nbsp;# Exercises:
+ 135&nbsp;# --------
+ 136&nbsp;
+ 137&nbsp;# 1) Check arguments to script,
+ 138&nbsp;#    and exit with appropriate error message if necessary.
+ 139&nbsp;
+ 140&nbsp;# 2) Check if on-line at invocation of script,
+ 141&nbsp;#    and exit with appropriate error message if necessary.
+ 142&nbsp;
+ 143&nbsp;# 3) Substitute generic variables for "hard-coded" BHL domains.
+ 144&nbsp;
+ 145&nbsp;# 4) Set a time-out for the script using the "+time=" option
+ 146&nbsp;     to the 'dig' command.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>For a much more elaborate version of the above script, see 
+	    <A
+HREF="contributed-scripts.html#ISSPAMMER2"
+>Example A-28</A
+>.</P
+></DD
+><DT
+><A
+NAME="TRACEROUTEREF"
+></A
+><B
+CLASS="COMMAND"
+>traceroute</B
+></DT
+><DD
+><P
+>Trace the route taken by packets sent to a remote host. This
+	      command works within a LAN, WAN, or over the
+	      Internet. The remote host may be specified by an IP
+	      address. The output of this command may be filtered
+	      by <A
+HREF="textproc.html#GREPREF"
+>grep</A
+> or <A
+HREF="sedawk.html#SEDREF"
+>sed</A
+> in a pipe.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>traceroute 81.9.6.2</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>traceroute to 81.9.6.2 (81.9.6.2), 30 hops max, 38 byte packets
+ 1  tc43.xjbnnbrb.com (136.30.178.8)  191.303 ms  179.400 ms  179.767 ms
+ 2  or0.xjbnnbrb.com (136.30.178.1)  179.536 ms  179.534 ms  169.685 ms
+ 3  192.168.11.101 (192.168.11.101)  189.471 ms  189.556 ms *
+ ...</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+></DD
+><DT
+><A
+NAME="PINGREF"
+></A
+><B
+CLASS="COMMAND"
+>ping</B
+></DT
+><DD
+><P
+>Broadcast an <TT
+CLASS="REPLACEABLE"
+><I
+>ICMP
+	      ECHO_REQUEST</I
+></TT
+> packet to another machine,
+              either on a local or remote network. This is a
+              diagnostic tool for testing network connections,
+              and it should be used with caution.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ping localhost</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>PING localhost.localdomain (127.0.0.1) from 127.0.0.1 : 56(84) bytes of data.
+ 64 bytes from localhost.localdomain (127.0.0.1): icmp_seq=0 ttl=255 time=709 usec
+ 64 bytes from localhost.localdomain (127.0.0.1): icmp_seq=1 ttl=255 time=286 usec
+
+ --- localhost.localdomain ping statistics ---
+ 2 packets transmitted, 2 packets received, 0% packet loss
+ round-trip min/avg/max/mdev = 0.286/0.497/0.709/0.212 ms</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><P
+>A successful <I
+CLASS="FIRSTTERM"
+>ping</I
+> returns
+	      an <A
+HREF="exit-status.html#EXITSTATUSREF"
+>exit status</A
+> of
+	      <SPAN
+CLASS="ERRORCODE"
+>0</SPAN
+>. This can be tested for in a
+	      script.</P
+><P
+><A
+NAME="PING0"
+></A
+></P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;  HNAME=news-15.net  # Notorious spammer.
+   2&nbsp;# HNAME=$HOST     # Debug: test for localhost.
+   3&nbsp;  count=2  # Send only two pings.
+   4&nbsp;
+   5&nbsp;if [[ `ping -c $count "$HNAME"` ]]
+   6&nbsp;then
+   7&nbsp;  echo ""$HNAME" still up and broadcasting spam your way."
+   8&nbsp;else
+   9&nbsp;  echo ""$HNAME" seems to be down. Pity."
+  10&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+><A
+NAME="WHOISREF"
+></A
+><B
+CLASS="COMMAND"
+>whois</B
+></DT
+><DD
+><P
+>Perform a DNS (Domain Name System) lookup.
+	      The <TT
+CLASS="OPTION"
+>-h</TT
+> option permits specifying which
+	      particular <I
+CLASS="FIRSTTERM"
+>whois</I
+> server to query. See
+	      <A
+HREF="othertypesv.html#EX18"
+>Example 4-6</A
+> and <A
+HREF="communications.html#SPAMLOOKUP"
+>Example 16-40</A
+>.</P
+></DD
+><DT
+><A
+NAME="FINGERREF"
+></A
+><B
+CLASS="COMMAND"
+>finger</B
+></DT
+><DD
+><P
+>Retrieve information about users on a
+	      network. Optionally, this command can display
+	      a user's <TT
+CLASS="FILENAME"
+>~/.plan</TT
+>,
+	      <TT
+CLASS="FILENAME"
+>~/.project</TT
+>, and
+	      <TT
+CLASS="FILENAME"
+>~/.forward</TT
+> files, if present.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>finger</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Login  Name           Tty      Idle  Login Time   Office     Office Phone
+ bozo   Bozo Bozeman   tty1        8  Jun 25 16:59                (:0)
+ bozo   Bozo Bozeman   ttyp0          Jun 25 16:59                (:0.0)
+ bozo   Bozo Bozeman   ttyp1          Jun 25 17:07                (:0.0)</TT
+>
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>finger bozo</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Login: bozo                             Name: Bozo Bozeman
+ Directory: /home/bozo                   Shell: /bin/bash
+ Office: 2355 Clown St., 543-1234
+ On since Fri Aug 31 20:13 (MST) on tty1    1 hour 38 minutes idle
+ On since Fri Aug 31 20:13 (MST) on pts/0   12 seconds idle
+ On since Fri Aug 31 20:13 (MST) on pts/1
+ On since Fri Aug 31 20:31 (MST) on pts/2   1 hour 16 minutes idle
+ Mail last read Tue Jul  3 10:08 2007 (MST) 
+ No Plan.</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><P
+>Out of security considerations, many networks disable
+	      <B
+CLASS="COMMAND"
+>finger</B
+> and its associated daemon.
+	          <A
+NAME="AEN13268"
+HREF="#FTN.AEN13268"
+>[1]</A
+>
+	      </P
+></DD
+><DT
+><A
+NAME="CHFNREF"
+></A
+><B
+CLASS="COMMAND"
+>chfn</B
+></DT
+><DD
+><P
+>Change information disclosed by the
+	      <B
+CLASS="COMMAND"
+>finger</B
+> command.</P
+></DD
+><DT
+><A
+NAME="VRFYREF"
+></A
+><B
+CLASS="COMMAND"
+>vrfy</B
+></DT
+><DD
+><P
+>Verify an Internet e-mail address.</P
+><P
+>This command seems to be missing from newer Linux
+	      distros.</P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="COMMREMOTE1"
+></A
+>Remote Host Access</B
+></P
+><DL
+><DT
+><A
+NAME="RXREF"
+></A
+><B
+CLASS="COMMAND"
+>sx</B
+>, <B
+CLASS="COMMAND"
+>rx</B
+></DT
+><DD
+><P
+>The <B
+CLASS="COMMAND"
+>sx</B
+> and <B
+CLASS="COMMAND"
+>rx</B
+>
+	      command set serves to transfer files to and from a remote
+	      host using the <I
+CLASS="FIRSTTERM"
+>xmodem</I
+> protocol. These
+	      are generally part of a communications package, such as
+	      <B
+CLASS="COMMAND"
+>minicom</B
+>.</P
+></DD
+><DT
+><A
+NAME="RZREF"
+></A
+><B
+CLASS="COMMAND"
+>sz</B
+>, <B
+CLASS="COMMAND"
+>rz</B
+></DT
+><DD
+><P
+>The <B
+CLASS="COMMAND"
+>sz</B
+> and <B
+CLASS="COMMAND"
+>rz</B
+>
+	      command set serves to transfer files to and from a remote
+	      host using the <I
+CLASS="FIRSTTERM"
+>zmodem</I
+> protocol.
+	      <I
+CLASS="FIRSTTERM"
+>Zmodem</I
+> has certain advantages over
+	      <I
+CLASS="FIRSTTERM"
+>xmodem</I
+>, such as faster transmission
+	      rate and resumption of interrupted file transfers.
+	      Like <B
+CLASS="COMMAND"
+>sx</B
+> and <B
+CLASS="COMMAND"
+>rx</B
+>,
+	      these are generally part of a communications package.</P
+></DD
+><DT
+><A
+NAME="FTPREF"
+></A
+><B
+CLASS="COMMAND"
+>ftp</B
+></DT
+><DD
+><P
+>Utility and protocol for uploading / downloading
+	      files to or from a remote host. An ftp session can be automated
+	      in a script (see <A
+HREF="here-docs.html#EX72"
+>Example 19-6</A
+> and <A
+HREF="contributed-scripts.html#ENCRYPTEDPW"
+>Example A-4</A
+>).</P
+></DD
+><DT
+><A
+NAME="UUCPREF"
+></A
+><B
+CLASS="COMMAND"
+>uucp</B
+>, <A
+NAME="UUXREF"
+></A
+><B
+CLASS="COMMAND"
+>uux</B
+>, <A
+NAME="CUREF"
+></A
+><B
+CLASS="COMMAND"
+>cu</B
+></DT
+><DD
+><P
+><B
+CLASS="COMMAND"
+>uucp</B
+>: <I
+CLASS="FIRSTTERM"
+>UNIX to UNIX
+	      copy</I
+>. This is a communications package for
+	      transferring files between UNIX servers. A shell script
+	      is an effective way to handle a <B
+CLASS="COMMAND"
+>uucp</B
+>
+	      command sequence.</P
+><P
+>Since the advent of the Internet and e-mail,
+	      <B
+CLASS="COMMAND"
+>uucp</B
+> seems to have faded into obscurity,
+	      but it still exists and remains perfectly workable in
+	      situations where an Internet connection is not available
+	      or appropriate. The advantage of <B
+CLASS="COMMAND"
+>uucp</B
+>
+	      is that it is fault-tolerant, so even if there is a service
+	      interruption the copy operation will resume where it left
+	      off when the connection is restored.</P
+><P
+>---</P
+><P
+><B
+CLASS="COMMAND"
+>uux</B
+>: <I
+CLASS="FIRSTTERM"
+>UNIX to UNIX
+	      execute</I
+>. Execute a command on a remote system.
+	      This command is part of the <B
+CLASS="COMMAND"
+>uucp</B
+>
+	      package.</P
+><P
+>---</P
+><P
+><B
+CLASS="COMMAND"
+>cu</B
+>: <B
+CLASS="COMMAND"
+>C</B
+>all
+	      <B
+CLASS="COMMAND"
+>U</B
+>p a remote system and connect as a
+	      simple terminal. It is a sort of dumbed-down version of
+	      <A
+HREF="communications.html#TELNETREF"
+>telnet</A
+>. This command is
+	      part of the <B
+CLASS="COMMAND"
+>uucp</B
+> package.</P
+></DD
+><DT
+><A
+NAME="TELNETREF"
+></A
+><B
+CLASS="COMMAND"
+>telnet</B
+></DT
+><DD
+><P
+>Utility and protocol for connecting to a remote host.</P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The <I
+CLASS="FIRSTTERM"
+>telnet</I
+> protocol
+	    contains security holes and should therefore probably be
+	    avoided. Its use within a shell script is
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> recommended.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="WGETREF"
+></A
+><B
+CLASS="COMMAND"
+>wget</B
+></DT
+><DD
+><P
+>The <B
+CLASS="COMMAND"
+>wget</B
+> utility
+	      <I
+CLASS="FIRSTTERM"
+>noninteractively</I
+> retrieves or
+	      downloads files from a Web or ftp site. It works well in a
+	      script.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;wget -p http://www.xyz23.com/file01.html
+   2&nbsp;#  The -p or --page-requisite option causes wget to fetch all files
+   3&nbsp;#+ required to display the specified page.
+   4&nbsp;
+   5&nbsp;wget -r ftp://ftp.xyz24.net/~bozo/project_files/ -O $SAVEFILE
+   6&nbsp;#  The -r option recursively follows and retrieves all links
+   7&nbsp;#+ on the specified site.
+   8&nbsp;
+   9&nbsp;wget -c ftp://ftp.xyz25.net/bozofiles/filename.tar.bz2
+  10&nbsp;#  The -c option lets wget resume an interrupted download.
+  11&nbsp;#  This works with ftp servers and many HTTP sites.</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="QUOTEFETCH"
+></A
+><P
+><B
+>Example 16-42. Getting a stock quote</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# quote-fetch.sh: Download a stock quote.
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;E_NOPARAMS=86
+   6&nbsp;
+   7&nbsp;if [ -z "$1" ]  # Must specify a stock (symbol) to fetch.
+   8&nbsp;  then echo "Usage: `basename $0` stock-symbol"
+   9&nbsp;  exit $E_NOPARAMS
+  10&nbsp;fi
+  11&nbsp;
+  12&nbsp;stock_symbol=$1
+  13&nbsp;
+  14&nbsp;file_suffix=.html
+  15&nbsp;# Fetches an HTML file, so name it appropriately.
+  16&nbsp;URL='http://finance.yahoo.com/q?s='
+  17&nbsp;# Yahoo finance board, with stock query suffix.
+  18&nbsp;
+  19&nbsp;# -----------------------------------------------------------
+  20&nbsp;wget -O ${stock_symbol}${file_suffix} "${URL}${stock_symbol}"
+  21&nbsp;# -----------------------------------------------------------
+  22&nbsp;
+  23&nbsp;
+  24&nbsp;# To look up stuff on http://search.yahoo.com:
+  25&nbsp;# -----------------------------------------------------------
+  26&nbsp;# URL="http://search.yahoo.com/search?fr=ush-news&#38;p=${query}"
+  27&nbsp;# wget -O "$savefilename" "${URL}"
+  28&nbsp;# -----------------------------------------------------------
+  29&nbsp;# Saves a list of relevant URLs.
+  30&nbsp;
+  31&nbsp;exit $?
+  32&nbsp;
+  33&nbsp;# Exercises:
+  34&nbsp;# ---------
+  35&nbsp;#
+  36&nbsp;# 1) Add a test to ensure the user running the script is on-line.
+  37&nbsp;#    (Hint: parse the output of 'ps -ax' for "ppp" or "connect."
+  38&nbsp;#
+  39&nbsp;# 2) Modify this script to fetch the local weather report,
+  40&nbsp;#+   taking the user's zip code as an argument.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>See also <A
+HREF="contributed-scripts.html#WGETTER2"
+>Example A-30</A
+> and <A
+HREF="contributed-scripts.html#BASHPODDER"
+>Example A-31</A
+>.</P
+></DD
+><DT
+><A
+NAME="LYNXREF"
+></A
+><B
+CLASS="COMMAND"
+>lynx</B
+></DT
+><DD
+><P
+>The <B
+CLASS="COMMAND"
+>lynx</B
+> Web and file browser
+	      can be used inside a script (with the
+	      <TT
+CLASS="OPTION"
+>-dump</TT
+> option) to retrieve a file from a Web or 
+	      ftp site noninteractively.</P
+><P
+>	   <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;lynx -dump http://www.xyz23.com/file01.html &#62;$SAVEFILE</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+><P
+>With the <TT
+CLASS="OPTION"
+>-traversal</TT
+> option,
+	      <B
+CLASS="COMMAND"
+>lynx</B
+> starts at the HTTP URL specified
+	      as an argument, then <SPAN
+CLASS="QUOTE"
+>"crawls"</SPAN
+> through all
+	      links located on that particular server. Used together
+	      with the <TT
+CLASS="OPTION"
+>-crawl</TT
+> option, outputs page text
+	      to a log file.</P
+></DD
+><DT
+><A
+NAME="RLOGINREF"
+></A
+><B
+CLASS="COMMAND"
+>rlogin</B
+></DT
+><DD
+><P
+><TT
+CLASS="REPLACEABLE"
+><I
+>Remote login</I
+></TT
+>, initates a
+	      session on a remote host. This command has security issues,
+	      so use <A
+HREF="communications.html#SSHREF"
+>ssh</A
+> instead.</P
+></DD
+><DT
+><A
+NAME="RSHREF"
+></A
+><B
+CLASS="COMMAND"
+>rsh</B
+></DT
+><DD
+><P
+><TT
+CLASS="REPLACEABLE"
+><I
+>Remote shell</I
+></TT
+>, executes
+	      command(s) on a remote host. This has security issues,
+	      so use <B
+CLASS="COMMAND"
+>ssh</B
+> instead.</P
+></DD
+><DT
+><A
+NAME="RCPREF"
+></A
+><B
+CLASS="COMMAND"
+>rcp</B
+></DT
+><DD
+><P
+><TT
+CLASS="REPLACEABLE"
+><I
+>Remote copy</I
+></TT
+>, copies files
+	      between two different networked machines.</P
+></DD
+><DT
+><A
+NAME="RSYNCREF"
+></A
+><B
+CLASS="COMMAND"
+>rsync</B
+></DT
+><DD
+><P
+><TT
+CLASS="REPLACEABLE"
+><I
+>Remote synchronize</I
+></TT
+>, updates
+	    (synchronizes) files
+	      between two different networked machines.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>rsync -a ~/sourcedir/*txt /node1/subdirectory/</B
+></TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="FC4UPD"
+></A
+><P
+><B
+>Example 16-43. Updating FC4</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# fc4upd.sh
+   3&nbsp;
+   4&nbsp;# Script author: Frank Wang.
+   5&nbsp;# Slight stylistic modifications by ABS Guide author.
+   6&nbsp;# Used in ABS Guide with permission.
+   7&nbsp;
+   8&nbsp;
+   9&nbsp;#  Download Fedora Core 4 update from mirror site using rsync. 
+  10&nbsp;#  Should also work for newer Fedora Cores -- 5, 6, . . .
+  11&nbsp;#  Only download latest package if multiple versions exist,
+  12&nbsp;#+ to save space.
+  13&nbsp;
+  14&nbsp;URL=rsync://distro.ibiblio.org/fedora-linux-core/updates/
+  15&nbsp;# URL=rsync://ftp.kddilabs.jp/fedora/core/updates/
+  16&nbsp;# URL=rsync://rsync.planetmirror.com/fedora-linux-core/updates/
+  17&nbsp;
+  18&nbsp;DEST=${1:-/var/www/html/fedora/updates/}
+  19&nbsp;LOG=/tmp/repo-update-$(/bin/date +%Y-%m-%d).txt
+  20&nbsp;PID_FILE=/var/run/${0##*/}.pid
+  21&nbsp;
+  22&nbsp;E_RETURN=85        # Something unexpected happened.
+  23&nbsp;
+  24&nbsp;
+  25&nbsp;# General rsync options
+  26&nbsp;# -r: recursive download
+  27&nbsp;# -t: reserve time
+  28&nbsp;# -v: verbose
+  29&nbsp;
+  30&nbsp;OPTS="-rtv --delete-excluded --delete-after --partial"
+  31&nbsp;
+  32&nbsp;# rsync include pattern
+  33&nbsp;# Leading slash causes absolute path name match.
+  34&nbsp;INCLUDE=(
+  35&nbsp;    "/4/i386/kde-i18n-Chinese*" 
+  36&nbsp;#   ^                         ^
+  37&nbsp;# Quoting is necessary to prevent globbing.
+  38&nbsp;) 
+  39&nbsp;
+  40&nbsp;
+  41&nbsp;# rsync exclude pattern
+  42&nbsp;# Temporarily comment out unwanted pkgs using "#" . . .
+  43&nbsp;EXCLUDE=(
+  44&nbsp;    /1
+  45&nbsp;    /2
+  46&nbsp;    /3
+  47&nbsp;    /testing
+  48&nbsp;    /4/SRPMS
+  49&nbsp;    /4/ppc
+  50&nbsp;    /4/x86_64
+  51&nbsp;    /4/i386/debug
+  52&nbsp;   "/4/i386/kde-i18n-*"
+  53&nbsp;   "/4/i386/openoffice.org-langpack-*"
+  54&nbsp;   "/4/i386/*i586.rpm"
+  55&nbsp;   "/4/i386/GFS-*"
+  56&nbsp;   "/4/i386/cman-*"
+  57&nbsp;   "/4/i386/dlm-*"
+  58&nbsp;   "/4/i386/gnbd-*"
+  59&nbsp;   "/4/i386/kernel-smp*"
+  60&nbsp;#  "/4/i386/kernel-xen*" 
+  61&nbsp;#  "/4/i386/xen-*" 
+  62&nbsp;)
+  63&nbsp;
+  64&nbsp;
+  65&nbsp;init () {
+  66&nbsp;    # Let pipe command return possible rsync error, e.g., stalled network.
+  67&nbsp;    set -o pipefail                  # Newly introduced in Bash, version 3.
+  68&nbsp;
+  69&nbsp;    TMP=${TMPDIR:-/tmp}/${0##*/}.$$  # Store refined download list.
+  70&nbsp;    trap "{
+  71&nbsp;        rm -f $TMP 2&#62;/dev/null
+  72&nbsp;    }" EXIT                          # Clear temporary file on exit.
+  73&nbsp;}
+  74&nbsp;
+  75&nbsp;
+  76&nbsp;check_pid () {
+  77&nbsp;# Check if process exists.
+  78&nbsp;    if [ -s "$PID_FILE" ]; then
+  79&nbsp;        echo "PID file exists. Checking ..."
+  80&nbsp;        PID=$(/bin/egrep -o "^[[:digit:]]+" $PID_FILE)
+  81&nbsp;        if /bin/ps --pid $PID &#38;&#62;/dev/null; then
+  82&nbsp;            echo "Process $PID found. ${0##*/} seems to be running!"
+  83&nbsp;           /usr/bin/logger -t ${0##*/} \
+  84&nbsp;                 "Process $PID found. ${0##*/} seems to be running!"
+  85&nbsp;            exit $E_RETURN
+  86&nbsp;        fi
+  87&nbsp;        echo "Process $PID not found. Start new process . . ."
+  88&nbsp;    fi
+  89&nbsp;}
+  90&nbsp;
+  91&nbsp;
+  92&nbsp;#  Set overall file update range starting from root or $URL,
+  93&nbsp;#+ according to above patterns.
+  94&nbsp;set_range () {
+  95&nbsp;    include=
+  96&nbsp;    exclude=
+  97&nbsp;    for p in "${INCLUDE[@]}"; do
+  98&nbsp;        include="$include --include \"$p\""
+  99&nbsp;    done
+ 100&nbsp;
+ 101&nbsp;    for p in "${EXCLUDE[@]}"; do
+ 102&nbsp;        exclude="$exclude --exclude \"$p\""
+ 103&nbsp;    done
+ 104&nbsp;}
+ 105&nbsp;
+ 106&nbsp;
+ 107&nbsp;# Retrieve and refine rsync update list.
+ 108&nbsp;get_list () {
+ 109&nbsp;    echo $$ &#62; $PID_FILE || {
+ 110&nbsp;        echo "Can't write to pid file $PID_FILE"
+ 111&nbsp;        exit $E_RETURN
+ 112&nbsp;    }
+ 113&nbsp;
+ 114&nbsp;    echo -n "Retrieving and refining update list . . ."
+ 115&nbsp;
+ 116&nbsp;    # Retrieve list -- 'eval' is needed to run rsync as a single command.
+ 117&nbsp;    # $3 and $4 is the date and time of file creation.
+ 118&nbsp;    # $5 is the full package name.
+ 119&nbsp;    previous=
+ 120&nbsp;    pre_file=
+ 121&nbsp;    pre_date=0
+ 122&nbsp;    eval /bin/nice /usr/bin/rsync \
+ 123&nbsp;        -r $include $exclude $URL | \
+ 124&nbsp;        egrep '^dr.x|^-r' | \
+ 125&nbsp;        awk '{print $3, $4, $5}' | \
+ 126&nbsp;        sort -k3 | \
+ 127&nbsp;        { while read line; do
+ 128&nbsp;            # Get seconds since epoch, to filter out obsolete pkgs.
+ 129&nbsp;            cur_date=$(date -d "$(echo $line | awk '{print $1, $2}')" +%s)
+ 130&nbsp;            #  echo $cur_date
+ 131&nbsp;
+ 132&nbsp;            # Get file name.
+ 133&nbsp;            cur_file=$(echo $line | awk '{print $3}')
+ 134&nbsp;            #  echo $cur_file
+ 135&nbsp;
+ 136&nbsp;            # Get rpm pkg name from file name, if possible.
+ 137&nbsp;            if [[ $cur_file == *rpm ]]; then
+ 138&nbsp;                pkg_name=$(echo $cur_file | sed -r -e \
+ 139&nbsp;                    's/(^([^_-]+[_-])+)[[:digit:]]+\..*[_-].*$/\1/')
+ 140&nbsp;            else
+ 141&nbsp;                pkg_name=
+ 142&nbsp;            fi
+ 143&nbsp;            # echo $pkg_name
+ 144&nbsp;
+ 145&nbsp;            if [ -z "$pkg_name" ]; then   #  If not a rpm file,
+ 146&nbsp;                echo $cur_file &#62;&#62; $TMP    #+ then append to download list.
+ 147&nbsp;            elif [ "$pkg_name" != "$previous" ]; then   # A new pkg found.
+ 148&nbsp;                echo $pre_file &#62;&#62; $TMP                  # Output latest file.
+ 149&nbsp;                previous=$pkg_name                      # Save current.
+ 150&nbsp;                pre_date=$cur_date
+ 151&nbsp;                pre_file=$cur_file
+ 152&nbsp;            elif [ "$cur_date" -gt "$pre_date" ]; then
+ 153&nbsp;                                                #  If same pkg, but newer,
+ 154&nbsp;                pre_date=$cur_date              #+ then update latest pointer.
+ 155&nbsp;                pre_file=$cur_file
+ 156&nbsp;            fi
+ 157&nbsp;            done
+ 158&nbsp;            echo $pre_file &#62;&#62; $TMP              #  TMP contains ALL
+ 159&nbsp;                                                #+ of refined list now.
+ 160&nbsp;            # echo "subshell=$BASH_SUBSHELL"
+ 161&nbsp;
+ 162&nbsp;    }       # Bracket required here to let final "echo $pre_file &#62;&#62; $TMP" 
+ 163&nbsp;            # Remained in the same subshell ( 1 ) with the entire loop.
+ 164&nbsp;
+ 165&nbsp;    RET=$?  # Get return code of the pipe command.
+ 166&nbsp;
+ 167&nbsp;    [ "$RET" -ne 0 ] &#38;&#38; {
+ 168&nbsp;        echo "List retrieving failed with code $RET"
+ 169&nbsp;        exit $E_RETURN
+ 170&nbsp;    }
+ 171&nbsp;
+ 172&nbsp;    echo "done"; echo
+ 173&nbsp;}
+ 174&nbsp;
+ 175&nbsp;# Real rsync download part.
+ 176&nbsp;get_file () {
+ 177&nbsp;
+ 178&nbsp;    echo "Downloading..."
+ 179&nbsp;    /bin/nice /usr/bin/rsync \
+ 180&nbsp;        $OPTS \
+ 181&nbsp;        --filter "merge,+/ $TMP" \
+ 182&nbsp;        --exclude '*'  \
+ 183&nbsp;        $URL $DEST     \
+ 184&nbsp;        | /usr/bin/tee $LOG
+ 185&nbsp;
+ 186&nbsp;    RET=$?
+ 187&nbsp;
+ 188&nbsp;   #  --filter merge,+/ is crucial for the intention. 
+ 189&nbsp;   #  + modifier means include and / means absolute path.
+ 190&nbsp;   #  Then sorted list in $TMP will contain ascending dir name and 
+ 191&nbsp;   #+ prevent the following --exclude '*' from "shortcutting the circuit." 
+ 192&nbsp;
+ 193&nbsp;    echo "Done"
+ 194&nbsp;
+ 195&nbsp;    rm -f $PID_FILE 2&#62;/dev/null
+ 196&nbsp;
+ 197&nbsp;    return $RET
+ 198&nbsp;}
+ 199&nbsp;
+ 200&nbsp;# -------
+ 201&nbsp;# Main
+ 202&nbsp;init
+ 203&nbsp;check_pid
+ 204&nbsp;set_range
+ 205&nbsp;get_list
+ 206&nbsp;get_file
+ 207&nbsp;RET=$?
+ 208&nbsp;# -------
+ 209&nbsp;
+ 210&nbsp;if [ "$RET" -eq 0 ]; then
+ 211&nbsp;    /usr/bin/logger -t ${0##*/} "Fedora update mirrored successfully."
+ 212&nbsp;else
+ 213&nbsp;    /usr/bin/logger -t ${0##*/} \
+ 214&nbsp;    "Fedora update mirrored with failure code: $RET"
+ 215&nbsp;fi
+ 216&nbsp;
+ 217&nbsp;exit $RET</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>See also <A
+HREF="contributed-scripts.html#NIGHTLYBACKUP"
+>Example A-32</A
+>.</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Using <A
+HREF="communications.html#RCPREF"
+>rcp</A
+>, <A
+HREF="communications.html#RSYNCREF"
+>rsync</A
+>, and similar
+	      utilities with security implications in a shell
+	      script may not be advisable. Consider, instead, using
+	      <B
+CLASS="COMMAND"
+>ssh</B
+>, <A
+HREF="communications.html#SCPREF"
+>scp</A
+>,
+	      or an <B
+CLASS="COMMAND"
+>expect</B
+> script.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="SSHREF"
+></A
+><B
+CLASS="COMMAND"
+>ssh</B
+></DT
+><DD
+><P
+><TT
+CLASS="REPLACEABLE"
+><I
+>Secure shell</I
+></TT
+>, logs onto
+	      a remote host and executes commands there. This
+	      secure replacement for <B
+CLASS="COMMAND"
+>telnet</B
+>,
+	      <B
+CLASS="COMMAND"
+>rlogin</B
+>, <B
+CLASS="COMMAND"
+>rcp</B
+>, and
+	      <B
+CLASS="COMMAND"
+>rsh</B
+> uses identity authentication
+	      and encryption. See its <A
+HREF="external.html#MANREF"
+>manpage</A
+>
+	      for details.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="REMOTE"
+></A
+><P
+><B
+>Example 16-44. Using <I
+CLASS="FIRSTTERM"
+>ssh</I
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# remote.bash: Using ssh.
+   3&nbsp;
+   4&nbsp;# This example by Michael Zick.
+   5&nbsp;# Used with permission.
+   6&nbsp;
+   7&nbsp;
+   8&nbsp;#   Presumptions:
+   9&nbsp;#   ------------
+  10&nbsp;#   fd-2 isn't being captured ( '2&#62;/dev/null' ).
+  11&nbsp;#   ssh/sshd presumes stderr ('2') will display to user.
+  12&nbsp;#
+  13&nbsp;#   sshd is running on your machine.
+  14&nbsp;#   For any 'standard' distribution, it probably is,
+  15&nbsp;#+  and without any funky ssh-keygen having been done.
+  16&nbsp;
+  17&nbsp;# Try ssh to your machine from the command-line:
+  18&nbsp;#
+  19&nbsp;# $ ssh $HOSTNAME
+  20&nbsp;# Without extra set-up you'll be asked for your password.
+  21&nbsp;#   enter password
+  22&nbsp;#   when done,  $ exit
+  23&nbsp;#
+  24&nbsp;# Did that work? If so, you're ready for more fun.
+  25&nbsp;
+  26&nbsp;# Try ssh to your machine as 'root':
+  27&nbsp;#
+  28&nbsp;#   $  ssh -l root $HOSTNAME
+  29&nbsp;#   When asked for password, enter root's, not yours.
+  30&nbsp;#          Last login: Tue Aug 10 20:25:49 2004 from localhost.localdomain
+  31&nbsp;#   Enter 'exit' when done.
+  32&nbsp;
+  33&nbsp;#  The above gives you an interactive shell.
+  34&nbsp;#  It is possible for sshd to be set up in a 'single command' mode,
+  35&nbsp;#+ but that is beyond the scope of this example.
+  36&nbsp;#  The only thing to note is that the following will work in
+  37&nbsp;#+ 'single command' mode.
+  38&nbsp;
+  39&nbsp;
+  40&nbsp;# A basic, write stdout (local) command.
+  41&nbsp;
+  42&nbsp;ls -l
+  43&nbsp;
+  44&nbsp;# Now the same basic command on a remote machine.
+  45&nbsp;# Pass a different 'USERNAME' 'HOSTNAME' if desired:
+  46&nbsp;USER=${USERNAME:-$(whoami)}
+  47&nbsp;HOST=${HOSTNAME:-$(hostname)}
+  48&nbsp;
+  49&nbsp;#  Now excute the above command-line on the remote host,
+  50&nbsp;#+ with all transmissions encrypted.
+  51&nbsp;
+  52&nbsp;ssh -l ${USER} ${HOST} " ls -l "
+  53&nbsp;
+  54&nbsp;#  The expected result is a listing of your username's home
+  55&nbsp;#+ directory on the remote machine.
+  56&nbsp;#  To see any difference, run this script from somewhere
+  57&nbsp;#+ other than your home directory.
+  58&nbsp;
+  59&nbsp;#  In other words, the Bash command is passed as a quoted line
+  60&nbsp;#+ to the remote shell, which executes it on the remote machine.
+  61&nbsp;#  In this case, sshd does  ' bash -c "ls -l" '   on your behalf.
+  62&nbsp;
+  63&nbsp;#  For information on topics such as not having to enter a
+  64&nbsp;#+ password/passphrase for every command-line, see
+  65&nbsp;#+    man ssh
+  66&nbsp;#+    man ssh-keygen
+  67&nbsp;#+    man sshd_config.
+  68&nbsp;
+  69&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Within a loop, <B
+CLASS="COMMAND"
+>ssh</B
+> may cause
+		unexpected behavior. According to a <A
+HREF="http://groups-beta.google.com/group/comp.unix.shell/msg/dcb446b5fff7d230"
+TARGET="_top"
+>		Usenet post</A
+> in the comp.unix shell archives,
+		<B
+CLASS="COMMAND"
+>ssh</B
+> inherits the loop's
+		<TT
+CLASS="FILENAME"
+>stdin</TT
+>. To remedy this, pass
+		<B
+CLASS="COMMAND"
+>ssh</B
+> either the <TT
+CLASS="OPTION"
+>-n</TT
+>
+		or <TT
+CLASS="OPTION"
+>-f</TT
+> option.</P
+><P
+>Thanks, Jason Bechtel, for pointing this out.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="SCPREF"
+></A
+><B
+CLASS="COMMAND"
+>scp</B
+></DT
+><DD
+><P
+><TT
+CLASS="REPLACEABLE"
+><I
+>Secure copy</I
+></TT
+>, similar in
+	      function to <B
+CLASS="COMMAND"
+>rcp</B
+>, copies files between
+	      two different networked machines, but does so using
+	      authentication, and with a security level similar to
+	      <B
+CLASS="COMMAND"
+>ssh</B
+>.</P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="COMMLOCAL1"
+></A
+>Local Network</B
+></P
+><DL
+><DT
+><A
+NAME="WRITEREF"
+></A
+><B
+CLASS="COMMAND"
+>write</B
+></DT
+><DD
+><P
+>This is a utility for terminal-to-terminal communication.
+	      It allows sending lines from your terminal (console or
+	      <I
+CLASS="FIRSTTERM"
+>xterm</I
+>) to that of another user. The
+	      <A
+HREF="system.html#MESGREF"
+>mesg</A
+> command may, of course,
+	      be used to disable write access to a terminal</P
+><P
+>Since <B
+CLASS="COMMAND"
+>write</B
+> is interactive, it
+	      would not normally find use in a script.</P
+></DD
+><DT
+><A
+NAME="NETCONFIGREF"
+></A
+><B
+CLASS="COMMAND"
+>netconfig</B
+></DT
+><DD
+><P
+>A command-line utility for configuring a network adapter
+	      (using <I
+CLASS="FIRSTTERM"
+>DHCP</I
+>). This command is native
+	      to Red Hat centric Linux distros.</P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="COMMMAIL1"
+></A
+>Mail</B
+></P
+><DL
+><DT
+><B
+CLASS="COMMAND"
+>mail</B
+></DT
+><DD
+><P
+>Send or read e-mail messages.</P
+><P
+>This stripped-down command-line mail client
+	      works fine as a command embedded in a script.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="SELFMAILER"
+></A
+><P
+><B
+>Example 16-45. A script that mails itself</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/sh
+   2&nbsp;# self-mailer.sh: Self-mailing script
+   3&nbsp;
+   4&nbsp;adr=${1:-`whoami`}     # Default to current user, if not specified.
+   5&nbsp;#  Typing 'self-mailer.sh wiseguy@superdupergenius.com'
+   6&nbsp;#+ sends this script to that addressee.
+   7&nbsp;#  Just 'self-mailer.sh' (no argument) sends the script
+   8&nbsp;#+ to the person invoking it, for example, bozo@localhost.localdomain.
+   9&nbsp;#
+  10&nbsp;#  For more on the ${parameter:-default} construct,
+  11&nbsp;#+ see the "Parameter Substitution" section
+  12&nbsp;#+ of the "Variables Revisited" chapter.
+  13&nbsp;
+  14&nbsp;# ============================================================================
+  15&nbsp;  cat $0 | mail -s "Script \"`basename $0`\" has mailed itself to you." "$adr"
+  16&nbsp;# ============================================================================
+  17&nbsp;
+  18&nbsp;# --------------------------------------------
+  19&nbsp;#  Greetings from the self-mailing script.
+  20&nbsp;#  A mischievous person has run this script,
+  21&nbsp;#+ which has caused it to mail itself to you.
+  22&nbsp;#  Apparently, some people have nothing better
+  23&nbsp;#+ to do with their time.
+  24&nbsp;# --------------------------------------------
+  25&nbsp;
+  26&nbsp;echo "At `date`, script \"`basename $0`\" mailed to "$adr"."
+  27&nbsp;
+  28&nbsp;exit 0
+  29&nbsp;
+  30&nbsp;#  Note that the "mailx" command (in "send" mode) may be substituted
+  31&nbsp;#+ for "mail" ... but with somewhat different options.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="MAILTOREF"
+></A
+><B
+CLASS="COMMAND"
+>mailto</B
+></DT
+><DD
+><P
+>Similar to the <B
+CLASS="COMMAND"
+>mail</B
+> command,
+	      <B
+CLASS="COMMAND"
+>mailto</B
+> sends e-mail messages
+	      from the command-line or in a script. However,
+	      <B
+CLASS="COMMAND"
+>mailto</B
+> also permits sending MIME
+	      (multimedia) messages.</P
+></DD
+><DT
+><A
+NAME="MAILSTATSREF"
+></A
+><B
+CLASS="COMMAND"
+>mailstats</B
+></DT
+><DD
+><P
+>Show <I
+CLASS="FIRSTTERM"
+>mail statistics</I
+>. This command
+	      may be invoked only by <I
+CLASS="FIRSTTERM"
+>root</I
+>.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>root# </TT
+><TT
+CLASS="USERINPUT"
+><B
+>mailstats</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Statistics from Tue Jan  1 20:32:08 2008
+  M   msgsfr  bytes_from   msgsto    bytes_to  msgsrej msgsdis msgsqur  Mailer
+  4     1682      24118K        0          0K        0       0       0  esmtp
+  9      212        640K     1894      25131K        0       0       0  local
+ =====================================================================
+  T     1894      24758K     1894      25131K        0       0       0
+  C      414                    0</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></DD
+><DT
+><A
+NAME="VACATIONREF"
+></A
+><B
+CLASS="COMMAND"
+>vacation</B
+></DT
+><DD
+><P
+>This utility automatically replies to e-mails that
+	      the intended recipient is on vacation and temporarily
+	      unavailable. It runs on a network, in conjunction with
+	      <B
+CLASS="COMMAND"
+>sendmail</B
+>, and is not applicable to a
+	      dial-up POPmail account.</P
+></DD
+></DL
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN13268"
+HREF="communications.html#AEN13268"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><A
+NAME="DAEMONREF"
+></A
+></P
+><P
+>A <I
+CLASS="FIRSTTERM"
+>daemon</I
+> is a background
+		    process not attached to a terminal session. Daemons
+		    perform designated services either at specified times
+		    or explicitly triggered by certain events.</P
+><P
+>The word <SPAN
+CLASS="QUOTE"
+>"daemon"</SPAN
+> means ghost in
+		    Greek, and there is certainly something mysterious,
+		    almost supernatural, about the way UNIX daemons
+		    wander about behind the scenes, silently carrying
+		    out their appointed tasks.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="filearchiv.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="terminalccmds.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>File and Archiving Commands</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="external.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Terminal Control Commands</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

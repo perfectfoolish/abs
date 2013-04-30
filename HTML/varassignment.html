@@ -1,0 +1,383 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Variable Assignment</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Introduction to Variables and Parameters"
+HREF="variables.html"><LINK
+REL="PREVIOUS"
+TITLE="Introduction to Variables and Parameters"
+HREF="variables.html"><LINK
+REL="NEXT"
+TITLE="Bash Variables Are Untyped"
+HREF="untyped.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="variables.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Introduction to Variables and Parameters</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="untyped.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="VARASSIGNMENT"
+></A
+>4.2. Variable Assignment</H1
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="EQREF"
+></A
+><SPAN
+CLASS="TOKEN"
+>=</SPAN
+></DT
+><DD
+><P
+>the assignment operator (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>no space before
+	    and after</I
+></SPAN
+>)</P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Do not confuse this with <A
+HREF="comparison-ops.html#EQUALSIGNREF"
+>=</A
+> and
+	      <A
+HREF="comparison-ops.html#EQUALREF"
+>-eq</A
+>, which
+	      <A
+HREF="tests.html#IFTHEN"
+>test</A
+>,
+	      rather than assign!</P
+><P
+>Note that <SPAN
+CLASS="TOKEN"
+>=</SPAN
+> can be either
+	      an <I
+CLASS="FIRSTTERM"
+>assignment</I
+> or a
+	      <I
+CLASS="FIRSTTERM"
+>test</I
+> operator, depending on
+	      context.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+><A
+NAME="EX15_0"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX15"
+></A
+><P
+><B
+>Example 4-2. Plain Variable Assignment</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Naked variables
+   3&nbsp;
+   4&nbsp;echo
+   5&nbsp;
+   6&nbsp;# When is a variable "naked", i.e., lacking the '$' in front?
+   7&nbsp;# When it is being assigned, rather than referenced.
+   8&nbsp;
+   9&nbsp;# Assignment
+  10&nbsp;a=879
+  11&nbsp;echo "The value of \"a\" is $a."
+  12&nbsp;
+  13&nbsp;# Assignment using 'let'
+  14&nbsp;let a=16+5
+  15&nbsp;echo "The value of \"a\" is now $a."
+  16&nbsp;
+  17&nbsp;echo
+  18&nbsp;
+  19&nbsp;# In a 'for' loop (really, a type of disguised assignment):
+  20&nbsp;echo -n "Values of \"a\" in the loop are: "
+  21&nbsp;for a in 7 8 9 11
+  22&nbsp;do
+  23&nbsp;  echo -n "$a "
+  24&nbsp;done
+  25&nbsp;
+  26&nbsp;echo
+  27&nbsp;echo
+  28&nbsp;
+  29&nbsp;# In a 'read' statement (also a type of assignment):
+  30&nbsp;echo -n "Enter \"a\" "
+  31&nbsp;read a
+  32&nbsp;echo "The value of \"a\" is now $a."
+  33&nbsp;
+  34&nbsp;echo
+  35&nbsp;
+  36&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="EX16_0"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX16"
+></A
+><P
+><B
+>Example 4-3. Variable Assignment, plain and fancy</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;a=23              # Simple case
+   4&nbsp;echo $a
+   5&nbsp;b=$a
+   6&nbsp;echo $b
+   7&nbsp;
+   8&nbsp;# Now, getting a little bit fancier (command substitution).
+   9&nbsp;
+  10&nbsp;a=`echo Hello!`   # Assigns result of 'echo' command to 'a' ...
+  11&nbsp;echo $a
+  12&nbsp;#  Note that including an exclamation mark (!) within a
+  13&nbsp;#+ command substitution construct will not work from the command-line,
+  14&nbsp;#+ since this triggers the Bash "history mechanism."
+  15&nbsp;#  Inside a script, however, the history functions are disabled.
+  16&nbsp;
+  17&nbsp;a=`ls -l`         # Assigns result of 'ls -l' command to 'a'
+  18&nbsp;echo $a           # Unquoted, however, it removes tabs and newlines.
+  19&nbsp;echo
+  20&nbsp;echo "$a"         # The quoted variable preserves whitespace.
+  21&nbsp;                  # (See the chapter on "Quoting.")
+  22&nbsp;
+  23&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="COMMANDSUBREF0"
+></A
+></P
+><P
+>Variable assignment using the <I
+CLASS="FIRSTTERM"
+>$(...)</I
+>
+	      mechanism (a newer method than <A
+HREF="commandsub.html#BACKQUOTESREF"
+>backquotes</A
+>). This is
+	      likewise a form of <A
+HREF="commandsub.html#COMMANDSUBREF"
+>command
+	      substitution</A
+>.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# From /etc/rc.d/rc.local
+   2&nbsp;R=$(cat /etc/redhat-release)
+   3&nbsp;arch=$(uname -m)</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="variables.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="untyped.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Introduction to Variables and Parameters</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="variables.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Bash Variables Are Untyped</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,643 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Of Zeros and Nulls</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part5.html"><LINK
+REL="PREVIOUS"
+TITLE="Network Programming"
+HREF="networkprogramming.html"><LINK
+REL="NEXT"
+TITLE="Debugging"
+HREF="debugging.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="networkprogramming.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="debugging.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="ZEROS"
+></A
+>Chapter 31. Of Zeros and Nulls</H1
+><TABLE
+BORDER="0"
+WIDTH="100%"
+CELLSPACING="0"
+CELLPADDING="0"
+CLASS="EPIGRAPH"
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+><P
+><I
+>Faultily faultless, icily regular, splendidly null</I
+></P
+><P
+><I
+>Dead perfection; no more.</I
+></P
+><P
+><I
+>--Alfred Lord Tennyson</I
+></P
+></I
+></TD
+></TR
+></TABLE
+><P
+><A
+NAME="ZEROSREF"
+></A
+></P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="ZERONULL1"
+></A
+><TT
+CLASS="FILENAME"
+>/dev/zero</TT
+>
+          ... <TT
+CLASS="FILENAME"
+>/dev/null</TT
+></B
+></P
+><DL
+><DT
+><A
+NAME="DEVNULLREF"
+></A
+>Uses of
+	    <TT
+CLASS="FILENAME"
+>/dev/null</TT
+></DT
+><DD
+><P
+>Think of <TT
+CLASS="FILENAME"
+>/dev/null</TT
+> as a <I
+CLASS="FIRSTTERM"
+>black
+		hole</I
+>. It is essentially the equivalent of
+		a write-only file. Everything written to it disappears.
+		Attempts to read or output from it result in nothing. All
+		the same, <TT
+CLASS="FILENAME"
+>/dev/null</TT
+> can be quite
+		useful from both the command-line and in scripts.</P
+><P
+>Suppressing <TT
+CLASS="FILENAME"
+>stdout</TT
+>.
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat $filename &#62;/dev/null
+   2&nbsp;# Contents of the file will not list to stdout.</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+><P
+>Suppressing <TT
+CLASS="FILENAME"
+>stderr</TT
+>
+	      (from <A
+HREF="moreadv.html#EX57"
+>Example 16-3</A
+>).
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;rm $badname 2&#62;/dev/null
+   2&nbsp;#           So error messages [stderr] deep-sixed.</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><P
+>Suppressing output from <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>both</I
+></SPAN
+>
+	      <TT
+CLASS="FILENAME"
+>stdout</TT
+> and <TT
+CLASS="FILENAME"
+>stderr</TT
+>.
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat $filename 2&#62;/dev/null &#62;/dev/null
+   2&nbsp;# If "$filename" does not exist, there will be no error message output.
+   3&nbsp;# If "$filename" does exist, the contents of the file will not list to stdout.
+   4&nbsp;# Therefore, no output at all will result from the above line of code.
+   5&nbsp;#
+   6&nbsp;#  This can be useful in situations where the return code from a command
+   7&nbsp;#+ needs to be tested, but no output is desired.
+   8&nbsp;#
+   9&nbsp;# cat $filename &#38;&#62;/dev/null
+  10&nbsp;#     also works, as Baris Cicek points out.</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><P
+>Deleting contents of a file, but preserving the file itself, with
+	      all attendant permissions (from <A
+HREF="sha-bang.html#EX1"
+>Example 2-1</A
+> and <A
+HREF="sha-bang.html#EX2"
+>Example 2-3</A
+>):
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat /dev/null &#62; /var/log/messages
+   2&nbsp;#  : &#62; /var/log/messages   has same effect, but does not spawn a new process.
+   3&nbsp;
+   4&nbsp;cat /dev/null &#62; /var/log/wtmp</PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+><P
+>Automatically emptying the contents of a logfile
+	      (especially good for dealing with those nasty
+	      <SPAN
+CLASS="QUOTE"
+>"cookies"</SPAN
+> sent by commercial Web sites):</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="COOKIES"
+></A
+><P
+><B
+>Example 31-1. Hiding the cookie jar</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Obsolete Netscape browser.
+   2&nbsp;# Same principle applies to newer browsers.
+   3&nbsp;
+   4&nbsp;if [ -f ~/.netscape/cookies ]  # Remove, if exists.
+   5&nbsp;then
+   6&nbsp;  rm -f ~/.netscape/cookies
+   7&nbsp;fi
+   8&nbsp;
+   9&nbsp;ln -s /dev/null ~/.netscape/cookies
+  10&nbsp;# All cookies now get sent to a black hole, rather than saved to disk.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="ZEROSREF1"
+></A
+>Uses of <TT
+CLASS="FILENAME"
+>/dev/zero</TT
+></DT
+><DD
+><P
+>Like <TT
+CLASS="FILENAME"
+>/dev/null</TT
+>,
+	      <TT
+CLASS="FILENAME"
+>/dev/zero</TT
+> is a pseudo-device file, but
+	      it actually produces a stream of nulls
+	      (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>binary</I
+></SPAN
+> zeros, not the <A
+HREF="special-chars.html#ASCIIDEF"
+>ASCII</A
+> kind). Output written
+	      to <TT
+CLASS="FILENAME"
+>/dev/zero</TT
+> disappears, and it is
+	      fairly difficult to actually read the nulls emitted there,
+	      though it can be done with <A
+HREF="extmisc.html#ODREF"
+>od</A
+>
+	      or a hex editor. <A
+NAME="SWAPFILEREF"
+></A
+>The chief use of
+	      <TT
+CLASS="FILENAME"
+>/dev/zero</TT
+> is creating an initialized
+	      dummy file of predetermined length intended as a temporary
+	      swap file.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX73"
+></A
+><P
+><B
+>Example 31-2. Setting up a swapfile using <TT
+CLASS="FILENAME"
+>/dev/zero</TT
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Creating a swap file.
+   3&nbsp;
+   4&nbsp;#  A swap file provides a temporary storage cache
+   5&nbsp;#+ which helps speed up certain filesystem operations.
+   6&nbsp;
+   7&nbsp;ROOT_UID=0         # Root has $UID 0.
+   8&nbsp;E_WRONG_USER=85    # Not root?
+   9&nbsp;
+  10&nbsp;FILE=/swap
+  11&nbsp;BLOCKSIZE=1024
+  12&nbsp;MINBLOCKS=40
+  13&nbsp;SUCCESS=0
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;# This script must be run as root.
+  17&nbsp;if [ "$UID" -ne "$ROOT_UID" ]
+  18&nbsp;then
+  19&nbsp;  echo; echo "You must be root to run this script."; echo
+  20&nbsp;  exit $E_WRONG_USER
+  21&nbsp;fi  
+  22&nbsp;  
+  23&nbsp;
+  24&nbsp;blocks=${1:-$MINBLOCKS}          #  Set to default of 40 blocks,
+  25&nbsp;                                 #+ if nothing specified on command-line.
+  26&nbsp;# This is the equivalent of the command block below.
+  27&nbsp;# --------------------------------------------------
+  28&nbsp;# if [ -n "$1" ]
+  29&nbsp;# then
+  30&nbsp;#   blocks=$1
+  31&nbsp;# else
+  32&nbsp;#   blocks=$MINBLOCKS
+  33&nbsp;# fi
+  34&nbsp;# --------------------------------------------------
+  35&nbsp;
+  36&nbsp;
+  37&nbsp;if [ "$blocks" -lt $MINBLOCKS ]
+  38&nbsp;then
+  39&nbsp;  blocks=$MINBLOCKS              # Must be at least 40 blocks long.
+  40&nbsp;fi  
+  41&nbsp;
+  42&nbsp;
+  43&nbsp;######################################################################
+  44&nbsp;echo "Creating swap file of size $blocks blocks (KB)."
+  45&nbsp;dd if=/dev/zero of=$FILE bs=$BLOCKSIZE count=$blocks  # Zero out file.
+  46&nbsp;mkswap $FILE $blocks             # Designate it a swap file.
+  47&nbsp;swapon $FILE                     # Activate swap file.
+  48&nbsp;retcode=$?                       # Everything worked?
+  49&nbsp;#  Note that if one or more of these commands fails,
+  50&nbsp;#+ then it could cause nasty problems.
+  51&nbsp;######################################################################
+  52&nbsp;
+  53&nbsp;#  Exercise:
+  54&nbsp;#  Rewrite the above block of code so that if it does not execute
+  55&nbsp;#+ successfully, then:
+  56&nbsp;#    1) an error message is echoed to stderr,
+  57&nbsp;#    2) all temporary files are cleaned up, and
+  58&nbsp;#    3) the script exits in an orderly fashion with an
+  59&nbsp;#+      appropriate error code.
+  60&nbsp;
+  61&nbsp;echo "Swap file created and activated."
+  62&nbsp;
+  63&nbsp;exit $retcode</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Another application of <TT
+CLASS="FILENAME"
+>/dev/zero</TT
+>
+	      is to <SPAN
+CLASS="QUOTE"
+>"zero out"</SPAN
+> a file of a designated
+	      size for a special purpose, such as mounting a filesystem
+	      on a <A
+HREF="devproc.html#LOOPBACKREF"
+>loopback device</A
+>
+	      (see <A
+HREF="system.html#CREATEFS"
+>Example 17-8</A
+>) or <SPAN
+CLASS="QUOTE"
+>"securely"</SPAN
+>
+	      deleting a file (see <A
+HREF="extmisc.html#BLOTOUT"
+>Example 16-60</A
+>).</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RAMDISK"
+></A
+><P
+><B
+>Example 31-3. Creating a ramdisk</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# ramdisk.sh
+   3&nbsp;
+   4&nbsp;#  A "ramdisk" is a segment of system RAM memory
+   5&nbsp;#+ which acts as if it were a filesystem.
+   6&nbsp;#  Its advantage is very fast access (read/write time).
+   7&nbsp;#  Disadvantages: volatility, loss of data on reboot or powerdown,
+   8&nbsp;#+                less RAM available to system.
+   9&nbsp;#
+  10&nbsp;#  Of what use is a ramdisk?
+  11&nbsp;#  Keeping a large dataset, such as a table or dictionary on ramdisk,
+  12&nbsp;#+ speeds up data lookup, since memory access is much faster than disk access.
+  13&nbsp;
+  14&nbsp;
+  15&nbsp;E_NON_ROOT_USER=70             # Must run as root.
+  16&nbsp;ROOTUSER_NAME=root
+  17&nbsp;
+  18&nbsp;MOUNTPT=/mnt/ramdisk           # Create with mkdir /mnt/ramdisk.
+  19&nbsp;SIZE=2000                      # 2K blocks (change as appropriate)
+  20&nbsp;BLOCKSIZE=1024                 # 1K (1024 byte) block size
+  21&nbsp;DEVICE=/dev/ram0               # First ram device
+  22&nbsp;
+  23&nbsp;username=`id -nu`
+  24&nbsp;if [ "$username" != "$ROOTUSER_NAME" ]
+  25&nbsp;then
+  26&nbsp;  echo "Must be root to run \"`basename $0`\"."
+  27&nbsp;  exit $E_NON_ROOT_USER
+  28&nbsp;fi
+  29&nbsp;
+  30&nbsp;if [ ! -d "$MOUNTPT" ]         #  Test whether mount point already there,
+  31&nbsp;then                           #+ so no error if this script is run
+  32&nbsp;  mkdir $MOUNTPT               #+ multiple times.
+  33&nbsp;fi
+  34&nbsp;
+  35&nbsp;##############################################################################
+  36&nbsp;dd if=/dev/zero of=$DEVICE count=$SIZE bs=$BLOCKSIZE  # Zero out RAM device.
+  37&nbsp;                                                      # Why is this necessary?
+  38&nbsp;mke2fs $DEVICE                 # Create an ext2 filesystem on it.
+  39&nbsp;mount $DEVICE $MOUNTPT         # Mount it.
+  40&nbsp;chmod 777 $MOUNTPT             # Enables ordinary user to access ramdisk.
+  41&nbsp;                               # However, must be root to unmount it.
+  42&nbsp;##############################################################################
+  43&nbsp;# Need to test whether above commands succeed. Could cause problems otherwise.
+  44&nbsp;# Exercise: modify this script to make it safer.
+  45&nbsp;
+  46&nbsp;echo "\"$MOUNTPT\" now available for use."
+  47&nbsp;# The ramdisk is now accessible for storing files, even by an ordinary user.
+  48&nbsp;
+  49&nbsp;#  Caution, the ramdisk is volatile, and its contents will disappear
+  50&nbsp;#+ on reboot or power loss.
+  51&nbsp;#  Copy anything you want saved to a regular directory.
+  52&nbsp;
+  53&nbsp;# After reboot, run this script to again set up ramdisk.
+  54&nbsp;# Remounting /mnt/ramdisk without the other steps will not work.
+  55&nbsp;
+  56&nbsp;#  Suitably modified, this script can by invoked in /etc/rc.d/rc.local,
+  57&nbsp;#+ to set up ramdisk automatically at bootup.
+  58&nbsp;#  That may be appropriate on, for example, a database server.
+  59&nbsp;
+  60&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>In addition to all the above,
+	      <TT
+CLASS="FILENAME"
+>/dev/zero</TT
+> is needed by ELF
+	      (<I
+CLASS="FIRSTTERM"
+>Executable and Linking Format</I
+>)
+	      UNIX/Linux binaries.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="networkprogramming.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="debugging.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Network Programming</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part5.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Debugging</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

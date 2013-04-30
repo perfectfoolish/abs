@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Applications</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="I/O Redirection"
+HREF="io-redirection.html"><LINK
+REL="PREVIOUS"
+TITLE="Redirecting Code Blocks"
+HREF="redircb.html"><LINK
+REL="NEXT"
+TITLE="Subshells"
+HREF="subshells.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="redircb.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 20. I/O Redirection</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="subshells.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="REDIRAPPS"
+></A
+>20.3. Applications</H1
+><P
+>Clever use of I/O redirection permits parsing and stitching
+	together snippets of command output (see <A
+HREF="internal.html#READREDIR"
+>Example 15-7</A
+>). This permits
+	 generating report and log files.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="LOGEVENTS"
+></A
+><P
+><B
+>Example 20-12. Logging events</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# logevents.sh
+   3&nbsp;# Author: Stephane Chazelas.
+   4&nbsp;# Used in ABS Guide with permission.
+   5&nbsp;
+   6&nbsp;# Event logging to a file.
+   7&nbsp;# Must be run as root (for write access in /var/log).
+   8&nbsp;
+   9&nbsp;ROOT_UID=0     # Only users with $UID 0 have root privileges.
+  10&nbsp;E_NOTROOT=67   # Non-root exit error.
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;if [ "$UID" -ne "$ROOT_UID" ]
+  14&nbsp;then
+  15&nbsp;  echo "Must be root to run this script."
+  16&nbsp;  exit $E_NOTROOT
+  17&nbsp;fi  
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;FD_DEBUG1=3
+  21&nbsp;FD_DEBUG2=4
+  22&nbsp;FD_DEBUG3=5
+  23&nbsp;
+  24&nbsp;# === Uncomment one of the two lines below to activate script. ===
+  25&nbsp;# LOG_EVENTS=1
+  26&nbsp;# LOG_VARS=1
+  27&nbsp;
+  28&nbsp;
+  29&nbsp;log()  # Writes time and date to log file.
+  30&nbsp;{
+  31&nbsp;echo "$(date)  $*" &#62;&#38;7     # This *appends* the date to the file.
+  32&nbsp;#     ^^^^^^^  command substitution
+  33&nbsp;                           # See below.
+  34&nbsp;}
+  35&nbsp;
+  36&nbsp;
+  37&nbsp;
+  38&nbsp;case $LOG_LEVEL in
+  39&nbsp; 1) exec 3&#62;&#38;2         4&#62; /dev/null 5&#62; /dev/null;;
+  40&nbsp; 2) exec 3&#62;&#38;2         4&#62;&#38;2         5&#62; /dev/null;;
+  41&nbsp; 3) exec 3&#62;&#38;2         4&#62;&#38;2         5&#62;&#38;2;;
+  42&nbsp; *) exec 3&#62; /dev/null 4&#62; /dev/null 5&#62; /dev/null;;
+  43&nbsp;esac
+  44&nbsp;
+  45&nbsp;FD_LOGVARS=6
+  46&nbsp;if [[ $LOG_VARS ]]
+  47&nbsp;then exec 6&#62;&#62; /var/log/vars.log
+  48&nbsp;else exec 6&#62; /dev/null                     # Bury output.
+  49&nbsp;fi
+  50&nbsp;
+  51&nbsp;FD_LOGEVENTS=7
+  52&nbsp;if [[ $LOG_EVENTS ]]
+  53&nbsp;then
+  54&nbsp;  # exec 7 &#62;(exec gawk '{print strftime(), $0}' &#62;&#62; /var/log/event.log)
+  55&nbsp;  # Above line fails in versions of Bash more recent than 2.04. Why?
+  56&nbsp;  exec 7&#62;&#62; /var/log/event.log              # Append to "event.log".
+  57&nbsp;  log                                      # Write time and date.
+  58&nbsp;else exec 7&#62; /dev/null                     # Bury output.
+  59&nbsp;fi
+  60&nbsp;
+  61&nbsp;echo "DEBUG3: beginning" &#62;&#38;${FD_DEBUG3}
+  62&nbsp;
+  63&nbsp;ls -l &#62;&#38;5 2&#62;&#38;4                             # command1 &#62;&#38;5 2&#62;&#38;4
+  64&nbsp;
+  65&nbsp;echo "Done"                                # command2 
+  66&nbsp;
+  67&nbsp;echo "sending mail" &#62;&#38;${FD_LOGEVENTS}
+  68&nbsp;# Writes "sending mail" to file descriptor #7.
+  69&nbsp;
+  70&nbsp;
+  71&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="redircb.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="subshells.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Redirecting Code Blocks</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="io-redirection.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Subshells</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

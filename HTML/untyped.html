@@ -1,0 +1,287 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Bash Variables Are Untyped</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Introduction to Variables and Parameters"
+HREF="variables.html"><LINK
+REL="PREVIOUS"
+TITLE="Variable Assignment"
+HREF="varassignment.html"><LINK
+REL="NEXT"
+TITLE="Special Variable Types"
+HREF="othertypesv.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="varassignment.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Introduction to Variables and Parameters</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="othertypesv.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="UNTYPED"
+></A
+>4.3. Bash Variables Are Untyped</H1
+><P
+><A
+NAME="BVUNTYPED"
+></A
+></P
+><P
+>Unlike many other programming languages, Bash does not segregate
+	its variables by <SPAN
+CLASS="QUOTE"
+>"type."</SPAN
+> Essentially, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Bash
+	variables are character strings</I
+></SPAN
+>, but, depending on
+	context, Bash permits arithmetic operations and comparisons on
+	variables. The determining factor is whether the value of a
+	variable contains only digits.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="INTORSTRING"
+></A
+><P
+><B
+>Example 4-4. Integer or string?</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# int-or-string.sh
+   3&nbsp;
+   4&nbsp;a=2334                   # Integer.
+   5&nbsp;let "a += 1"
+   6&nbsp;echo "a = $a "           # a = 2335
+   7&nbsp;echo                     # Integer, still.
+   8&nbsp;
+   9&nbsp;
+  10&nbsp;b=${a/23/BB}             # Substitute "BB" for "23".
+  11&nbsp;                         # This transforms $b into a string.
+  12&nbsp;echo "b = $b"            # b = BB35
+  13&nbsp;declare -i b             # Declaring it an integer doesn't help.
+  14&nbsp;echo "b = $b"            # b = BB35
+  15&nbsp;
+  16&nbsp;let "b += 1"             # BB35 + 1
+  17&nbsp;echo "b = $b"            # b = 1
+  18&nbsp;echo                     # Bash sets the "integer value" of a string to 0.
+  19&nbsp;
+  20&nbsp;c=BB34
+  21&nbsp;echo "c = $c"            # c = BB34
+  22&nbsp;d=${c/BB/23}             # Substitute "23" for "BB".
+  23&nbsp;                         # This makes $d an integer.
+  24&nbsp;echo "d = $d"            # d = 2334
+  25&nbsp;let "d += 1"             # 2334 + 1
+  26&nbsp;echo "d = $d"            # d = 2335
+  27&nbsp;echo
+  28&nbsp;
+  29&nbsp;
+  30&nbsp;# What about null variables?
+  31&nbsp;e=''                     # ... Or e="" ... Or e=
+  32&nbsp;echo "e = $e"            # e =
+  33&nbsp;let "e += 1"             # Arithmetic operations allowed on a null variable?
+  34&nbsp;echo "e = $e"            # e = 1
+  35&nbsp;echo                     # Null variable transformed into an integer.
+  36&nbsp;
+  37&nbsp;# What about undeclared variables?
+  38&nbsp;echo "f = $f"            # f =
+  39&nbsp;let "f += 1"             # Arithmetic operations allowed?
+  40&nbsp;echo "f = $f"            # f = 1
+  41&nbsp;echo                     # Undeclared variable transformed into an integer.
+  42&nbsp;#
+  43&nbsp;# However ...
+  44&nbsp;let "f /= $undecl_var"   # Divide by zero?
+  45&nbsp;#   let: f /= : syntax error: operand expected (error token is " ")
+  46&nbsp;# Syntax error! Variable $undecl_var is not set to zero here!
+  47&nbsp;#
+  48&nbsp;# But still ...
+  49&nbsp;let "f /= 0"
+  50&nbsp;#   let: f /= 0: division by 0 (error token is "0")
+  51&nbsp;# Expected behavior.
+  52&nbsp;
+  53&nbsp;
+  54&nbsp;#  Bash (usually) sets the "integer value" of null to zero
+  55&nbsp;#+ when performing an arithmetic operation.
+  56&nbsp;#  But, don't try this at home, folks!
+  57&nbsp;#  It's undocumented and probably non-portable behavior.
+  58&nbsp;
+  59&nbsp;
+  60&nbsp;# Conclusion: Variables in Bash are untyped,
+  61&nbsp;#+ with all attendant consequences.
+  62&nbsp;
+  63&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Untyped variables are both a blessing and a curse. They permit
+	more flexibility in scripting and make it easier to grind out
+	lines of code (and give you enough rope to hang yourself!).
+	However, they likewise permit subtle errors to creep in
+	and encourage sloppy programming habits.</P
+><P
+>To lighten the burden of keeping track of variable
+        types in a script, Bash <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>does</I
+></SPAN
+> permit
+	<A
+HREF="declareref.html"
+>declaring</A
+> variables.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="varassignment.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="othertypesv.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Variable Assignment</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="variables.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Special Variable Types</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

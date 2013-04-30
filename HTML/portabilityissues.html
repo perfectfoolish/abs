@@ -1,0 +1,526 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Portability Issues</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Miscellany"
+HREF="miscellany.html"><LINK
+REL="PREVIOUS"
+TITLE="Security Issues"
+HREF="securityissues.html"><LINK
+REL="NEXT"
+TITLE="Shell Scripting Under Windows"
+HREF="winscript.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="securityissues.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 36. Miscellany</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="winscript.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PORTABILITYISSUES"
+></A
+>36.9. Portability Issues</H1
+><TABLE
+BORDER="0"
+WIDTH="100%"
+CELLSPACING="0"
+CELLPADDING="0"
+CLASS="EPIGRAPH"
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+><P
+><I
+>It is easier to port a shell than a shell script.</I
+></P
+><P
+><I
+>--Larry Wall</I
+></P
+></I
+></TD
+></TR
+></TABLE
+><P
+>This book deals specifically with Bash scripting on
+	  a GNU/Linux system. All the same, users of <B
+CLASS="COMMAND"
+>sh</B
+>
+	  and <B
+CLASS="COMMAND"
+>ksh</B
+> will find much of value here.</P
+><P
+><A
+NAME="POSIX3REF"
+></A
+>As it happens, many of the various
+	  shells and scripting languages seem to be converging toward the
+	  <A
+HREF="sha-bang.html#POSIX2REF"
+>POSIX</A
+> 1003.2 standard. Invoking
+	  Bash with the <TT
+CLASS="OPTION"
+>--posix</TT
+> option or inserting
+	  a <B
+CLASS="COMMAND"
+>set -o posix</B
+> at the head of a script
+	  causes Bash to conform very closely to this standard. Another
+	  alternative is to use a <I
+CLASS="FIRSTTERM"
+>#!/bin/sh</I
+> <A
+HREF="sha-bang.html#SHABANGREF"
+>sha-bang header</A
+> in the script,
+	  rather than <I
+CLASS="FIRSTTERM"
+>#!/bin/bash</I
+>.
+
+	    <A
+NAME="AEN20726"
+HREF="#FTN.AEN20726"
+>[1]</A
+>
+
+	  Note that <TT
+CLASS="FILENAME"
+>/bin/sh</TT
+> is a <A
+HREF="external.html#LINKREF"
+>link</A
+> to <TT
+CLASS="FILENAME"
+>/bin/bash</TT
+>
+	  in Linux and certain other flavors of UNIX, and a script invoked
+	  this way disables extended Bash functionality.</P
+><P
+>Most Bash scripts will run as-is under
+	  <B
+CLASS="COMMAND"
+>ksh</B
+>, and vice-versa, since Chet Ramey has
+	  been busily porting <B
+CLASS="COMMAND"
+>ksh</B
+> features to the
+	  latest versions of Bash.</P
+><P
+>On a commercial UNIX machine, scripts using GNU-specific
+	  features of standard commands may not work. This has become less
+	  of a problem in the last few years, as the GNU utilities have
+	  pretty much displaced their proprietary
+	  counterparts even on <SPAN
+CLASS="QUOTE"
+>"big-iron"</SPAN
+> UNIX.
+	  <A
+HREF="http://linux.oreillynet.com/pub/a/linux/2002/02/28/caldera.html"
+TARGET="_top"
+>Caldera's
+	  release of the source</A
+> to many of the original UNIX
+	  utilities has accelerated the trend.</P
+><P
+><A
+NAME="BASHCOMPAT"
+></A
+></P
+><P
+>Bash has certain features that the traditional <A
+HREF="why-shell.html#BASHDEF"
+>Bourne shell</A
+> lacks. Among these are:
+
+	<UL
+><LI
+><P
+>Certain extended <A
+HREF="options.html#INVOCATIONOPTIONSREF"
+>invocation options</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="commandsub.html#COMMANDSUBREF"
+>Command substitution</A
+> using
+	  <B
+CLASS="COMMAND"
+>$(    )</B
+> notation</P
+></LI
+><LI
+><P
+><A
+HREF="bashver3.html#BRACEEXPREF3"
+>Brace expansion</A
+></P
+></LI
+><LI
+><P
+>Certain <A
+HREF="arrays.html#ARRAYREF"
+>array</A
+> operations,
+          and <A
+HREF="bashver4.html#ASSOCARR"
+>associative arrays</A
+></P
+></LI
+><LI
+><P
+>The <A
+HREF="tests.html#DBLBRACKETS"
+>double brackets</A
+>
+	  extended test construct</P
+></LI
+><LI
+><P
+>The <A
+HREF="dblparens.html#DBLPARENSREF"
+>double-parentheses</A
+>
+	  arithmetic-evaluation construct</P
+></LI
+><LI
+><P
+>Certain <A
+HREF="manipulatingvars.html#STRINGMANIP"
+>string manipulation</A
+>
+	  operations</P
+></LI
+><LI
+><P
+><A
+HREF="process-sub.html#PROCESSSUBREF"
+>Process substitution</A
+></P
+></LI
+><LI
+><P
+>A Regular Expression <A
+HREF="bashver3.html#REGEXMATCHREF"
+>matching
+	  operator</A
+></P
+></LI
+><LI
+><P
+>Bash-specific <A
+HREF="internal.html#BUILTINREF"
+>builtins</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="bashver4.html#COPROCREF"
+>Coprocesses</A
+></P
+></LI
+></UL
+>
+	</P
+><P
+>See the <A
+HREF="ftp://ftp.cwru.edu/pub/bash/FAQ"
+TARGET="_top"
+>Bash
+	   F.A.Q.</A
+> for a complete listing.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN20780"
+></A
+>36.9.1. A Test Suite</H2
+><P
+><A
+NAME="TESTSUITE0"
+></A
+>Let us illustrate some of the
+	   incompatibilities between Bash and the classic
+	   Bourne shell. Download and install the <A
+HREF="http://freshmeat.net/projects/bournesh"
+TARGET="_top"
+><SPAN
+CLASS="QUOTE"
+>"Heirloom
+	   Bourne Shell"</SPAN
+></A
+> and run the following
+	   script, first using Bash, then the classic
+	   <I
+CLASS="FIRSTTERM"
+>sh</I
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="TESTSUITE"
+></A
+><P
+><B
+>Example 36-21. Test Suite</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# test-suite.sh
+   3&nbsp;# A partial Bash compatibility test suite.
+   4&nbsp;# Run this on your version of Bash, or some other shell.
+   5&nbsp;
+   6&nbsp;default_option=FAIL         # Tests below will fail unless . . .
+   7&nbsp;
+   8&nbsp;echo
+   9&nbsp;echo -n "Testing "
+  10&nbsp;sleep 1; echo -n ". "
+  11&nbsp;sleep 1; echo -n ". "
+  12&nbsp;sleep 1; echo ". "
+  13&nbsp;echo
+  14&nbsp;
+  15&nbsp;# Double brackets
+  16&nbsp;String="Double brackets supported?"
+  17&nbsp;echo -n "Double brackets test: "
+  18&nbsp;if [[ "$String" = "Double brackets supported?" ]]
+  19&nbsp;then
+  20&nbsp;  echo "PASS"
+  21&nbsp;else
+  22&nbsp;  echo "FAIL"
+  23&nbsp;fi
+  24&nbsp;
+  25&nbsp;
+  26&nbsp;# Double brackets and regex matching
+  27&nbsp;String="Regex matching supported?"
+  28&nbsp;echo -n "Regex matching: "
+  29&nbsp;if [[ "$String" =~ R.....matching* ]]
+  30&nbsp;then
+  31&nbsp;  echo "PASS"
+  32&nbsp;else
+  33&nbsp;  echo "FAIL"
+  34&nbsp;fi
+  35&nbsp;
+  36&nbsp;
+  37&nbsp;# Arrays
+  38&nbsp;test_arr=$default_option     # FAIL
+  39&nbsp;Array=( If supports arrays will print PASS )
+  40&nbsp;test_arr=${Array[5]}
+  41&nbsp;echo "Array test: $test_arr"
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;# Command Substitution
+  45&nbsp;csub_test ()
+  46&nbsp;{
+  47&nbsp;  echo "PASS"
+  48&nbsp;}
+  49&nbsp;
+  50&nbsp;test_csub=$default_option    # FAIL
+  51&nbsp;test_csub=$(csub_test)
+  52&nbsp;echo "Command substitution test: $test_csub"
+  53&nbsp;
+  54&nbsp;echo
+  55&nbsp;
+  56&nbsp;#  Completing this script is an exercise for the reader.
+  57&nbsp;#  Add to the above similar tests for double parentheses,
+  58&nbsp;#+ brace expansion, process substitution, etc.
+  59&nbsp;
+  60&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN20726"
+HREF="portabilityissues.html#AEN20726"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>Or, better yet, <A
+HREF="system.html#ENVV2REF"
+>#!/bin/env sh</A
+>.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="securityissues.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="winscript.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Security Issues</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Shell Scripting Under Windows</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

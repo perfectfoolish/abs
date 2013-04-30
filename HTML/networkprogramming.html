@@ -1,0 +1,446 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Network Programming</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part5.html"><LINK
+REL="PREVIOUS"
+TITLE="/proc"
+HREF="procref1.html"><LINK
+REL="NEXT"
+TITLE="Of Zeros and Nulls"
+HREF="zeros.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="procref1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="zeros.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="NETWORKPROGRAMMING"
+></A
+>Chapter 30. Network Programming</H1
+><TABLE
+BORDER="0"
+WIDTH="100%"
+CELLSPACING="0"
+CELLPADDING="0"
+CLASS="EPIGRAPH"
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+><P
+><I
+>The Net's a cross between an elephant and a white
+	      elephant sale: it never forgets, and it's always crap.</I
+></P
+><P
+><I
+>--Nemo</I
+></P
+></I
+></TD
+></TR
+></TABLE
+><P
+>A Linux system has quite a number of tools for accessing,
+      manipulating, and troubleshooting network connections. We can
+      incorporate some of these tools into scripts -- scripts that
+      expand our knowledge of networking, useful scripts that can
+      facilitate the administration of a network.</P
+><P
+><A
+NAME="CGISCRIPT"
+></A
+>Here is a simple CGI
+      script that demonstrates connecting to a remote server.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="TESTCGI"
+></A
+><P
+><B
+>Example 30-1. Print the server environment</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# test-cgi.sh
+   3&nbsp;# by Michael Zick
+   4&nbsp;# Used with permission
+   5&nbsp;
+   6&nbsp;# May have to change the location for your site.
+   7&nbsp;# (At the ISP's servers, Bash may not be in the usual place.)
+   8&nbsp;# Other places: /usr/bin or /usr/local/bin
+   9&nbsp;# Might even try it without any path in sha-bang.
+  10&nbsp;
+  11&nbsp;# Disable filename globbing.
+  12&nbsp;set -f
+  13&nbsp;
+  14&nbsp;# Header tells browser what to expect.
+  15&nbsp;echo Content-type: text/plain
+  16&nbsp;echo
+  17&nbsp;
+  18&nbsp;echo CGI/1.0 test script report:
+  19&nbsp;echo
+  20&nbsp;
+  21&nbsp;echo environment settings:
+  22&nbsp;set
+  23&nbsp;echo
+  24&nbsp;
+  25&nbsp;echo whereis bash?
+  26&nbsp;whereis bash
+  27&nbsp;echo
+  28&nbsp;
+  29&nbsp;
+  30&nbsp;echo who are we?
+  31&nbsp;echo ${BASH_VERSINFO[*]}
+  32&nbsp;echo
+  33&nbsp;
+  34&nbsp;echo argc is $#. argv is "$*".
+  35&nbsp;echo
+  36&nbsp;
+  37&nbsp;# CGI/1.0 expected environment variables.
+  38&nbsp;
+  39&nbsp;echo SERVER_SOFTWARE = $SERVER_SOFTWARE
+  40&nbsp;echo SERVER_NAME = $SERVER_NAME
+  41&nbsp;echo GATEWAY_INTERFACE = $GATEWAY_INTERFACE
+  42&nbsp;echo SERVER_PROTOCOL = $SERVER_PROTOCOL
+  43&nbsp;echo SERVER_PORT = $SERVER_PORT
+  44&nbsp;echo REQUEST_METHOD = $REQUEST_METHOD
+  45&nbsp;echo HTTP_ACCEPT = "$HTTP_ACCEPT"
+  46&nbsp;echo PATH_INFO = "$PATH_INFO"
+  47&nbsp;echo PATH_TRANSLATED = "$PATH_TRANSLATED"
+  48&nbsp;echo SCRIPT_NAME = "$SCRIPT_NAME"
+  49&nbsp;echo QUERY_STRING = "$QUERY_STRING"
+  50&nbsp;echo REMOTE_HOST = $REMOTE_HOST
+  51&nbsp;echo REMOTE_ADDR = $REMOTE_ADDR
+  52&nbsp;echo REMOTE_USER = $REMOTE_USER
+  53&nbsp;echo AUTH_TYPE = $AUTH_TYPE
+  54&nbsp;echo CONTENT_TYPE = $CONTENT_TYPE
+  55&nbsp;echo CONTENT_LENGTH = $CONTENT_LENGTH
+  56&nbsp;
+  57&nbsp;exit 0
+  58&nbsp;
+  59&nbsp;# Here document to give short instructions.
+  60&nbsp;:&#60;&#60;-'_test_CGI_'
+  61&nbsp;
+  62&nbsp;1) Drop this in your http://domain.name/cgi-bin directory.
+  63&nbsp;2) Then, open http://domain.name/cgi-bin/test-cgi.sh.
+  64&nbsp;
+  65&nbsp;_test_CGI_</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>For security purposes, it may be helpful to identify the IP
+      addresses a computer is accessing.</P
+><P
+><A
+NAME="IPTABLES02"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="IPADDRESSES"
+></A
+><P
+><B
+>Example 30-2. IP addresses</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# ip-addresses.sh
+   3&nbsp;# List the IP addresses your computer is connected to.
+   4&nbsp;
+   5&nbsp;#  Inspired by Greg Bledsoe's ddos.sh script,
+   6&nbsp;#  Linux Journal, 09 March 2011.
+   7&nbsp;#    URL:
+   8&nbsp;#  http://www.linuxjournal.com/content/back-dead-simple-bash-complex-ddos
+   9&nbsp;#  Greg licensed his script under the GPL2,
+  10&nbsp;#+ and as a derivative, this script is likewise GPL2.
+  11&nbsp;
+  12&nbsp;connection_type=TCP      # Also try UDP.
+  13&nbsp;field=2           # Which field of the output we're interested in.
+  14&nbsp;no_match=LISTEN   # Filter out records containing this. Why?
+  15&nbsp;lsof_args=-ni     # -i lists Internet-associated files.
+  16&nbsp;                  # -n preserves numerical IP addresses.
+  17&nbsp;		  # What happens without the -n option? Try it.
+  18&nbsp;router="[0-9][0-9][0-9][0-9][0-9]-&#62;"
+  19&nbsp;#       Delete the router info.
+  20&nbsp;
+  21&nbsp;lsof "$lsof_args" | grep $connection_type | grep -v "$no_match" |
+  22&nbsp;      awk '{print $9}' | cut -d : -f $field | sort | uniq |
+  23&nbsp;      sed s/"^$router"//
+  24&nbsp;
+  25&nbsp;#  Bledsoe's script assigns the output of a filtered IP list,
+  26&nbsp;#  (similar to lines 19-22, above) to a variable.
+  27&nbsp;#  He checks for multiple connections to a single IP address,
+  28&nbsp;#  then uses:
+  29&nbsp;#
+  30&nbsp;#    iptables -I INPUT -s $ip -p tcp -j REJECT --reject-with tcp-reset
+  31&nbsp;#
+  32&nbsp;#  ... within a 60-second delay loop to bounce packets from DDOS attacks.
+  33&nbsp;
+  34&nbsp;
+  35&nbsp;#  Exercise:
+  36&nbsp;#  --------
+  37&nbsp;#  Use the 'iptables' command to extend this script
+  38&nbsp;#+ to reject connection attempts from well-known spammer IP domains.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>More examples of network programming:
+       <OL
+TYPE="1"
+><LI
+><P
+><A
+HREF="devproc.html#NPREF"
+>Getting the time from
+           <I
+CLASS="FIRSTTERM"
+>nist.gov</I
+></A
+></P
+></LI
+><LI
+><P
+><A
+HREF="devproc.html#NW001"
+>Downloading a
+           URL</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="system.html#IPSCRIPT0"
+>A GRE
+	   tunnel</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="communications.html#PING0"
+>Checking
+	   if an Internet server is up</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="communications.html#ISSPAMMER"
+>Example 16-41</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="contributed-scripts.html#ISSPAMMER2"
+>Example A-28</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="contributed-scripts.html#WHX"
+>Example A-29</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="devproc.html#DEVTCP"
+>Example 29-1</A
+></P
+></LI
+></OL
+>
+     </P
+><P
+>See also the <A
+HREF="system.html#NETWORKSYS1"
+>networking commands</A
+>
+       in the <A
+HREF="system.html"
+>System and
+       Administrative Commands</A
+> chapter and the <A
+HREF="communications.html"
+>communications commands</A
+> in
+       the <A
+HREF="external.html"
+>External Filters, Programs and
+       Commands</A
+> chapter.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="procref1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="zeros.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><TT
+CLASS="FILENAME"
+>/proc</TT
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part5.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Of Zeros and Nulls</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

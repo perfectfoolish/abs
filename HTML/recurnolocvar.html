@@ -1,0 +1,372 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Recursion Without Local Variables</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="functions.html"><LINK
+REL="PREVIOUS"
+TITLE="Local Variables"
+HREF="localvar.html"><LINK
+REL="NEXT"
+TITLE="Aliases"
+HREF="aliases.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="localvar.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 24. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="aliases.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RECURNOLOCVAR"
+></A
+>24.3. Recursion Without Local Variables</H1
+><P
+>A function may recursively call itself even without use of
+	      local variables.</P
+><P
+><A
+NAME="FIBOREF"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="FIBO"
+></A
+><P
+><B
+>Example 24-16. <I
+CLASS="FIRSTTERM"
+>The Fibonacci Sequence</I
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# fibo.sh : Fibonacci sequence (recursive)
+   3&nbsp;# Author: M. Cooper
+   4&nbsp;# License: GPL3
+   5&nbsp;
+   6&nbsp;# ----------algorithm--------------
+   7&nbsp;# Fibo(0) = 0
+   8&nbsp;# Fibo(1) = 1
+   9&nbsp;# else
+  10&nbsp;#   Fibo(j) = Fibo(j-1) + Fibo(j-2)
+  11&nbsp;# ---------------------------------
+  12&nbsp;
+  13&nbsp;MAXTERM=15       # Number of terms (+1) to generate.
+  14&nbsp;MINIDX=2         # If idx is less than 2, then Fibo(idx) = idx.
+  15&nbsp;
+  16&nbsp;Fibonacci ()
+  17&nbsp;{
+  18&nbsp;  idx=$1   # Doesn't need to be local. Why not?
+  19&nbsp;  if [ "$idx" -lt "$MINIDX" ]
+  20&nbsp;  then
+  21&nbsp;    echo "$idx"  # First two terms are 0 1 ... see above.
+  22&nbsp;  else
+  23&nbsp;    (( --idx ))  # j-1
+  24&nbsp;    term1=$( Fibonacci $idx )   #  Fibo(j-1)
+  25&nbsp;
+  26&nbsp;    (( --idx ))  # j-2
+  27&nbsp;    term2=$( Fibonacci $idx )   #  Fibo(j-2)
+  28&nbsp;
+  29&nbsp;    echo $(( term1 + term2 ))
+  30&nbsp;  fi
+  31&nbsp;  #  An ugly, ugly kludge.
+  32&nbsp;  #  The more elegant implementation of recursive fibo in C
+  33&nbsp;  #+ is a straightforward translation of the algorithm in lines 7 - 10.
+  34&nbsp;}
+  35&nbsp;
+  36&nbsp;for i in $(seq 0 $MAXTERM)
+  37&nbsp;do  # Calculate $MAXTERM+1 terms.
+  38&nbsp;  FIBO=$(Fibonacci $i)
+  39&nbsp;  echo -n "$FIBO "
+  40&nbsp;done
+  41&nbsp;# 0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610
+  42&nbsp;# Takes a while, doesn't it? Recursion in a script is slow.
+  43&nbsp;
+  44&nbsp;echo
+  45&nbsp;
+  46&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="HANOIREF"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="HANOI"
+></A
+><P
+><B
+>Example 24-17. <I
+CLASS="FIRSTTERM"
+>The Towers of Hanoi</I
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#! /bin/bash
+   2&nbsp;#
+   3&nbsp;# The Towers Of Hanoi
+   4&nbsp;# Bash script
+   5&nbsp;# Copyright (C) 2000 Amit Singh. All Rights Reserved.
+   6&nbsp;# http://hanoi.kernelthread.com
+   7&nbsp;#
+   8&nbsp;# Tested under Bash version 2.05b.0(13)-release.
+   9&nbsp;# Also works under Bash version 3.x.
+  10&nbsp;#
+  11&nbsp;#  Used in "Advanced Bash Scripting Guide"
+  12&nbsp;#+ with permission of script author.
+  13&nbsp;#  Slightly modified and commented by ABS author.
+  14&nbsp;
+  15&nbsp;#=================================================================#
+  16&nbsp;#  The Tower of Hanoi is a mathematical puzzle attributed to
+  17&nbsp;#+ Edouard Lucas, a nineteenth-century French mathematician.
+  18&nbsp;#
+  19&nbsp;#  There are three vertical posts set in a base.
+  20&nbsp;#  The first post has a set of annular rings stacked on it.
+  21&nbsp;#  These rings are disks with a hole drilled out of the center,
+  22&nbsp;#+ so they can slip over the posts and rest flat.
+  23&nbsp;#  The rings have different diameters, and they stack in ascending
+  24&nbsp;#+ order, according to size.
+  25&nbsp;#  The smallest ring is on top, and the largest on the bottom.
+  26&nbsp;#
+  27&nbsp;#  The task is to transfer the stack of rings
+  28&nbsp;#+ to one of the other posts.
+  29&nbsp;#  You can move only one ring at a time to another post.
+  30&nbsp;#  You are permitted to move rings back to the original post.
+  31&nbsp;#  You may place a smaller ring atop a larger one,
+  32&nbsp;#+ but *not* vice versa.
+  33&nbsp;#  Again, it is forbidden to place a larger ring atop a smaller one.
+  34&nbsp;#
+  35&nbsp;#  For a small number of rings, only a few moves are required.
+  36&nbsp;#+ For each additional ring,
+  37&nbsp;#+ the required number of moves approximately doubles,
+  38&nbsp;#+ and the "strategy" becomes increasingly complicated.
+  39&nbsp;#
+  40&nbsp;#  For more information, see http://hanoi.kernelthread.com
+  41&nbsp;#+ or pp. 186-92 of _The Armchair Universe_ by A.K. Dewdney.
+  42&nbsp;#
+  43&nbsp;#
+  44&nbsp;#         ...                   ...                    ...
+  45&nbsp;#         | |                   | |                    | |
+  46&nbsp;#        _|_|_                  | |                    | |
+  47&nbsp;#       |_____|                 | |                    | |
+  48&nbsp;#      |_______|                | |                    | |
+  49&nbsp;#     |_________|               | |                    | |
+  50&nbsp;#    |___________|              | |                    | |
+  51&nbsp;#   |             |             | |                    | |
+  52&nbsp;# .--------------------------------------------------------------.
+  53&nbsp;# |**************************************************************|
+  54&nbsp;#          #1                   #2                      #3
+  55&nbsp;#
+  56&nbsp;#=================================================================#
+  57&nbsp;
+  58&nbsp;
+  59&nbsp;E_NOPARAM=66  # No parameter passed to script.
+  60&nbsp;E_BADPARAM=67 # Illegal number of disks passed to script.
+  61&nbsp;Moves=        # Global variable holding number of moves.
+  62&nbsp;              # Modification to original script.
+  63&nbsp;
+  64&nbsp;dohanoi() {   # Recursive function.
+  65&nbsp;    case $1 in
+  66&nbsp;    0)
+  67&nbsp;        ;;
+  68&nbsp;    *)
+  69&nbsp;        dohanoi "$(($1-1))" $2 $4 $3
+  70&nbsp;        echo move $2 "--&#62;" $3
+  71&nbsp;        ((Moves++))          # Modification to original script.
+  72&nbsp;        dohanoi "$(($1-1))" $4 $3 $2
+  73&nbsp;        ;;
+  74&nbsp;    esac
+  75&nbsp;}
+  76&nbsp;
+  77&nbsp;case $# in
+  78&nbsp;    1) case $(($1&#62;0)) in     # Must have at least one disk.
+  79&nbsp;       1)  # Nested case statement.
+  80&nbsp;           dohanoi $1 1 3 2
+  81&nbsp;           echo "Total moves = $Moves"   # 2^n - 1, where n = # of disks.
+  82&nbsp;           exit 0;
+  83&nbsp;           ;;
+  84&nbsp;       *)
+  85&nbsp;           echo "$0: illegal value for number of disks";
+  86&nbsp;           exit $E_BADPARAM;
+  87&nbsp;           ;;
+  88&nbsp;       esac
+  89&nbsp;    ;;
+  90&nbsp;    *)
+  91&nbsp;       echo "usage: $0 N"
+  92&nbsp;       echo "       Where \"N\" is the number of disks."
+  93&nbsp;       exit $E_NOPARAM;
+  94&nbsp;       ;;
+  95&nbsp;esac
+  96&nbsp;
+  97&nbsp;# Exercises:
+  98&nbsp;# ---------
+  99&nbsp;# 1) Would commands beyond this point ever be executed?
+ 100&nbsp;#    Why not? (Easy)
+ 101&nbsp;# 2) Explain the workings of the workings of the "dohanoi" function.
+ 102&nbsp;#    (Difficult -- see the Dewdney reference, above.)</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="localvar.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="aliases.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Local Variables</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="functions.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Aliases</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

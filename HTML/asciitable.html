@@ -1,0 +1,355 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>ASCII Table</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Copyright"
+HREF="copyright.html"><LINK
+REL="NEXT"
+TITLE="Index"
+HREF="xrefindex.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="APPENDIX"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="copyright.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="xrefindex.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="APPENDIX"
+><H1
+><A
+NAME="ASCIITABLE"
+></A
+>Appendix T. ASCII Table</H1
+><P
+>Traditionally, a book of this sort has an <A
+HREF="special-chars.html#ASCIIDEF"
+>ASCII</A
+> Table appendix.
+      This book does not. Instead, here are several short
+      scripts, each of which generates a complete ASCII table.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ASCIISH"
+></A
+><P
+><B
+>Example T-1. A script that generates an ASCII table</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# ascii.sh
+   3&nbsp;# ver. 0.2, reldate 26 Aug 2008
+   4&nbsp;# Patched by ABS Guide author.
+   5&nbsp;
+   6&nbsp;# Original script by Sebastian Arming.
+   7&nbsp;# Used with permission (thanks!).
+   8&nbsp;
+   9&nbsp;exec &#62;ASCII.txt         #  Save stdout to file,
+  10&nbsp;                        #+ as in the example scripts
+  11&nbsp;                        #+ reassign-stdout.sh and upperconv.sh.
+  12&nbsp;
+  13&nbsp;MAXNUM=256
+  14&nbsp;COLUMNS=5
+  15&nbsp;OCT=8
+  16&nbsp;OCTSQU=64
+  17&nbsp;LITTLESPACE=-3
+  18&nbsp;BIGSPACE=-5
+  19&nbsp;
+  20&nbsp;i=1 # Decimal counter
+  21&nbsp;o=1 # Octal counter
+  22&nbsp;
+  23&nbsp;while [ "$i" -lt "$MAXNUM" ]; do  # We don't have to count past 400 octal.
+  24&nbsp;        paddi="    $i"
+  25&nbsp;        echo -n "${paddi: $BIGSPACE}  "       # Column spacing.
+  26&nbsp;        paddo="00$o"
+  27&nbsp;#       echo -ne "\\${paddo: $LITTLESPACE}"   # Original.
+  28&nbsp;        echo -ne "\\0${paddo: $LITTLESPACE}"  # Fixup.
+  29&nbsp;#                   ^
+  30&nbsp;        echo -n "     "
+  31&nbsp;        if (( i % $COLUMNS == 0)); then       # New line.
+  32&nbsp;           echo
+  33&nbsp;        fi
+  34&nbsp;        ((i++, o++))
+  35&nbsp;        # The octal notation for 8 is 10, and 64 decimal is 100 octal.
+  36&nbsp;        (( i % $OCT == 0))    &#38;&#38; ((o+=2))
+  37&nbsp;        (( i % $OCTSQU == 0)) &#38;&#38; ((o+=20))
+  38&nbsp;done
+  39&nbsp;
+  40&nbsp;exit $?
+  41&nbsp;
+  42&nbsp;# Compare this script with the "pr-asc.sh" example.
+  43&nbsp;# This one handles "unprintable" characters.
+  44&nbsp;
+  45&nbsp;# Exercise:
+  46&nbsp;# Rewrite this script to use decimal numbers, rather than octal.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ASCII2SH"
+></A
+><P
+><B
+>Example T-2. Another ASCII table script</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Script author: Joseph Steinhauser
+   3&nbsp;# Lightly edited by ABS Guide author, but not commented.
+   4&nbsp;# Used in ABS Guide with permission.
+   5&nbsp;
+   6&nbsp;#-------------------------------------------------------------------------
+   7&nbsp;#-- File:  ascii.sh    Print ASCII chart, base 10/8/16         (JETS-2012)
+   8&nbsp;#-------------------------------------------------------------------------
+   9&nbsp;#-- Usage: ascii [oct|dec|hex|help|8|10|16]
+  10&nbsp;#--
+  11&nbsp;#-- This script prints out a summary of ASCII char codes from Zero to 127.
+  12&nbsp;#-- Numeric values may be printed in Base10, Octal, or Hex.
+  13&nbsp;#--
+  14&nbsp;#-- Format Based on: /usr/share/lib/pub/ascii with base-10 as default.
+  15&nbsp;#-- For more detail, man ascii . . .
+  16&nbsp;#-------------------------------------------------------------------------
+  17&nbsp;
+  18&nbsp;[ -n "$BASH_VERSION" ] &#38;&#38; shopt -s extglob
+  19&nbsp;
+  20&nbsp;case "$1" in
+  21&nbsp;   oct|[Oo]?([Cc][Tt])|8)       Obase=Octal;  Numy=3o;;
+  22&nbsp;   hex|[Hh]?([Ee][Xx])|16|[Xx]) Obase=Hex;    Numy=2X;;
+  23&nbsp;   help|?(-)[h?])        sed -n '2,/^[ ]*$/p' $0;exit;;
+  24&nbsp;   code|[Cc][Oo][Dd][Ee])sed -n '/case/,$p'   $0;exit;;
+  25&nbsp;   *) Obase=Decimal
+  26&nbsp;esac # CODE is actually shorter than the chart!
+  27&nbsp;
+  28&nbsp;printf "\t\t## $Obase ASCII Chart ##\n\n"; FM1="|%0${Numy:-3d}"; LD=-1
+  29&nbsp;
+  30&nbsp;AB="nul soh stx etx eot enq ack bel bs tab nl vt np cr so si dle"
+  31&nbsp;AD="dc1 dc2 dc3 dc4 nak syn etb can em sub esc fs gs rs us sp"
+  32&nbsp;
+  33&nbsp;for TOK in $AB $AD; do ABR[$((LD+=1))]=$TOK; done;
+  34&nbsp;ABR[127]=del
+  35&nbsp;
+  36&nbsp;IDX=0
+  37&nbsp;while [ $IDX -le 127 ] &#38;&#38; CHR="${ABR[$IDX]}"
+  38&nbsp;   do ((${#CHR}))&#38;&#38; FM2='%-3s'|| FM2=`printf '\\\\%o  ' $IDX`
+  39&nbsp;      printf "$FM1 $FM2" "$IDX" $CHR; (( (IDX+=1)%8))||echo '|'
+  40&nbsp;   done
+  41&nbsp;
+  42&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ASCII3SH"
+></A
+><P
+><B
+>Example T-3. A third ASCII table script, using
+                   <I
+CLASS="FIRSTTERM"
+>awk</I
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# ASCII table script, using awk.
+   3&nbsp;# Author: Joseph Steinhauser
+   4&nbsp;# Used in ABS Guide with permission.
+   5&nbsp;
+   6&nbsp;
+   7&nbsp;#-------------------------------------------------------------------------
+   8&nbsp;#-- File:  ascii     Print ASCII chart, base 10/8/16         (JETS-2010)
+   9&nbsp;#-------------------------------------------------------------------------
+  10&nbsp;#-- Usage: ascii [oct|dec|hex|help|8|10|16]
+  11&nbsp;#--
+  12&nbsp;#-- This script prints a summary of ASCII char codes from Zero to 127.
+  13&nbsp;#-- Numeric values may be printed in Base10, Octal, or Hex (Base16).
+  14&nbsp;#--
+  15&nbsp;#-- Format Based on: /usr/share/lib/pub/ascii with base-10 as default.
+  16&nbsp;#-- For more detail, man ascii
+  17&nbsp;#-------------------------------------------------------------------------
+  18&nbsp;
+  19&nbsp;[ -n "$BASH_VERSION" ] &#38;&#38; shopt -s extglob
+  20&nbsp;
+  21&nbsp;case "$1" in
+  22&nbsp;   oct|[Oo]?([Cc][Tt])|8)       Obase=Octal;  Numy=3o;;
+  23&nbsp;   hex|[Hh]?([Ee][Xx])|16|[Xx]) Obase=Hex;    Numy=2X;;
+  24&nbsp;   help|?(-)[h?])        sed -n '2,/^[ ]*$/p' $0;exit;;
+  25&nbsp;   code|[Cc][Oo][Dd][Ee])sed -n '/case/,$p'   $0;exit;;
+  26&nbsp;   *) Obase=Decimal
+  27&nbsp;esac
+  28&nbsp;export Obase   # CODE is actually shorter than the chart!
+  29&nbsp;
+  30&nbsp;awk 'BEGIN{print "\n\t\t## "ENVIRON["Obase"]" ASCII Chart ##\n"
+  31&nbsp;           ab="soh,stx,etx,eot,enq,ack,bel,bs,tab,nl,vt,np,cr,so,si,dle,"
+  32&nbsp;           ad="dc1,dc2,dc3,dc4,nak,syn,etb,can,em,sub,esc,fs,gs,rs,us,sp"
+  33&nbsp;           split(ab ad,abr,",");abr[0]="nul";abr[127]="del";
+  34&nbsp;           fm1="|%0'"${Numy:- 4d}"' %-3s"
+  35&nbsp;           for(idx=0;idx&#60;128;idx++){fmt=fm1 (++colz%8?"":"|\n")
+  36&nbsp;           printf(fmt,idx,(idx in abr)?abr[idx]:sprintf("%c",idx))} }'
+  37&nbsp;
+  38&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="copyright.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="xrefindex.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Copyright</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Index</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

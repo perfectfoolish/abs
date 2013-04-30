@@ -1,0 +1,998 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Operator Precedence</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Operations and Related Topics"
+HREF="operations.html"><LINK
+REL="PREVIOUS"
+TITLE="The Double-Parentheses Construct"
+HREF="dblparens.html"><LINK
+REL="NEXT"
+TITLE="Beyond the Basics"
+HREF="part3.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="dblparens.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Operations and Related Topics</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="part3.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="OPPRECEDENCE"
+></A
+>8.4. Operator Precedence</H1
+><P
+><A
+NAME="OPPRECEDENCE1"
+></A
+></P
+><P
+>        In a script, operations execute in order of
+        <I
+CLASS="FIRSTTERM"
+>precedence</I
+>: the higher precedence operations
+	execute <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>before</I
+></SPAN
+> the lower precedence ones.
+	  <A
+NAME="AEN4287"
+HREF="#FTN.AEN4287"
+>[1]</A
+>
+      </P
+><DIV
+CLASS="TABLE"
+><HR><A
+NAME="AEN4291"
+></A
+><P
+><B
+>Table 8-1. Operator Precedence</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Operator</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Meaning</TH
+><TH
+ALIGN="LEFT"
+VALIGN="TOP"
+>Comments</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+></TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><B
+CLASS="COMMAND"
+>HIGHEST PRECEDENCE</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>var++ var--</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>post-increment, post-decrement</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="assortedtips.html#CSTYLE"
+>C-style</A
+> operators</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>++var --var</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>pre-increment, pre-decrement</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>! ~</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="special-chars.html#NOTREF"
+>negation</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>logical / bitwise, inverts sense of following
+	        operator</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>**</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="operations.html#EXPONENTIATIONREF"
+>exponentiation</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="operations.html#AROPS1"
+>arithmetic
+	        operation</A
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>* / %</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>multiplication, division, modulo</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>arithmetic operation</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>+ -</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>addition, subtraction</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>arithmetic operation</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>&#60;&#60; &#62;&#62;</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>left, right shift</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="operations.html#BITWSOPS1"
+>bitwise</A
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-z -n</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+CLASS="FIRSTTERM"
+>unary</I
+> comparison</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>string is/is-not <A
+HREF="comparison-ops.html#STRINGNULL"
+>null</A
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-e -f -t -x, etc.</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+CLASS="FIRSTTERM"
+>unary</I
+> comparison</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="fto.html"
+>file-test</A
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>&#60; -lt &#62; -gt &#60;= -le &#62;= -ge</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+CLASS="FIRSTTERM"
+>compound</I
+> comparison</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>string and integer</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>-nt -ot -ef</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+CLASS="FIRSTTERM"
+>compound</I
+> comparison</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>file-test</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>== -eq <A
+HREF="comparison-ops.html#NOTEQUAL"
+>!=</A
+>
+	       -ne</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>equality / inequality</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>test operators, string and integer</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>&#38;</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>AND</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>bitwise</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>^</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>XOR</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+CLASS="FIRSTTERM"
+>exclusive</I
+> OR, bitwise</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>|</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>OR</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>bitwise</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>&#38;&#38; -a</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>AND</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="operations.html#LOGOPS1"
+>logical</A
+>,
+	        <I
+CLASS="FIRSTTERM"
+>compound</I
+>
+	        comparison</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>|| -o</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>OR</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>logical, <I
+CLASS="FIRSTTERM"
+>compound</I
+>
+	        comparison</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>?:</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="special-chars.html#CSTRINARY"
+>trinary
+	        operator</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>C-style</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>=</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="varassignment.html#EQREF"
+>assignment</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>(do not confuse with equality
+	        <I
+CLASS="FIRSTTERM"
+>test</I
+>)</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>*= /= %= += -= &#60;&#60;= &#62;&#62;= &#38;=</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="operations.html#ARITHOPSCOMB"
+>combination
+	        assignment</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>times-equal, divide-equal, mod-equal, etc.</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+>,</TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="operations.html#COMMAOP"
+>comma</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>links a sequence of operations</TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="OPTION"
+></TT
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><B
+CLASS="COMMAND"
+>LOWEST PRECEDENCE</B
+></TD
+></TR
+></TBODY
+></TABLE
+><HR></DIV
+><P
+>In practice, all you really need to remember is the
+      following:</P
+><UL
+><LI
+><P
+>The <SPAN
+CLASS="QUOTE"
+>"My Dear Aunt Sally"</SPAN
+> mantra (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>multiply,
+	  divide, add, subtract</I
+></SPAN
+>) for the familiar <A
+HREF="operations.html#AROPS1"
+>arithmetic operations</A
+>.</P
+></LI
+><LI
+><P
+>The <I
+CLASS="FIRSTTERM"
+>compound</I
+> logical operators,
+	  <B
+CLASS="COMMAND"
+>&#38;&#38;</B
+>, <B
+CLASS="COMMAND"
+>||</B
+>, <B
+CLASS="COMMAND"
+>-a</B
+>,
+	  and <B
+CLASS="COMMAND"
+>-o</B
+> have low precedence.</P
+></LI
+><LI
+><P
+>The order of evaluation of equal-precedence operators is
+	  usually <I
+CLASS="FIRSTTERM"
+>left-to-right</I
+>.</P
+></LI
+></UL
+><P
+>Now, let's utilize our knowledge of operator precedence to
+	  analyze a couple of lines from the
+	  <TT
+CLASS="FILENAME"
+>/etc/init.d/functions file</TT
+>, as found in
+	  the <I
+CLASS="FIRSTTERM"
+>Fedora Core</I
+> Linux distro.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;while [ -n "$remaining" -a "$retry" -gt 0 ]; do
+   2&nbsp;
+   3&nbsp;# This looks rather daunting at first glance.
+   4&nbsp;
+   5&nbsp;
+   6&nbsp;# Separate the conditions:
+   7&nbsp;while [ -n "$remaining" -a "$retry" -gt 0 ]; do
+   8&nbsp;#       --condition 1-- ^^ --condition 2-
+   9&nbsp;
+  10&nbsp;#  If variable "$remaining" is not zero length
+  11&nbsp;#+      AND (-a)
+  12&nbsp;#+ variable "$retry" is greater-than zero
+  13&nbsp;#+ then
+  14&nbsp;#+ the [ expresion-within-condition-brackets ] returns success (0)
+  15&nbsp;#+ and the while-loop executes an iteration.
+  16&nbsp;#  ==============================================================
+  17&nbsp;#  Evaluate "condition 1" and "condition 2" ***before***
+  18&nbsp;#+ ANDing them. Why? Because the AND (-a) has a lower precedence
+  19&nbsp;#+ than the -n and -gt operators,
+  20&nbsp;#+ and therefore gets evaluated *last*.
+  21&nbsp;
+  22&nbsp;#################################################################
+  23&nbsp;
+  24&nbsp;if [ -f /etc/sysconfig/i18n -a -z "${NOLOCALE:-}" ] ; then
+  25&nbsp;
+  26&nbsp;
+  27&nbsp;# Again, separate the conditions:
+  28&nbsp;if [ -f /etc/sysconfig/i18n -a -z "${NOLOCALE:-}" ] ; then
+  29&nbsp;#    --condition 1--------- ^^ --condition 2-----
+  30&nbsp;
+  31&nbsp;#  If file "/etc/sysconfig/i18n" exists
+  32&nbsp;#+      AND (-a)
+  33&nbsp;#+ variable $NOLOCALE is zero length
+  34&nbsp;#+ then
+  35&nbsp;#+ the [ test-expresion-within-condition-brackets ] returns success (0)
+  36&nbsp;#+ and the commands following execute.
+  37&nbsp;#
+  38&nbsp;#  As before, the AND (-a) gets evaluated *last*
+  39&nbsp;#+ because it has the lowest precedence of the operators within
+  40&nbsp;#+ the test brackets.
+  41&nbsp;#  ==============================================================
+  42&nbsp;#  Note:
+  43&nbsp;#  ${NOLOCALE:-} is a parameter expansion that seems redundant.
+  44&nbsp;#  But, if $NOLOCALE has not been declared, it gets set to *null*,
+  45&nbsp;#+ in effect declaring it.
+  46&nbsp;#  This makes a difference in some contexts.</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="TIP"
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/tip.png"
+HSPACE="5"
+ALT="Tip"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>To avoid confusion or error in a complex sequence of test
+        operators, break up the sequence into bracketed sections.
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if [ "$v1" -gt "$v2"  -o  "$v1" -lt "$v2"  -a  -e "$filename" ]
+   2&nbsp;# Unclear what's going on here...
+   3&nbsp;
+   4&nbsp;if [[ "$v1" -gt "$v2" ]] || [[ "$v1" -lt "$v2" ]] &#38;&#38; [[ -e "$filename" ]]
+   5&nbsp;# Much better -- the condition tests are grouped in logical sections.</PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN4287"
+HREF="opprecedence.html#AEN4287"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><I
+CLASS="FIRSTTERM"
+>Precedence</I
+>, in this context,
+	    has approximately the same meaning as
+	    <I
+CLASS="FIRSTTERM"
+>priority</I
+></P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="dblparens.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="part3.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The Double-Parentheses Construct</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="operations.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Beyond the Basics</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

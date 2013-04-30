@@ -1,0 +1,131 @@
+                        SOME SCRIPTS WILL NOT RUN AS IS
+
+
+Note that the source code for certain of the example shell scripts
+have the "&lt;" and "&gt;" in place of angle brackets (< and >), or &amp; in
+place of the ampersand (&). This is necessary for the Docbook SGML
+conversion. If you plan to run these scripts from the enclosed source
+files, then it will, of course, be necessary to restore the angle
+brackets or ampersand.
+
+                     &lt;           becomes  <
+                     &gt;           becomes  >
+                     &lt;&lt;       becomes  <<
+                     &lt;&lt;&lt;   becomes  <<<
+                     &gt;&gt;       becomes  >>
+                     &amp;          becomes  &
+
+In some of the below cases, only the comments are affected, and these scripts
+require no fixups to execute as expected.
+
+
+The following sed scriptlet will accomplish the fixup:
+
+   sed -e 's/&lt;/</g' -e 's/&gt;/>/g' SCRIPT.sh > FIXED_SCRIPT.sh
+
+A followup double-check is advisable, of course.
+
+=======================================================================
+
+
+Scripts needing to be altered:
+-----------------------------
+
+Du.sh (line 19)
+encryptedpw.sh (lines 27 and 35)
+ex57.sh (comment in line 8)
+ex70.sh (line 3)
+ex71.sh (line 7)
+ex71a.sh (line 8)
+ex71b.sh (line 22)
+logevents.sh (lines 31, 39-42, 47-8, 54, 56, 58, 61, 63, 67)
+m4.sh (line 8: "\&amp;" --> \&)
+pw.sh (comment in line 4)
+read-r.sh (lines 5, 6, 20, 27)
+rnd.sh (comments in lines 38, 55, 64)
+rot13.sh (comment, line 6)
+rot13a.sh (comment, line 5)
+here-function.sh (line 16)
+avoid-subshell.sh (lines 24, 25, and 33)
+usb.sh (line 28)
+prepend.sh (lines 18 and 28)
+array-assign.bash ( comments on lines 18-19)
+cdll (lines 51-53, 59, 63-69, 82-83, 85, 463, 521, 567-568, 570,
+            580-586, 637, 656-658)
+directory-info.sh (lines 36, 166, 273 and 353)
+is-spammer.sh (comments on lines 4, 35, and 51)
+bashrc (comment on line 4)
+commentblock.sh (lines 4 and 23)
+self-document.sh (line 14)
+self-document2.sh (line 8)
+dev-tcp.sh (line 14)
+archiveweblogs.sh (comment in line 4)
+multiple-processes.sh (line 143)
+catscripts.sh (lines 12 and 21)
+is_spammer.bash (comments on various lines)
+iscan.sh (comment in line 10)
+Hash.lib, (comments in lines lines 103 and 116: & --> &amp;)
+          (comment in line 3: < --> &lt;, > --> &gt;)
+hash-example.sh (comment in line 3: < --> &lt;, > --> &gt;)
+quote-fetch.sh (comment in line 26: &amp; --> &)
+ftpget.sh (comment in line 28)
+whx.sh (comment in line 259)
+pad.sh, (comments in line 6, lines 26, 27, 28, 29, 30, 33, 34).
+nightly-backup.sh (comment in line 4)
+tohtml.sh: lines 22-33
+           lines 35-36
+           lines 38-41
+           line 74
+           line 83
+           lines 100-101
+In-line code block at beginning of "I/O Redirection" chapter, line 41.
+In-line code block at "mkfifo" entro in "Miscellaneous Commands" section of
+"External Filters, Programs and Commands" chapter.
+
+insertion-sort.sh:
+                  line 8 (comment)
+                  line 44
+                  line 45
+                  line 57 (two instances)
+
+tree2.sh:
+         line 38 (comment)
+         line 88
+
+petals.sh
+         line 56
+
+realname.sh
+         line 26
+
+qky.sh
+         line 7
+	 line 63
+	 line 87
+	 line 113
+(The unaltered, executable script can be downloaded.
+ See:  http://bash.deta.in/qky.README.html)
+
+maned.sh
+         line 6 (comment)
+
+progress-bar.sh
+         line 26
+	 line 30
+nim.sh
+         line 27
+
+paragraph-spac3.sh
+         line 6
+
+sw.sh
+         line 5 (comment)
+
+here-commsub.sh
+         line 5
+
+UseGetOpt.sh: line 4 (comment)
+UseGetOpt-2.sh: line 11 (comment)
+
+bash64.sh
+         line 4 (comment)

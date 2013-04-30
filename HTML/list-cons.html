@@ -1,0 +1,675 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>List Constructs</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part5.html"><LINK
+REL="PREVIOUS"
+TITLE="Aliases"
+HREF="aliases.html"><LINK
+REL="NEXT"
+TITLE="Arrays"
+HREF="arrays.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="aliases.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="arrays.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="LIST-CONS"
+></A
+>Chapter 26. List Constructs</H1
+><P
+><A
+NAME="LISTCONSREF"
+></A
+></P
+><P
+>The <I
+CLASS="FIRSTTERM"
+>and list</I
+> and <I
+CLASS="FIRSTTERM"
+>or
+	list</I
+> constructs provide a means of processing a
+	number of commands consecutively. These can effectively replace
+	complex nested <A
+HREF="tests.html#TESTCONSTRUCTS1"
+>if/then</A
+>
+	or even <A
+HREF="testbranch.html#CASEESAC1"
+>case</A
+> statements.</P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="LCONS1"
+></A
+>Chaining together commands</B
+></P
+><DL
+><DT
+>and list</DT
+><DD
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;command-1 &#38;&#38; command-2 &#38;&#38; command-3 &#38;&#38; ... command-n</PRE
+></TD
+></TR
+></TABLE
+>
+	      Each command executes in turn, provided that
+	      the previous command has given a return value of
+	      <TT
+CLASS="REPLACEABLE"
+><I
+>true</I
+></TT
+> (zero). At the first
+	      <TT
+CLASS="REPLACEABLE"
+><I
+>false</I
+></TT
+> (non-zero) return, the
+	      command chain terminates (the first command returning
+	      <TT
+CLASS="REPLACEABLE"
+><I
+>false</I
+></TT
+> is the last one to
+	      execute).</P
+><P
+>An interesting use of a two-condition <I
+CLASS="FIRSTTERM"
+>and
+	      list</I
+> from an ealy version of YongYe's <A
+HREF="http://bash.deta.in/Tetris_Game.sh"
+TARGET="_top"
+>Tetris
+	      game script</A
+>:</P
+><P
+>           <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;equation()
+   2&nbsp;
+   3&nbsp;{  # core algorithm used for doubling and halving the coordinates
+   4&nbsp;   [[ ${cdx} ]] &#38;&#38; ((y=cy+(ccy-cdy)${2}2))
+   5&nbsp;   eval ${1}+=\"${x} ${y} \"
+   6&nbsp;}</PRE
+></TD
+></TR
+></TABLE
+>
+           </P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX64"
+></A
+><P
+><B
+>Example 26-1. Using an <I
+CLASS="FIRSTTERM"
+>and list</I
+> to test
+	      for command-line arguments</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# and list
+   3&nbsp;
+   4&nbsp;if [ ! -z "$1" ] &#38;&#38; echo "Argument #1 = $1" &#38;&#38; [ ! -z "$2" ] &#38;&#38; \
+   5&nbsp;#                ^^                         ^^               ^^
+   6&nbsp;echo "Argument #2 = $2"
+   7&nbsp;then
+   8&nbsp;  echo "At least 2 arguments passed to script."
+   9&nbsp;  # All the chained commands return true.
+  10&nbsp;else
+  11&nbsp;  echo "Fewer than 2 arguments passed to script."
+  12&nbsp;  # At least one of the chained commands returns false.
+  13&nbsp;fi  
+  14&nbsp;# Note that "if [ ! -z $1 ]" works, but its alleged equivalent,
+  15&nbsp;#   "if [ -n $1 ]" does not.
+  16&nbsp;#     However, quoting fixes this.
+  17&nbsp;#  if "[ -n "$1" ]" works.
+  18&nbsp;#           ^  ^    Careful!
+  19&nbsp;# It is always best to QUOTE the variables being tested.
+  20&nbsp;
+  21&nbsp;
+  22&nbsp;# This accomplishes the same thing, using "pure" if/then statements.
+  23&nbsp;if [ ! -z "$1" ]
+  24&nbsp;then
+  25&nbsp;  echo "Argument #1 = $1"
+  26&nbsp;fi
+  27&nbsp;if [ ! -z "$2" ]
+  28&nbsp;then
+  29&nbsp;  echo "Argument #2 = $2"
+  30&nbsp;  echo "At least 2 arguments passed to script."
+  31&nbsp;else
+  32&nbsp;  echo "Fewer than 2 arguments passed to script."
+  33&nbsp;fi
+  34&nbsp;# It's longer and more ponderous than using an "and list".
+  35&nbsp;
+  36&nbsp;
+  37&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ANDLIST2"
+></A
+><P
+><B
+>Example 26-2. Another command-line arg test using an <I
+CLASS="FIRSTTERM"
+>and
+	      list</I
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;ARGS=1        # Number of arguments expected.
+   4&nbsp;E_BADARGS=85  # Exit value if incorrect number of args passed.
+   5&nbsp;
+   6&nbsp;test $# -ne $ARGS &#38;&#38; \
+   7&nbsp;#    ^^^^^^^^^^^^ condition #1
+   8&nbsp;echo "Usage: `basename $0` $ARGS argument(s)" &#38;&#38; exit $E_BADARGS
+   9&nbsp;#                                             ^^
+  10&nbsp;#  If condition #1 tests true (wrong number of args passed to script),
+  11&nbsp;#+ then the rest of the line executes, and script terminates.
+  12&nbsp;
+  13&nbsp;# Line below executes only if the above test fails.
+  14&nbsp;echo "Correct number of arguments passed to this script."
+  15&nbsp;
+  16&nbsp;exit 0
+  17&nbsp;
+  18&nbsp;# To check exit value, do a "echo $?" after script termination.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="ANDDEFAULT"
+></A
+></P
+><P
+>	      Of course, an <I
+CLASS="FIRSTTERM"
+>and list</I
+> can also
+	      <I
+CLASS="FIRSTTERM"
+>set</I
+> variables to a default value.
+	        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;arg1=$@ &#38;&#38; [ -z "$arg1" ] &#38;&#38; arg1=DEFAULT
+   2&nbsp;		
+   3&nbsp;              # Set $arg1 to command-line arguments, if any.
+   4&nbsp;              # But . . . set to DEFAULT if not specified on command-line.</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+></DD
+><DT
+><A
+NAME="ORLISTREF"
+></A
+>or list</DT
+><DD
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;command-1 || command-2 || command-3 || ... command-n</PRE
+></TD
+></TR
+></TABLE
+>
+	      Each command executes in turn for as long as the previous
+	      command returns <SPAN
+CLASS="RETURNVALUE"
+>false</SPAN
+>. At
+	      the first <SPAN
+CLASS="RETURNVALUE"
+>true</SPAN
+> return, the
+	      command chain terminates (the first command returning
+	      <SPAN
+CLASS="RETURNVALUE"
+>true</SPAN
+> is the last one to
+	      execute). This is obviously the inverse of the <SPAN
+CLASS="QUOTE"
+>"and
+	      list"</SPAN
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX65"
+></A
+><P
+><B
+>Example 26-3. Using <I
+CLASS="FIRSTTERM"
+>or lists</I
+> in combination
+	      with an <I
+CLASS="FIRSTTERM"
+>and list</I
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  delete.sh, a not-so-cunning file deletion utility.
+   4&nbsp;#  Usage: delete filename
+   5&nbsp;
+   6&nbsp;E_BADARGS=85
+   7&nbsp;
+   8&nbsp;if [ -z "$1" ]
+   9&nbsp;then
+  10&nbsp;  echo "Usage: `basename $0` filename"
+  11&nbsp;  exit $E_BADARGS  # No arg? Bail out.
+  12&nbsp;else  
+  13&nbsp;  file=$1          # Set filename.
+  14&nbsp;fi  
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;[ ! -f "$file" ] &#38;&#38; echo "File \"$file\" not found. \
+  18&nbsp;Cowardly refusing to delete a nonexistent file."
+  19&nbsp;# AND LIST, to give error message if file not present.
+  20&nbsp;# Note echo message continuing on to a second line after an escape.
+  21&nbsp;
+  22&nbsp;[ ! -f "$file" ] || (rm -f $file; echo "File \"$file\" deleted.")
+  23&nbsp;# OR LIST, to delete file if present.
+  24&nbsp;
+  25&nbsp;# Note logic inversion above.
+  26&nbsp;# AND LIST executes on true, OR LIST on false.
+  27&nbsp;
+  28&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>If the first command in an <I
+CLASS="FIRSTTERM"
+>or
+	      list</I
+> returns <SPAN
+CLASS="RETURNVALUE"
+>true</SPAN
+>,
+	      it <TT
+CLASS="REPLACEABLE"
+><I
+>will</I
+></TT
+> execute.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+></DL
+></DIV
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# ==&#62; The following snippets from the /etc/rc.d/init.d/single
+   2&nbsp;#+==&#62; script by Miquel van Smoorenburg
+   3&nbsp;#+==&#62; illustrate use of "and" and "or" lists.
+   4&nbsp;# ==&#62; "Arrowed" comments added by document author.
+   5&nbsp;
+   6&nbsp;[ -x /usr/bin/clear ] &#38;&#38; /usr/bin/clear
+   7&nbsp;  # ==&#62; If /usr/bin/clear exists, then invoke it.
+   8&nbsp;  # ==&#62; Checking for the existence of a command before calling it
+   9&nbsp;  #+==&#62; avoids error messages and other awkward consequences.
+  10&nbsp;
+  11&nbsp;  # ==&#62; . . .
+  12&nbsp;
+  13&nbsp;# If they want to run something in single user mode, might as well run it...
+  14&nbsp;for i in /etc/rc1.d/S[0-9][0-9]* ; do
+  15&nbsp;        # Check if the script is there.
+  16&nbsp;        [ -x "$i" ] || continue
+  17&nbsp;  # ==&#62; If corresponding file in $PWD *not* found,
+  18&nbsp;  #+==&#62; then "continue" by jumping to the top of the loop.
+  19&nbsp;
+  20&nbsp;        # Reject backup files and files generated by rpm.
+  21&nbsp;        case "$1" in
+  22&nbsp;                *.rpmsave|*.rpmorig|*.rpmnew|*~|*.orig)
+  23&nbsp;                        continue;;
+  24&nbsp;        esac
+  25&nbsp;        [ "$i" = "/etc/rc1.d/S00single" ] &#38;&#38; continue
+  26&nbsp;  # ==&#62; Set script name, but don't execute it yet.
+  27&nbsp;        $i start
+  28&nbsp;done
+  29&nbsp;
+  30&nbsp;  # ==&#62; . . .</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="IMPORTANT"
+><TABLE
+CLASS="IMPORTANT"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/important.png"
+HSPACE="5"
+ALT="Important"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The <A
+HREF="exit-status.html#EXITSTATUSREF"
+>exit
+	  status</A
+> of an <TT
+CLASS="USERINPUT"
+><B
+>and list</B
+></TT
+> or an
+	  <TT
+CLASS="USERINPUT"
+><B
+>or list</B
+></TT
+> is the exit status of the last
+	  command executed.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Clever combinations of <I
+CLASS="FIRSTTERM"
+>and</I
+> and
+	<I
+CLASS="FIRSTTERM"
+>or</I
+> lists are possible, but the logic may
+	easily become convoluted and require close attention to <A
+HREF="opprecedence.html#OPPRECEDENCE1"
+>operator precedence rules</A
+>, and
+	possibly extensive debugging.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;false &#38;&#38; true || echo false         # false
+   2&nbsp;
+   3&nbsp;# Same result as
+   4&nbsp;( false &#38;&#38; true ) || echo false     # false
+   5&nbsp;# But NOT
+   6&nbsp;false &#38;&#38; ( true || echo false )     # (nothing echoed)
+   7&nbsp;
+   8&nbsp;#  Note left-to-right grouping and evaluation of statements,
+   9&nbsp;#+ since the logic operators "&#38;&#38;" and "||" have equal precedence.
+  10&nbsp;
+  11&nbsp;#  It's usually best to avoid such complexities.
+  12&nbsp;
+  13&nbsp;#  Thanks, S.C.</PRE
+></TD
+></TR
+></TABLE
+>
+	</P
+><P
+>See <A
+HREF="contributed-scripts.html#DAYSBETWEEN"
+>Example A-7</A
+> and <A
+HREF="fto.html#BROKENLINK"
+>Example 7-4</A
+> for illustrations of using <TT
+CLASS="USERINPUT"
+><B
+>and
+	/ or list</B
+></TT
+> constructs to test variables.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="aliases.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="arrays.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Aliases</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part5.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Arrays</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

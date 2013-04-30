@@ -1,0 +1,2563 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Arrays</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part5.html"><LINK
+REL="PREVIOUS"
+TITLE="List Constructs"
+HREF="list-cons.html"><LINK
+REL="NEXT"
+TITLE="Indirect References"
+HREF="ivr.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="list-cons.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="ivr.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="ARRAYS"
+></A
+>Chapter 27. Arrays</H1
+><P
+><A
+NAME="ARRAYREF"
+></A
+></P
+><P
+>Newer versions of Bash support one-dimensional arrays.
+        <A
+NAME="BRACKARRAY"
+></A
+>
+	Array elements may be initialized with the
+	<TT
+CLASS="USERINPUT"
+><B
+>variable[xx]</B
+></TT
+> notation. Alternatively,
+	a script may introduce the entire array by an explicit
+	<TT
+CLASS="USERINPUT"
+><B
+>declare -a variable</B
+></TT
+> statement. To
+	dereference (retrieve the contents of) an array element, use
+	<I
+CLASS="FIRSTTERM"
+>curly bracket</I
+> notation, that is,
+	<TT
+CLASS="USERINPUT"
+><B
+>${element[xx]}</B
+></TT
+>.</P
+><P
+><A
+NAME="ARRAYNOTATION"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX66"
+></A
+><P
+><B
+>Example 27-1. Simple array usage</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;
+   4&nbsp;area[11]=23
+   5&nbsp;area[13]=37
+   6&nbsp;area[51]=UFOs
+   7&nbsp;
+   8&nbsp;#  Array members need not be consecutive or contiguous.
+   9&nbsp;
+  10&nbsp;#  Some members of the array can be left uninitialized.
+  11&nbsp;#  Gaps in the array are okay.
+  12&nbsp;#  In fact, arrays with sparse data ("sparse arrays")
+  13&nbsp;#+ are useful in spreadsheet-processing software.
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;echo -n "area[11] = "
+  17&nbsp;echo ${area[11]}    #  {curly brackets} needed.
+  18&nbsp;
+  19&nbsp;echo -n "area[13] = "
+  20&nbsp;echo ${area[13]}
+  21&nbsp;
+  22&nbsp;echo "Contents of area[51] are ${area[51]}."
+  23&nbsp;
+  24&nbsp;# Contents of uninitialized array variable print blank (null variable).
+  25&nbsp;echo -n "area[43] = "
+  26&nbsp;echo ${area[43]}
+  27&nbsp;echo "(area[43] unassigned)"
+  28&nbsp;
+  29&nbsp;echo
+  30&nbsp;
+  31&nbsp;# Sum of two array variables assigned to third
+  32&nbsp;area[5]=`expr ${area[11]} + ${area[13]}`
+  33&nbsp;echo "area[5] = area[11] + area[13]"
+  34&nbsp;echo -n "area[5] = "
+  35&nbsp;echo ${area[5]}
+  36&nbsp;
+  37&nbsp;area[6]=`expr ${area[11]} + ${area[51]}`
+  38&nbsp;echo "area[6] = area[11] + area[51]"
+  39&nbsp;echo -n "area[6] = "
+  40&nbsp;echo ${area[6]}
+  41&nbsp;# This fails because adding an integer to a string is not permitted.
+  42&nbsp;
+  43&nbsp;echo; echo; echo
+  44&nbsp;
+  45&nbsp;# -----------------------------------------------------------------
+  46&nbsp;# Another array, "area2".
+  47&nbsp;# Another way of assigning array variables...
+  48&nbsp;# array_name=( XXX YYY ZZZ ... )
+  49&nbsp;
+  50&nbsp;area2=( zero one two three four )
+  51&nbsp;
+  52&nbsp;echo -n "area2[0] = "
+  53&nbsp;echo ${area2[0]}
+  54&nbsp;# Aha, zero-based indexing (first element of array is [0], not [1]).
+  55&nbsp;
+  56&nbsp;echo -n "area2[1] = "
+  57&nbsp;echo ${area2[1]}    # [1] is second element of array.
+  58&nbsp;# -----------------------------------------------------------------
+  59&nbsp;
+  60&nbsp;echo; echo; echo
+  61&nbsp;
+  62&nbsp;# -----------------------------------------------
+  63&nbsp;# Yet another array, "area3".
+  64&nbsp;# Yet another way of assigning array variables...
+  65&nbsp;# array_name=([xx]=XXX [yy]=YYY ...)
+  66&nbsp;
+  67&nbsp;area3=([17]=seventeen [24]=twenty-four)
+  68&nbsp;
+  69&nbsp;echo -n "area3[17] = "
+  70&nbsp;echo ${area3[17]}
+  71&nbsp;
+  72&nbsp;echo -n "area3[24] = "
+  73&nbsp;echo ${area3[24]}
+  74&nbsp;# -----------------------------------------------
+  75&nbsp;
+  76&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="ARRAYINIT0"
+></A
+></P
+><P
+>As we have seen, a convenient way of initializing an entire array
+        is the <TT
+CLASS="VARNAME"
+>array=( element1 element2 ... elementN )</TT
+>
+	notation.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;base64_charset=( {A..Z} {a..z} {0..9} + / = )
+   2&nbsp;               #  Using extended brace expansion
+   3&nbsp;               #+ to initialize the elements of the array.                
+   4&nbsp;               #  Excerpted from vladz's "base64.sh" script
+   5&nbsp;               #+ in the "Contributed Scripts" appendix.</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><A
+NAME="ARRAYOPSVARS"
+></A
+></P
+><TABLE
+CLASS="SIDEBAR"
+BORDER="1"
+CELLPADDING="5"
+><TR
+><TD
+><DIV
+CLASS="SIDEBAR"
+><A
+NAME="AEN18754"
+></A
+><P
+>Bash permits array operations on variables, even if
+        the variables are not explicitly declared as arrays.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;string=abcABC123ABCabc
+   2&nbsp;echo ${string[@]}               # abcABC123ABCabc
+   3&nbsp;echo ${string[*]}               # abcABC123ABCabc 
+   4&nbsp;echo ${string[0]}               # abcABC123ABCabc
+   5&nbsp;echo ${string[1]}               # No output!
+   6&nbsp;                                # Why?
+   7&nbsp;echo ${#string[@]}              # 1
+   8&nbsp;                                # One element in the array.
+   9&nbsp;                                # The string itself.
+  10&nbsp;
+  11&nbsp;# Thank you, Michael Zick, for pointing this out.</PRE
+></TD
+></TR
+></TABLE
+>
+      Once again this demonstrates that <A
+HREF="untyped.html#BVUNTYPED"
+>Bash
+      variables are untyped</A
+>.
+      </P
+></DIV
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="POEM"
+></A
+><P
+><B
+>Example 27-2. Formatting a poem</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# poem.sh: Pretty-prints one of the ABS Guide author's favorite poems.
+   3&nbsp;
+   4&nbsp;# Lines of the poem (single stanza).
+   5&nbsp;Line[1]="I do not know which to prefer,"
+   6&nbsp;Line[2]="The beauty of inflections"
+   7&nbsp;Line[3]="Or the beauty of innuendoes,"
+   8&nbsp;Line[4]="The blackbird whistling"
+   9&nbsp;Line[5]="Or just after."
+  10&nbsp;# Note that quoting permits embedding whitespace.
+  11&nbsp;
+  12&nbsp;# Attribution.
+  13&nbsp;Attrib[1]=" Wallace Stevens"
+  14&nbsp;Attrib[2]="\"Thirteen Ways of Looking at a Blackbird\""
+  15&nbsp;# This poem is in the Public Domain (copyright expired).
+  16&nbsp;
+  17&nbsp;echo
+  18&nbsp;
+  19&nbsp;tput bold   # Bold print.
+  20&nbsp;
+  21&nbsp;for index in 1 2 3 4 5    # Five lines.
+  22&nbsp;do
+  23&nbsp;  printf "     %s\n" "${Line[index]}"
+  24&nbsp;done
+  25&nbsp;
+  26&nbsp;for index in 1 2          # Two attribution lines.
+  27&nbsp;do
+  28&nbsp;  printf "          %s\n" "${Attrib[index]}"
+  29&nbsp;done
+  30&nbsp;
+  31&nbsp;tput sgr0   # Reset terminal.
+  32&nbsp;            # See 'tput' docs.
+  33&nbsp;
+  34&nbsp;echo
+  35&nbsp;
+  36&nbsp;exit 0
+  37&nbsp;
+  38&nbsp;# Exercise:
+  39&nbsp;# --------
+  40&nbsp;# Modify this script to pretty-print a poem from a text data file.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="ARRAYSYNTAX"
+></A
+></P
+><P
+>Array variables have a syntax all their own, and even
+	standard Bash commands and operators have special options adapted
+	for array use.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ARRAYOPS"
+></A
+><P
+><B
+>Example 27-3. Various array operations</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# array-ops.sh: More fun with arrays.
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;array=( zero one two three four five )
+   6&nbsp;# Element 0   1   2    3     4    5
+   7&nbsp;
+   8&nbsp;echo ${array[0]}       #  zero
+   9&nbsp;echo ${array:0}        #  zero
+  10&nbsp;                       #  Parameter expansion of first element,
+  11&nbsp;                       #+ starting at position # 0 (1st character).
+  12&nbsp;echo ${array:1}        #  ero
+  13&nbsp;                       #  Parameter expansion of first element,
+  14&nbsp;                       #+ starting at position # 1 (2nd character).
+  15&nbsp;
+  16&nbsp;echo "--------------"
+  17&nbsp;
+  18&nbsp;echo ${#array[0]}      #  4
+  19&nbsp;                       #  Length of first element of array.
+  20&nbsp;echo ${#array}         #  4
+  21&nbsp;                       #  Length of first element of array.
+  22&nbsp;                       #  (Alternate notation)
+  23&nbsp;
+  24&nbsp;echo ${#array[1]}      #  3
+  25&nbsp;                       #  Length of second element of array.
+  26&nbsp;                       #  Arrays in Bash have zero-based indexing.
+  27&nbsp;
+  28&nbsp;echo ${#array[*]}      #  6
+  29&nbsp;                       #  Number of elements in array.
+  30&nbsp;echo ${#array[@]}      #  6
+  31&nbsp;                       #  Number of elements in array.
+  32&nbsp;
+  33&nbsp;echo "--------------"
+  34&nbsp;
+  35&nbsp;array2=( [0]="first element" [1]="second element" [3]="fourth element" )
+  36&nbsp;#            ^     ^       ^     ^      ^       ^     ^      ^       ^
+  37&nbsp;# Quoting permits embedding whitespace within individual array elements.
+  38&nbsp;
+  39&nbsp;echo ${array2[0]}      # first element
+  40&nbsp;echo ${array2[1]}      # second element
+  41&nbsp;echo ${array2[2]}      #
+  42&nbsp;                       # Skipped in initialization, and therefore null.
+  43&nbsp;echo ${array2[3]}      # fourth element
+  44&nbsp;echo ${#array2[0]}     # 13    (length of first element)
+  45&nbsp;echo ${#array2[*]}     # 3     (number of elements in array)
+  46&nbsp;
+  47&nbsp;exit</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="ARRAYSTRINGOPS"
+></A
+></P
+><P
+>Many of the standard <A
+HREF="manipulatingvars.html#STRINGMANIP"
+>string
+       operations</A
+> work on arrays.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ARRAYSTROPS"
+></A
+><P
+><B
+>Example 27-4. String operations on arrays</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# array-strops.sh: String operations on arrays.
+   3&nbsp;
+   4&nbsp;# Script by Michael Zick.
+   5&nbsp;# Used in ABS Guide with permission.
+   6&nbsp;# Fixups: 05 May 08, 04 Aug 08.
+   7&nbsp;
+   8&nbsp;#  In general, any string operation using the ${name ... } notation
+   9&nbsp;#+ can be applied to all string elements in an array,
+  10&nbsp;#+ with the ${name[@] ... } or ${name[*] ...} notation.
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;arrayZ=( one two three four five five )
+  14&nbsp;
+  15&nbsp;echo
+  16&nbsp;
+  17&nbsp;# Trailing Substring Extraction
+  18&nbsp;echo ${arrayZ[@]:0}     # one two three four five five
+  19&nbsp;#                ^        All elements.
+  20&nbsp;
+  21&nbsp;echo ${arrayZ[@]:1}     # two three four five five
+  22&nbsp;#                ^        All elements following element[0].
+  23&nbsp;
+  24&nbsp;echo ${arrayZ[@]:1:2}   # two three
+  25&nbsp;#                  ^      Only the two elements after element[0].
+  26&nbsp;
+  27&nbsp;echo "---------"
+  28&nbsp;
+  29&nbsp;
+  30&nbsp;# Substring Removal
+  31&nbsp;
+  32&nbsp;# Removes shortest match from front of string(s).
+  33&nbsp;
+  34&nbsp;echo ${arrayZ[@]#f*r}   # one two three five five
+  35&nbsp;#               ^       # Applied to all elements of the array.
+  36&nbsp;                        # Matches "four" and removes it.
+  37&nbsp;
+  38&nbsp;# Longest match from front of string(s)
+  39&nbsp;echo ${arrayZ[@]##t*e}  # one two four five five
+  40&nbsp;#               ^^      # Applied to all elements of the array.
+  41&nbsp;                        # Matches "three" and removes it.
+  42&nbsp;
+  43&nbsp;# Shortest match from back of string(s)
+  44&nbsp;echo ${arrayZ[@]%h*e}   # one two t four five five
+  45&nbsp;#               ^       # Applied to all elements of the array.
+  46&nbsp;                        # Matches "hree" and removes it.
+  47&nbsp;
+  48&nbsp;# Longest match from back of string(s)
+  49&nbsp;echo ${arrayZ[@]%%t*e}  # one two four five five
+  50&nbsp;#               ^^      # Applied to all elements of the array.
+  51&nbsp;                        # Matches "three" and removes it.
+  52&nbsp;
+  53&nbsp;echo "----------------------"
+  54&nbsp;
+  55&nbsp;
+  56&nbsp;# Substring Replacement
+  57&nbsp;
+  58&nbsp;# Replace first occurrence of substring with replacement.
+  59&nbsp;echo ${arrayZ[@]/fiv/XYZ}   # one two three four XYZe XYZe
+  60&nbsp;#               ^           # Applied to all elements of the array.
+  61&nbsp;
+  62&nbsp;# Replace all occurrences of substring.
+  63&nbsp;echo ${arrayZ[@]//iv/YY}    # one two three four fYYe fYYe
+  64&nbsp;                            # Applied to all elements of the array.
+  65&nbsp;
+  66&nbsp;# Delete all occurrences of substring.
+  67&nbsp;# Not specifing a replacement defaults to 'delete' ...
+  68&nbsp;echo ${arrayZ[@]//fi/}      # one two three four ve ve
+  69&nbsp;#               ^^          # Applied to all elements of the array.
+  70&nbsp;
+  71&nbsp;# Replace front-end occurrences of substring.
+  72&nbsp;echo ${arrayZ[@]/#fi/XY}    # one two three four XYve XYve
+  73&nbsp;#                ^          # Applied to all elements of the array.
+  74&nbsp;
+  75&nbsp;# Replace back-end occurrences of substring.
+  76&nbsp;echo ${arrayZ[@]/%ve/ZZ}    # one two three four fiZZ fiZZ
+  77&nbsp;#                ^          # Applied to all elements of the array.
+  78&nbsp;
+  79&nbsp;echo ${arrayZ[@]/%o/XX}     # one twXX three four five five
+  80&nbsp;#                ^          # Why?
+  81&nbsp;
+  82&nbsp;echo "-----------------------------"
+  83&nbsp;
+  84&nbsp;
+  85&nbsp;replacement() {
+  86&nbsp;    echo -n "!!!"
+  87&nbsp;}
+  88&nbsp;
+  89&nbsp;echo ${arrayZ[@]/%e/$(replacement)}
+  90&nbsp;#                ^  ^^^^^^^^^^^^^^
+  91&nbsp;# on!!! two thre!!! four fiv!!! fiv!!!
+  92&nbsp;# The stdout of replacement() is the replacement string.
+  93&nbsp;# Q.E.D: The replacement action is, in effect, an 'assignment.'
+  94&nbsp;
+  95&nbsp;echo "------------------------------------"
+  96&nbsp;
+  97&nbsp;#  Accessing the "for-each":
+  98&nbsp;echo ${arrayZ[@]//*/$(replacement optional_arguments)}
+  99&nbsp;#                ^^ ^^^^^^^^^^^^^
+ 100&nbsp;# !!! !!! !!! !!! !!! !!!
+ 101&nbsp;
+ 102&nbsp;#  Now, if Bash would only pass the matched string
+ 103&nbsp;#+ to the function being called . . .
+ 104&nbsp;
+ 105&nbsp;echo
+ 106&nbsp;
+ 107&nbsp;exit 0
+ 108&nbsp;
+ 109&nbsp;#  Before reaching for a Big Hammer -- Perl, Python, or all the rest --
+ 110&nbsp;#  recall:
+ 111&nbsp;#    $( ... ) is command substitution.
+ 112&nbsp;#    A function runs as a sub-process.
+ 113&nbsp;#    A function writes its output (if echo-ed) to stdout.
+ 114&nbsp;#    Assignment, in conjunction with "echo" and command substitution,
+ 115&nbsp;#+   can read a function's stdout.
+ 116&nbsp;#    The name[@] notation specifies (the equivalent of) a "for-each"
+ 117&nbsp;#+   operation.
+ 118&nbsp;#  Bash is more powerful than you think!</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+HREF="commandsub.html#COMMANDSUBREF"
+>Command substitution</A
+> can
+        construct the individual elements of an array.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="SCRIPTARRAY"
+></A
+><P
+><B
+>Example 27-5. Loading the contents of a script into an array</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# script-array.sh: Loads this script into an array.
+   3&nbsp;# Inspired by an e-mail from Chris Martin (thanks!).
+   4&nbsp;
+   5&nbsp;script_contents=( $(cat "$0") )  #  Stores contents of this script ($0)
+   6&nbsp;                                 #+ in an array.
+   7&nbsp;
+   8&nbsp;for element in $(seq 0 $((${#script_contents[@]} - 1)))
+   9&nbsp;  do                #  ${#script_contents[@]}
+  10&nbsp;                    #+ gives number of elements in the array.
+  11&nbsp;                    #
+  12&nbsp;                    #  Question:
+  13&nbsp;                    #  Why is  seq 0  necessary?
+  14&nbsp;                    #  Try changing it to seq 1.
+  15&nbsp;  echo -n "${script_contents[$element]}"
+  16&nbsp;                    # List each field of this script on a single line.
+  17&nbsp;# echo -n "${script_contents[element]}" also works because of ${ ... }.
+  18&nbsp;  echo -n " -- "    # Use " -- " as a field separator.
+  19&nbsp;done
+  20&nbsp;
+  21&nbsp;echo
+  22&nbsp;
+  23&nbsp;exit 0
+  24&nbsp;
+  25&nbsp;# Exercise:
+  26&nbsp;# --------
+  27&nbsp;#  Modify this script so it lists itself
+  28&nbsp;#+ in its original format,
+  29&nbsp;#+ complete with whitespace, line breaks, etc.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>In an array context, some Bash <A
+HREF="internal.html#BUILTINREF"
+>builtins</A
+> have a slightly
+	altered meaning. <A
+NAME="ARRAYUNSET"
+></A
+>For example, <A
+HREF="internal.html#UNSETREF"
+>unset</A
+> deletes array elements, or even
+	an entire array.</P
+><P
+><A
+NAME="ARRAYSPECIALPROPS"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX67"
+></A
+><P
+><B
+>Example 27-6. Some special properties of arrays</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;declare -a colors
+   4&nbsp;#  All subsequent commands in this script will treat
+   5&nbsp;#+ the variable "colors" as an array.
+   6&nbsp;
+   7&nbsp;echo "Enter your favorite colors (separated from each other by a space)."
+   8&nbsp;
+   9&nbsp;read -a colors    # Enter at least 3 colors to demonstrate features below.
+  10&nbsp;#  Special option to 'read' command,
+  11&nbsp;#+ allowing assignment of elements in an array.
+  12&nbsp;
+  13&nbsp;echo
+  14&nbsp;
+  15&nbsp;element_count=${#colors[@]}
+  16&nbsp;# Special syntax to extract number of elements in array.
+  17&nbsp;#     element_count=${#colors[*]} works also.
+  18&nbsp;#
+  19&nbsp;#  The "@" variable allows word splitting within quotes
+  20&nbsp;#+ (extracts variables separated by whitespace).
+  21&nbsp;#
+  22&nbsp;#  This corresponds to the behavior of "$@" and "$*"
+  23&nbsp;#+ in positional parameters. 
+  24&nbsp;
+  25&nbsp;index=0
+  26&nbsp;
+  27&nbsp;while [ "$index" -lt "$element_count" ]
+  28&nbsp;do    # List all the elements in the array.
+  29&nbsp;  echo ${colors[$index]}
+  30&nbsp;  #    ${colors[index]} also works because it's within ${ ... } brackets.
+  31&nbsp;  let "index = $index + 1"
+  32&nbsp;  # Or:
+  33&nbsp;  #    ((index++))
+  34&nbsp;done
+  35&nbsp;# Each array element listed on a separate line.
+  36&nbsp;# If this is not desired, use  echo -n "${colors[$index]} "
+  37&nbsp;#
+  38&nbsp;# Doing it with a "for" loop instead:
+  39&nbsp;#   for i in "${colors[@]}"
+  40&nbsp;#   do
+  41&nbsp;#     echo "$i"
+  42&nbsp;#   done
+  43&nbsp;# (Thanks, S.C.)
+  44&nbsp;
+  45&nbsp;echo
+  46&nbsp;
+  47&nbsp;# Again, list all the elements in the array, but using a more elegant method.
+  48&nbsp;  echo ${colors[@]}          # echo ${colors[*]} also works.
+  49&nbsp;
+  50&nbsp;echo
+  51&nbsp;
+  52&nbsp;# The "unset" command deletes elements of an array, or entire array.
+  53&nbsp;unset colors[1]              # Remove 2nd element of array.
+  54&nbsp;                             # Same effect as   colors[1]=
+  55&nbsp;echo  ${colors[@]}           # List array again, missing 2nd element.
+  56&nbsp;
+  57&nbsp;unset colors                 # Delete entire array.
+  58&nbsp;                             #  unset colors[*] and
+  59&nbsp;                             #+ unset colors[@] also work.
+  60&nbsp;echo; echo -n "Colors gone."			   
+  61&nbsp;echo ${colors[@]}            # List array again, now empty.
+  62&nbsp;
+  63&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="ARRAYNUMELEMENTS"
+></A
+></P
+><P
+>As seen in the previous example, either
+	<B
+CLASS="COMMAND"
+>${array_name[@]}</B
+> or
+	<B
+CLASS="COMMAND"
+>${array_name[*]}</B
+> refers to
+	<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all</I
+></SPAN
+> the elements of the array.
+	Similarly, to get a count of the number of elements in an
+	array, use either <B
+CLASS="COMMAND"
+>${#array_name[@]}</B
+>
+	or <B
+CLASS="COMMAND"
+>${#array_name[*]}</B
+>.
+	<B
+CLASS="COMMAND"
+>${#array_name}</B
+> is the length (number of
+	characters) of <B
+CLASS="COMMAND"
+>${array_name[0]}</B
+>, the first
+	element of the array.</P
+><P
+><A
+NAME="EMPTYARRAY0"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EMPTYARRAY"
+></A
+><P
+><B
+>Example 27-7. Of empty arrays and empty elements</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# empty-array.sh
+   3&nbsp;
+   4&nbsp;#  Thanks to Stephane Chazelas for the original example,
+   5&nbsp;#+ and to Michael Zick and Omair Eshkenazi, for extending it.
+   6&nbsp;#  And to Nathan Coulter for clarifications and corrections.
+   7&nbsp;
+   8&nbsp;
+   9&nbsp;# An empty array is not the same as an array with empty elements.
+  10&nbsp;
+  11&nbsp;  array0=( first second third )
+  12&nbsp;  array1=( '' )   # "array1" consists of one empty element.
+  13&nbsp;  array2=( )      # No elements . . . "array2" is empty.
+  14&nbsp;  array3=(   )    # What about this array?
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;echo
+  18&nbsp;ListArray()
+  19&nbsp;{
+  20&nbsp;echo
+  21&nbsp;echo "Elements in array0:  ${array0[@]}"
+  22&nbsp;echo "Elements in array1:  ${array1[@]}"
+  23&nbsp;echo "Elements in array2:  ${array2[@]}"
+  24&nbsp;echo "Elements in array3:  ${array3[@]}"
+  25&nbsp;echo
+  26&nbsp;echo "Length of first element in array0 = ${#array0}"
+  27&nbsp;echo "Length of first element in array1 = ${#array1}"
+  28&nbsp;echo "Length of first element in array2 = ${#array2}"
+  29&nbsp;echo "Length of first element in array3 = ${#array3}"
+  30&nbsp;echo
+  31&nbsp;echo "Number of elements in array0 = ${#array0[*]}"  # 3
+  32&nbsp;echo "Number of elements in array1 = ${#array1[*]}"  # 1  (Surprise!)
+  33&nbsp;echo "Number of elements in array2 = ${#array2[*]}"  # 0
+  34&nbsp;echo "Number of elements in array3 = ${#array3[*]}"  # 0
+  35&nbsp;}
+  36&nbsp;
+  37&nbsp;# ===================================================================
+  38&nbsp;
+  39&nbsp;ListArray
+  40&nbsp;
+  41&nbsp;# Try extending those arrays.
+  42&nbsp;
+  43&nbsp;# Adding an element to an array.
+  44&nbsp;array0=( "${array0[@]}" "new1" )
+  45&nbsp;array1=( "${array1[@]}" "new1" )
+  46&nbsp;array2=( "${array2[@]}" "new1" )
+  47&nbsp;array3=( "${array3[@]}" "new1" )
+  48&nbsp;
+  49&nbsp;ListArray
+  50&nbsp;
+  51&nbsp;# or
+  52&nbsp;array0[${#array0[*]}]="new2"
+  53&nbsp;array1[${#array1[*]}]="new2"
+  54&nbsp;array2[${#array2[*]}]="new2"
+  55&nbsp;array3[${#array3[*]}]="new2"
+  56&nbsp;
+  57&nbsp;ListArray
+  58&nbsp;
+  59&nbsp;# When extended as above, arrays are 'stacks' ...
+  60&nbsp;# Above is the 'push' ...
+  61&nbsp;# The stack 'height' is:
+  62&nbsp;height=${#array2[@]}
+  63&nbsp;echo
+  64&nbsp;echo "Stack height for array2 = $height"
+  65&nbsp;
+  66&nbsp;# The 'pop' is:
+  67&nbsp;unset array2[${#array2[@]}-1]   #  Arrays are zero-based,
+  68&nbsp;height=${#array2[@]}            #+ which means first element has index 0.
+  69&nbsp;echo
+  70&nbsp;echo "POP"
+  71&nbsp;echo "New stack height for array2 = $height"
+  72&nbsp;
+  73&nbsp;ListArray
+  74&nbsp;
+  75&nbsp;# List only 2nd and 3rd elements of array0.
+  76&nbsp;from=1		    # Zero-based numbering.
+  77&nbsp;to=2
+  78&nbsp;array3=( ${array0[@]:1:2} )
+  79&nbsp;echo
+  80&nbsp;echo "Elements in array3:  ${array3[@]}"
+  81&nbsp;
+  82&nbsp;# Works like a string (array of characters).
+  83&nbsp;# Try some other "string" forms.
+  84&nbsp;
+  85&nbsp;# Replacement:
+  86&nbsp;array4=( ${array0[@]/second/2nd} )
+  87&nbsp;echo
+  88&nbsp;echo "Elements in array4:  ${array4[@]}"
+  89&nbsp;
+  90&nbsp;# Replace all matching wildcarded string.
+  91&nbsp;array5=( ${array0[@]//new?/old} )
+  92&nbsp;echo
+  93&nbsp;echo "Elements in array5:  ${array5[@]}"
+  94&nbsp;
+  95&nbsp;# Just when you are getting the feel for this . . .
+  96&nbsp;array6=( ${array0[@]#*new} )
+  97&nbsp;echo # This one might surprise you.
+  98&nbsp;echo "Elements in array6:  ${array6[@]}"
+  99&nbsp;
+ 100&nbsp;array7=( ${array0[@]#new1} )
+ 101&nbsp;echo # After array6 this should not be a surprise.
+ 102&nbsp;echo "Elements in array7:  ${array7[@]}"
+ 103&nbsp;
+ 104&nbsp;# Which looks a lot like . . .
+ 105&nbsp;array8=( ${array0[@]/new1/} )
+ 106&nbsp;echo
+ 107&nbsp;echo "Elements in array8:  ${array8[@]}"
+ 108&nbsp;
+ 109&nbsp;#  So what can one say about this?
+ 110&nbsp;
+ 111&nbsp;#  The string operations are performed on
+ 112&nbsp;#+ each of the elements in var[@] in succession.
+ 113&nbsp;#  Therefore : Bash supports string vector operations.
+ 114&nbsp;#  If the result is a zero length string,
+ 115&nbsp;#+ that element disappears in the resulting assignment.
+ 116&nbsp;#  However, if the expansion is in quotes, the null elements remain.
+ 117&nbsp;
+ 118&nbsp;#  Michael Zick:    Question, are those strings hard or soft quotes?
+ 119&nbsp;#  Nathan Coulter:  There is no such thing as "soft quotes."
+ 120&nbsp;#!    What's really happening is that
+ 121&nbsp;#!+   the pattern matching happens after
+ 122&nbsp;#!+   all the other expansions of [word]
+ 123&nbsp;#!+   in cases like ${parameter#word}.
+ 124&nbsp;
+ 125&nbsp;
+ 126&nbsp;zap='new*'
+ 127&nbsp;array9=( ${array0[@]/$zap/} )
+ 128&nbsp;echo
+ 129&nbsp;echo "Number of elements in array9:  ${#array9[@]}"
+ 130&nbsp;array9=( "${array0[@]/$zap/}" )
+ 131&nbsp;echo "Elements in array9:  ${array9[@]}"
+ 132&nbsp;# This time the null elements remain.
+ 133&nbsp;echo "Number of elements in array9:  ${#array9[@]}"
+ 134&nbsp;
+ 135&nbsp;
+ 136&nbsp;# Just when you thought you were still in Kansas . . .
+ 137&nbsp;array10=( ${array0[@]#$zap} )
+ 138&nbsp;echo
+ 139&nbsp;echo "Elements in array10:  ${array10[@]}"
+ 140&nbsp;# But, the asterisk in zap won't be interpreted if quoted.
+ 141&nbsp;array10=( ${array0[@]#"$zap"} )
+ 142&nbsp;echo
+ 143&nbsp;echo "Elements in array10:  ${array10[@]}"
+ 144&nbsp;# Well, maybe we _are_ still in Kansas . . .
+ 145&nbsp;# (Revisions to above code block by Nathan Coulter.)
+ 146&nbsp;
+ 147&nbsp;
+ 148&nbsp;#  Compare array7 with array10.
+ 149&nbsp;#  Compare array8 with array9.
+ 150&nbsp;
+ 151&nbsp;#  Reiterating: No such thing as soft quotes!
+ 152&nbsp;#  Nathan Coulter explains:
+ 153&nbsp;#  Pattern matching of 'word' in ${parameter#word} is done after
+ 154&nbsp;#+ parameter expansion and *before* quote removal.
+ 155&nbsp;#  In the normal case, pattern matching is done *after* quote removal.
+ 156&nbsp; 
+ 157&nbsp;exit</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>The relationship of <B
+CLASS="COMMAND"
+>${array_name[@]}</B
+>
+	and <B
+CLASS="COMMAND"
+>${array_name[*]}</B
+> is analogous to that
+	between <A
+HREF="variables2.html#APPREF"
+>$@ and $*</A
+>. This powerful
+	array notation has a number of uses.</P
+><P
+><A
+NAME="COPYARRAY0"
+></A
+></P
+><P
+>      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Copying an array.
+   2&nbsp;array2=( "${array1[@]}" )
+   3&nbsp;# or
+   4&nbsp;array2="${array1[@]}"
+   5&nbsp;#
+   6&nbsp;#  However, this fails with "sparse" arrays,
+   7&nbsp;#+ arrays with holes (missing elements) in them,
+   8&nbsp;#+ as Jochen DeSmet points out.
+   9&nbsp;# ------------------------------------------
+  10&nbsp;  array1[0]=0
+  11&nbsp;# array1[1] not assigned
+  12&nbsp;  array1[2]=2
+  13&nbsp;  array2=( "${array1[@]}" )       # Copy it?
+  14&nbsp;
+  15&nbsp;echo ${array2[0]}      # 0
+  16&nbsp;echo ${array2[2]}      # (null), should be 2
+  17&nbsp;# ------------------------------------------
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;
+  21&nbsp;# Adding an element to an array.
+  22&nbsp;array=( "${array[@]}" "new element" )
+  23&nbsp;# or
+  24&nbsp;array[${#array[*]}]="new element"
+  25&nbsp;
+  26&nbsp;# Thanks, S.C.</PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+><P
+><A
+NAME="ARRAYINITCS"
+></A
+></P
+><DIV
+CLASS="TIP"
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/tip.png"
+HSPACE="5"
+ALT="Tip"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The <B
+CLASS="COMMAND"
+>array=( element1 element2 ... elementN )</B
+>
+	initialization operation, with the help of <A
+HREF="commandsub.html#COMMANDSUBREF"
+>command substitution</A
+>, makes it
+	possible to load the contents of a text file into an array.</P
+><P
+>  	
+      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;filename=sample_file
+   4&nbsp;
+   5&nbsp;#            cat sample_file
+   6&nbsp;#
+   7&nbsp;#            1 a b c
+   8&nbsp;#            2 d e fg
+   9&nbsp;
+  10&nbsp;
+  11&nbsp;declare -a array1
+  12&nbsp;
+  13&nbsp;array1=( `cat "$filename"`)                #  Loads contents
+  14&nbsp;#         List file to stdout              #+ of $filename into array1.
+  15&nbsp;#
+  16&nbsp;#  array1=( `cat "$filename" | tr '\n' ' '`)
+  17&nbsp;#                            change linefeeds in file to spaces. 
+  18&nbsp;#  Not necessary because Bash does word splitting,
+  19&nbsp;#+ changing linefeeds to spaces.
+  20&nbsp;
+  21&nbsp;echo ${array1[@]}            # List the array.
+  22&nbsp;#                              1 a b c 2 d e fg
+  23&nbsp;#
+  24&nbsp;#  Each whitespace-separated "word" in the file
+  25&nbsp;#+ has been assigned to an element of the array.
+  26&nbsp;
+  27&nbsp;element_count=${#array1[*]}
+  28&nbsp;echo $element_count          # 8</PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Clever scripting makes it possible to add array operations.</P
+><P
+><A
+NAME="ARRAYASSIGN0"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ARRAYASSIGN"
+></A
+><P
+><B
+>Example 27-8. Initializing arrays</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#! /bin/bash
+   2&nbsp;# array-assign.bash
+   3&nbsp;
+   4&nbsp;#  Array operations are Bash-specific,
+   5&nbsp;#+ hence the ".bash" in the script name.
+   6&nbsp;
+   7&nbsp;# Copyright (c) Michael S. Zick, 2003, All rights reserved.
+   8&nbsp;# License: Unrestricted reuse in any form, for any purpose.
+   9&nbsp;# Version: $ID$
+  10&nbsp;#
+  11&nbsp;# Clarification and additional comments by William Park.
+  12&nbsp;
+  13&nbsp;#  Based on an example provided by Stephane Chazelas
+  14&nbsp;#+ which appeared in an earlier version of the
+  15&nbsp;#+ Advanced Bash Scripting Guide.
+  16&nbsp;
+  17&nbsp;# Output format of the 'times' command:
+  18&nbsp;# User CPU &#60;space&#62; System CPU
+  19&nbsp;# User CPU of dead children &#60;space&#62; System CPU of dead children
+  20&nbsp;
+  21&nbsp;#  Bash has two versions of assigning all elements of an array
+  22&nbsp;#+ to a new array variable.
+  23&nbsp;#  Both drop 'null reference' elements
+  24&nbsp;#+ in Bash versions 2.04 and later.
+  25&nbsp;#  An additional array assignment that maintains the relationship of
+  26&nbsp;#+ [subscript]=value for arrays may be added to newer versions.
+  27&nbsp;
+  28&nbsp;#  Constructs a large array using an internal command,
+  29&nbsp;#+ but anything creating an array of several thousand elements
+  30&nbsp;#+ will do just fine.
+  31&nbsp;
+  32&nbsp;declare -a bigOne=( /dev/* )  # All the files in /dev . . .
+  33&nbsp;echo
+  34&nbsp;echo 'Conditions: Unquoted, default IFS, All-Elements-Of'
+  35&nbsp;echo "Number of elements in array is ${#bigOne[@]}"
+  36&nbsp;
+  37&nbsp;# set -vx
+  38&nbsp;
+  39&nbsp;
+  40&nbsp;
+  41&nbsp;echo
+  42&nbsp;echo '- - testing: =( ${array[@]} ) - -'
+  43&nbsp;times
+  44&nbsp;declare -a bigTwo=( ${bigOne[@]} )
+  45&nbsp;# Note parens:    ^              ^
+  46&nbsp;times
+  47&nbsp;
+  48&nbsp;
+  49&nbsp;echo
+  50&nbsp;echo '- - testing: =${array[@]} - -'
+  51&nbsp;times
+  52&nbsp;declare -a bigThree=${bigOne[@]}
+  53&nbsp;# No parentheses this time.
+  54&nbsp;times
+  55&nbsp;
+  56&nbsp;#  Comparing the numbers shows that the second form, pointed out
+  57&nbsp;#+ by Stephane Chazelas, is faster.
+  58&nbsp;#
+  59&nbsp;#  As William Park explains:
+  60&nbsp;#+ The bigTwo array assigned element by element (because of parentheses),
+  61&nbsp;#+ whereas bigThree assigned as a single string.
+  62&nbsp;#  So, in essence, you have:
+  63&nbsp;#                   bigTwo=( [0]="..." [1]="..." [2]="..." ... )
+  64&nbsp;#                   bigThree=( [0]="... ... ..." )
+  65&nbsp;#
+  66&nbsp;#  Verify this by:  echo ${bigTwo[0]}
+  67&nbsp;#                   echo ${bigThree[0]}
+  68&nbsp;
+  69&nbsp;
+  70&nbsp;#  I will continue to use the first form in my example descriptions
+  71&nbsp;#+ because I think it is a better illustration of what is happening.
+  72&nbsp;
+  73&nbsp;#  The reusable portions of my examples will actual contain
+  74&nbsp;#+ the second form where appropriate because of the speedup.
+  75&nbsp;
+  76&nbsp;# MSZ: Sorry about that earlier oversight folks.
+  77&nbsp;
+  78&nbsp;
+  79&nbsp;#  Note:
+  80&nbsp;#  ----
+  81&nbsp;#  The "declare -a" statements in lines 32 and 44
+  82&nbsp;#+ are not strictly necessary, since it is implicit
+  83&nbsp;#+ in the  Array=( ... )  assignment form.
+  84&nbsp;#  However, eliminating these declarations slows down
+  85&nbsp;#+ the execution of the following sections of the script.
+  86&nbsp;#  Try it, and see.
+  87&nbsp;
+  88&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Adding a superfluous <B
+CLASS="COMMAND"
+>declare -a</B
+>
+	statement to an array declaration may speed up execution of
+	subsequent operations on the array.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+><A
+NAME="ARRAYAPPEND0"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="COPYARRAY"
+></A
+><P
+><B
+>Example 27-9. Copying and concatenating arrays</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#! /bin/bash
+   2&nbsp;# CopyArray.sh
+   3&nbsp;#
+   4&nbsp;# This script written by Michael Zick.
+   5&nbsp;# Used here with permission.
+   6&nbsp;
+   7&nbsp;#  How-To "Pass by Name &#38; Return by Name"
+   8&nbsp;#+ or "Building your own assignment statement".
+   9&nbsp;
+  10&nbsp;
+  11&nbsp;CpArray_Mac() {
+  12&nbsp;
+  13&nbsp;# Assignment Command Statement Builder
+  14&nbsp;
+  15&nbsp;    echo -n 'eval '
+  16&nbsp;    echo -n "$2"                    # Destination name
+  17&nbsp;    echo -n '=( ${'
+  18&nbsp;    echo -n "$1"                    # Source name
+  19&nbsp;    echo -n '[@]} )'
+  20&nbsp;
+  21&nbsp;# That could all be a single command.
+  22&nbsp;# Matter of style only.
+  23&nbsp;}
+  24&nbsp;
+  25&nbsp;declare -f CopyArray                # Function "Pointer"
+  26&nbsp;CopyArray=CpArray_Mac               # Statement Builder
+  27&nbsp;
+  28&nbsp;Hype()
+  29&nbsp;{
+  30&nbsp;
+  31&nbsp;# Hype the array named $1.
+  32&nbsp;# (Splice it together with array containing "Really Rocks".)
+  33&nbsp;# Return in array named $2.
+  34&nbsp;
+  35&nbsp;    local -a TMP
+  36&nbsp;    local -a hype=( Really Rocks )
+  37&nbsp;
+  38&nbsp;    $($CopyArray $1 TMP)
+  39&nbsp;    TMP=( ${TMP[@]} ${hype[@]} )
+  40&nbsp;    $($CopyArray TMP $2)
+  41&nbsp;}
+  42&nbsp;
+  43&nbsp;declare -a before=( Advanced Bash Scripting )
+  44&nbsp;declare -a after
+  45&nbsp;
+  46&nbsp;echo "Array Before = ${before[@]}"
+  47&nbsp;
+  48&nbsp;Hype before after
+  49&nbsp;
+  50&nbsp;echo "Array After = ${after[@]}"
+  51&nbsp;
+  52&nbsp;# Too much hype?
+  53&nbsp;
+  54&nbsp;echo "What ${after[@]:3:2}?"
+  55&nbsp;
+  56&nbsp;declare -a modest=( ${after[@]:2:1} ${after[@]:3:2} )
+  57&nbsp;#                    ---- substring extraction ----
+  58&nbsp;
+  59&nbsp;echo "Array Modest = ${modest[@]}"
+  60&nbsp;
+  61&nbsp;# What happened to 'before' ?
+  62&nbsp;
+  63&nbsp;echo "Array Before = ${before[@]}"
+  64&nbsp;
+  65&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ARRAYAPPEND"
+></A
+><P
+><B
+>Example 27-10. More on concatenating arrays</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#! /bin/bash
+   2&nbsp;# array-append.bash
+   3&nbsp;
+   4&nbsp;# Copyright (c) Michael S. Zick, 2003, All rights reserved.
+   5&nbsp;# License: Unrestricted reuse in any form, for any purpose.
+   6&nbsp;# Version: $ID$
+   7&nbsp;#
+   8&nbsp;# Slightly modified in formatting by M.C.
+   9&nbsp;
+  10&nbsp;
+  11&nbsp;# Array operations are Bash-specific.
+  12&nbsp;# Legacy UNIX /bin/sh lacks equivalents.
+  13&nbsp;
+  14&nbsp;
+  15&nbsp;#  Pipe the output of this script to 'more'
+  16&nbsp;#+ so it doesn't scroll off the terminal.
+  17&nbsp;#  Or, redirect output to a file.
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;declare -a array1=( zero1 one1 two1 )
+  21&nbsp;# Subscript packed.
+  22&nbsp;declare -a array2=( [0]=zero2 [2]=two2 [3]=three2 )
+  23&nbsp;# Subscript sparse -- [1] is not defined.
+  24&nbsp;
+  25&nbsp;echo
+  26&nbsp;echo '- Confirm that the array is really subscript sparse. -'
+  27&nbsp;echo "Number of elements: 4"        # Hard-coded for illustration.
+  28&nbsp;for (( i = 0 ; i &#60; 4 ; i++ ))
+  29&nbsp;do
+  30&nbsp;    echo "Element [$i]: ${array2[$i]}"
+  31&nbsp;done
+  32&nbsp;# See also the more general code example in basics-reviewed.bash.
+  33&nbsp;
+  34&nbsp;
+  35&nbsp;declare -a dest
+  36&nbsp;
+  37&nbsp;# Combine (append) two arrays into a third array.
+  38&nbsp;echo
+  39&nbsp;echo 'Conditions: Unquoted, default IFS, All-Elements-Of operator'
+  40&nbsp;echo '- Undefined elements not present, subscripts not maintained. -'
+  41&nbsp;# # The undefined elements do not exist; they are not being dropped.
+  42&nbsp;
+  43&nbsp;dest=( ${array1[@]} ${array2[@]} )
+  44&nbsp;# dest=${array1[@]}${array2[@]}     # Strange results, possibly a bug.
+  45&nbsp;
+  46&nbsp;# Now, list the result.
+  47&nbsp;echo
+  48&nbsp;echo '- - Testing Array Append - -'
+  49&nbsp;cnt=${#dest[@]}
+  50&nbsp;
+  51&nbsp;echo "Number of elements: $cnt"
+  52&nbsp;for (( i = 0 ; i &#60; cnt ; i++ ))
+  53&nbsp;do
+  54&nbsp;    echo "Element [$i]: ${dest[$i]}"
+  55&nbsp;done
+  56&nbsp;
+  57&nbsp;# Assign an array to a single array element (twice).
+  58&nbsp;dest[0]=${array1[@]}
+  59&nbsp;dest[1]=${array2[@]}
+  60&nbsp;
+  61&nbsp;# List the result.
+  62&nbsp;echo
+  63&nbsp;echo '- - Testing modified array - -'
+  64&nbsp;cnt=${#dest[@]}
+  65&nbsp;
+  66&nbsp;echo "Number of elements: $cnt"
+  67&nbsp;for (( i = 0 ; i &#60; cnt ; i++ ))
+  68&nbsp;do
+  69&nbsp;    echo "Element [$i]: ${dest[$i]}"
+  70&nbsp;done
+  71&nbsp;
+  72&nbsp;# Examine the modified second element.
+  73&nbsp;echo
+  74&nbsp;echo '- - Reassign and list second element - -'
+  75&nbsp;
+  76&nbsp;declare -a subArray=${dest[1]}
+  77&nbsp;cnt=${#subArray[@]}
+  78&nbsp;
+  79&nbsp;echo "Number of elements: $cnt"
+  80&nbsp;for (( i = 0 ; i &#60; cnt ; i++ ))
+  81&nbsp;do
+  82&nbsp;    echo "Element [$i]: ${subArray[$i]}"
+  83&nbsp;done
+  84&nbsp;
+  85&nbsp;#  The assignment of an entire array to a single element
+  86&nbsp;#+ of another array using the '=${ ... }' array assignment
+  87&nbsp;#+ has converted the array being assigned into a string,
+  88&nbsp;#+ with the elements separated by a space (the first character of IFS).
+  89&nbsp;
+  90&nbsp;# If the original elements didn't contain whitespace . . .
+  91&nbsp;# If the original array isn't subscript sparse . . .
+  92&nbsp;# Then we could get the original array structure back again.
+  93&nbsp;
+  94&nbsp;# Restore from the modified second element.
+  95&nbsp;echo
+  96&nbsp;echo '- - Listing restored element - -'
+  97&nbsp;
+  98&nbsp;declare -a subArray=( ${dest[1]} )
+  99&nbsp;cnt=${#subArray[@]}
+ 100&nbsp;
+ 101&nbsp;echo "Number of elements: $cnt"
+ 102&nbsp;for (( i = 0 ; i &#60; cnt ; i++ ))
+ 103&nbsp;do
+ 104&nbsp;    echo "Element [$i]: ${subArray[$i]}"
+ 105&nbsp;done
+ 106&nbsp;echo '- - Do not depend on this behavior. - -'
+ 107&nbsp;echo '- - This behavior is subject to change - -'
+ 108&nbsp;echo '- - in versions of Bash newer than version 2.05b - -'
+ 109&nbsp;
+ 110&nbsp;# MSZ: Sorry about any earlier confusion folks.
+ 111&nbsp;
+ 112&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>--</P
+><P
+>Arrays permit deploying old familiar algorithms as shell scripts.
+        Whether this is necessarily a good idea is left for the reader to
+	decide.</P
+><P
+><A
+NAME="BUBBLESORT"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="BUBBLE"
+></A
+><P
+><B
+>Example 27-11. The Bubble Sort</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# bubble.sh: Bubble sort, of sorts.
+   3&nbsp;
+   4&nbsp;# Recall the algorithm for a bubble sort. In this particular version...
+   5&nbsp;
+   6&nbsp;#  With each successive pass through the array to be sorted,
+   7&nbsp;#+ compare two adjacent elements, and swap them if out of order.
+   8&nbsp;#  At the end of the first pass, the "heaviest" element has sunk to bottom.
+   9&nbsp;#  At the end of the second pass, the next "heaviest" one has sunk next to bottom.
+  10&nbsp;#  And so forth.
+  11&nbsp;#  This means that each successive pass needs to traverse less of the array.
+  12&nbsp;#  You will therefore notice a speeding up in the printing of the later passes.
+  13&nbsp;
+  14&nbsp;
+  15&nbsp;exchange()
+  16&nbsp;{
+  17&nbsp;  # Swaps two members of the array.
+  18&nbsp;  local temp=${Countries[$1]} #  Temporary storage
+  19&nbsp;                              #+ for element getting swapped out.
+  20&nbsp;  Countries[$1]=${Countries[$2]}
+  21&nbsp;  Countries[$2]=$temp
+  22&nbsp;  
+  23&nbsp;  return
+  24&nbsp;}  
+  25&nbsp;
+  26&nbsp;declare -a Countries  #  Declare array,
+  27&nbsp;                      #+ optional here since it's initialized below.
+  28&nbsp;
+  29&nbsp;#  Is it permissable to split an array variable over multiple lines
+  30&nbsp;#+ using an escape (\)?
+  31&nbsp;#  Yes.
+  32&nbsp;
+  33&nbsp;Countries=(Netherlands Ukraine Zaire Turkey Russia Yemen Syria \
+  34&nbsp;Brazil Argentina Nicaragua Japan Mexico Venezuela Greece England \
+  35&nbsp;Israel Peru Canada Oman Denmark Wales France Kenya \
+  36&nbsp;Xanadu Qatar Liechtenstein Hungary)
+  37&nbsp;
+  38&nbsp;# "Xanadu" is the mythical place where, according to Coleridge,
+  39&nbsp;#+ Kubla Khan did a pleasure dome decree.
+  40&nbsp;
+  41&nbsp;
+  42&nbsp;clear                      # Clear the screen to start with. 
+  43&nbsp;
+  44&nbsp;echo "0: ${Countries[*]}"  # List entire array at pass 0.
+  45&nbsp;
+  46&nbsp;number_of_elements=${#Countries[@]}
+  47&nbsp;let "comparisons = $number_of_elements - 1"
+  48&nbsp;
+  49&nbsp;count=1 # Pass number.
+  50&nbsp;
+  51&nbsp;while [ "$comparisons" -gt 0 ]          # Beginning of outer loop
+  52&nbsp;do
+  53&nbsp;
+  54&nbsp;  index=0  # Reset index to start of array after each pass.
+  55&nbsp;
+  56&nbsp;  while [ "$index" -lt "$comparisons" ] # Beginning of inner loop
+  57&nbsp;  do
+  58&nbsp;    if [ ${Countries[$index]} \&#62; ${Countries[`expr $index + 1`]} ]
+  59&nbsp;    #  If out of order...
+  60&nbsp;    #  Recalling that \&#62; is ASCII comparison operator
+  61&nbsp;    #+ within single brackets.
+  62&nbsp;
+  63&nbsp;    #  if [[ ${Countries[$index]} &#62; ${Countries[`expr $index + 1`]} ]]
+  64&nbsp;    #+ also works.
+  65&nbsp;    then
+  66&nbsp;      exchange $index `expr $index + 1`  # Swap.
+  67&nbsp;    fi  
+  68&nbsp;    let "index += 1"  # Or,   index+=1   on Bash, ver. 3.1 or newer.
+  69&nbsp;  done # End of inner loop
+  70&nbsp;
+  71&nbsp;# ----------------------------------------------------------------------
+  72&nbsp;# Paulo Marcel Coelho Aragao suggests for-loops as a simpler altenative.
+  73&nbsp;#
+  74&nbsp;# for (( last = $number_of_elements - 1 ; last &#62; 0 ; last-- ))
+  75&nbsp;##                     Fix by C.Y. Hunt          ^   (Thanks!)
+  76&nbsp;# do
+  77&nbsp;#     for (( i = 0 ; i &#60; last ; i++ ))
+  78&nbsp;#     do
+  79&nbsp;#         [[ "${Countries[$i]}" &#62; "${Countries[$((i+1))]}" ]] \
+  80&nbsp;#             &#38;&#38; exchange $i $((i+1))
+  81&nbsp;#     done
+  82&nbsp;# done
+  83&nbsp;# ----------------------------------------------------------------------
+  84&nbsp;  
+  85&nbsp;
+  86&nbsp;let "comparisons -= 1" #  Since "heaviest" element bubbles to bottom,
+  87&nbsp;                       #+ we need do one less comparison each pass.
+  88&nbsp;
+  89&nbsp;echo
+  90&nbsp;echo "$count: ${Countries[@]}"  # Print resultant array at end of each pass.
+  91&nbsp;echo
+  92&nbsp;let "count += 1"                # Increment pass count.
+  93&nbsp;
+  94&nbsp;done                            # End of outer loop
+  95&nbsp;                                # All done.
+  96&nbsp;
+  97&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>--</P
+><P
+><A
+NAME="ARRAYNEST"
+></A
+></P
+><P
+>Is it possible to nest arrays within arrays?</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# "Nested" array.
+   3&nbsp;
+   4&nbsp;#  Michael Zick provided this example,
+   5&nbsp;#+ with corrections and clarifications by William Park.
+   6&nbsp;
+   7&nbsp;AnArray=( $(ls --inode --ignore-backups --almost-all \
+   8&nbsp;	--directory --full-time --color=none --time=status \
+   9&nbsp;	--sort=time -l ${PWD} ) )  # Commands and options.
+  10&nbsp;
+  11&nbsp;# Spaces are significant . . . and don't quote anything in the above.
+  12&nbsp;
+  13&nbsp;SubArray=( ${AnArray[@]:11:1}  ${AnArray[@]:6:5} )
+  14&nbsp;#  This array has six elements:
+  15&nbsp;#+     SubArray=( [0]=${AnArray[11]} [1]=${AnArray[6]} [2]=${AnArray[7]}
+  16&nbsp;#      [3]=${AnArray[8]} [4]=${AnArray[9]} [5]=${AnArray[10]} )
+  17&nbsp;#
+  18&nbsp;#  Arrays in Bash are (circularly) linked lists
+  19&nbsp;#+ of type string (char *).
+  20&nbsp;#  So, this isn't actually a nested array,
+  21&nbsp;#+ but it's functionally similar.
+  22&nbsp;
+  23&nbsp;echo "Current directory and date of last status change:"
+  24&nbsp;echo "${SubArray[@]}"
+  25&nbsp;
+  26&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>--</P
+><P
+>Embedded arrays in combination with <A
+HREF="bash2.html#VARREFNEW"
+>indirect references</A
+> create some fascinating
+	possibilities</P
+><P
+><A
+NAME="ARRAYINDIR"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EMBARR"
+></A
+><P
+><B
+>Example 27-12. Embedded arrays and indirect references</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# embedded-arrays.sh
+   3&nbsp;# Embedded arrays and indirect references.
+   4&nbsp;
+   5&nbsp;# This script by Dennis Leeuw.
+   6&nbsp;# Used with permission.
+   7&nbsp;# Modified by document author.
+   8&nbsp;
+   9&nbsp;
+  10&nbsp;ARRAY1=(
+  11&nbsp;        VAR1_1=value11
+  12&nbsp;        VAR1_2=value12
+  13&nbsp;        VAR1_3=value13
+  14&nbsp;)
+  15&nbsp;
+  16&nbsp;ARRAY2=(
+  17&nbsp;        VARIABLE="test"
+  18&nbsp;        STRING="VAR1=value1 VAR2=value2 VAR3=value3"
+  19&nbsp;        ARRAY21=${ARRAY1[*]}
+  20&nbsp;)       # Embed ARRAY1 within this second array.
+  21&nbsp;
+  22&nbsp;function print () {
+  23&nbsp;        OLD_IFS="$IFS"
+  24&nbsp;        IFS=$'\n'       #  To print each array element
+  25&nbsp;                        #+ on a separate line.
+  26&nbsp;        TEST1="ARRAY2[*]"
+  27&nbsp;        local ${!TEST1} # See what happens if you delete this line.
+  28&nbsp;        #  Indirect reference.
+  29&nbsp;	#  This makes the components of $TEST1
+  30&nbsp;	#+ accessible to this function.
+  31&nbsp;
+  32&nbsp;
+  33&nbsp;        #  Let's see what we've got so far.
+  34&nbsp;        echo
+  35&nbsp;        echo "\$TEST1 = $TEST1"       #  Just the name of the variable.
+  36&nbsp;        echo; echo
+  37&nbsp;        echo "{\$TEST1} = ${!TEST1}"  #  Contents of the variable.
+  38&nbsp;                                      #  That's what an indirect
+  39&nbsp;                                      #+ reference does.
+  40&nbsp;        echo
+  41&nbsp;        echo "-------------------------------------------"; echo
+  42&nbsp;        echo
+  43&nbsp;
+  44&nbsp;
+  45&nbsp;        # Print variable
+  46&nbsp;        echo "Variable VARIABLE: $VARIABLE"
+  47&nbsp;	
+  48&nbsp;        # Print a string element
+  49&nbsp;        IFS="$OLD_IFS"
+  50&nbsp;        TEST2="STRING[*]"
+  51&nbsp;        local ${!TEST2}      # Indirect reference (as above).
+  52&nbsp;        echo "String element VAR2: $VAR2 from STRING"
+  53&nbsp;
+  54&nbsp;        # Print an array element
+  55&nbsp;        TEST2="ARRAY21[*]"
+  56&nbsp;        local ${!TEST2}      # Indirect reference (as above).
+  57&nbsp;        echo "Array element VAR1_1: $VAR1_1 from ARRAY21"
+  58&nbsp;}
+  59&nbsp;
+  60&nbsp;print
+  61&nbsp;echo
+  62&nbsp;
+  63&nbsp;exit 0
+  64&nbsp;
+  65&nbsp;#   As the author of the script notes,
+  66&nbsp;#+ "you can easily expand it to create named-hashes in bash."
+  67&nbsp;#   (Difficult) exercise for the reader: implement this.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>--</P
+><P
+><A
+NAME="PRIMES0"
+></A
+></P
+><P
+>Arrays enable implementing a shell script version of the
+	<I
+CLASS="FIRSTTERM"
+>Sieve of Eratosthenes</I
+>. Of course, a
+	resource-intensive application of this nature should really be
+	written in a compiled language, such as C. It runs excruciatingly
+	slowly as a script.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX68"
+></A
+><P
+><B
+>Example 27-13. The Sieve of Eratosthenes</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# sieve.sh (ex68.sh)
+   3&nbsp;
+   4&nbsp;# Sieve of Eratosthenes
+   5&nbsp;# Ancient algorithm for finding prime numbers.
+   6&nbsp;
+   7&nbsp;#  This runs a couple of orders of magnitude slower
+   8&nbsp;#+ than the equivalent program written in C.
+   9&nbsp;
+  10&nbsp;LOWER_LIMIT=1       # Starting with 1.
+  11&nbsp;UPPER_LIMIT=1000    # Up to 1000.
+  12&nbsp;# (You may set this higher . . . if you have time on your hands.)
+  13&nbsp;
+  14&nbsp;PRIME=1
+  15&nbsp;NON_PRIME=0
+  16&nbsp;
+  17&nbsp;let SPLIT=UPPER_LIMIT/2
+  18&nbsp;# Optimization:
+  19&nbsp;# Need to test numbers only halfway to upper limit. Why?
+  20&nbsp;
+  21&nbsp;
+  22&nbsp;declare -a Primes
+  23&nbsp;# Primes[] is an array.
+  24&nbsp;
+  25&nbsp;
+  26&nbsp;initialize ()
+  27&nbsp;{
+  28&nbsp;# Initialize the array.
+  29&nbsp;
+  30&nbsp;i=$LOWER_LIMIT
+  31&nbsp;until [ "$i" -gt "$UPPER_LIMIT" ]
+  32&nbsp;do
+  33&nbsp;  Primes[i]=$PRIME
+  34&nbsp;  let "i += 1"
+  35&nbsp;done
+  36&nbsp;#  Assume all array members guilty (prime)
+  37&nbsp;#+ until proven innocent.
+  38&nbsp;}
+  39&nbsp;
+  40&nbsp;print_primes ()
+  41&nbsp;{
+  42&nbsp;# Print out the members of the Primes[] array tagged as prime.
+  43&nbsp;
+  44&nbsp;i=$LOWER_LIMIT
+  45&nbsp;
+  46&nbsp;until [ "$i" -gt "$UPPER_LIMIT" ]
+  47&nbsp;do
+  48&nbsp;
+  49&nbsp;  if [ "${Primes[i]}" -eq "$PRIME" ]
+  50&nbsp;  then
+  51&nbsp;    printf "%8d" $i
+  52&nbsp;    # 8 spaces per number gives nice, even columns.
+  53&nbsp;  fi
+  54&nbsp;  
+  55&nbsp;  let "i += 1"
+  56&nbsp;  
+  57&nbsp;done
+  58&nbsp;
+  59&nbsp;}
+  60&nbsp;
+  61&nbsp;sift () # Sift out the non-primes.
+  62&nbsp;{
+  63&nbsp;
+  64&nbsp;let i=$LOWER_LIMIT+1
+  65&nbsp;# Let's start with 2.
+  66&nbsp;
+  67&nbsp;until [ "$i" -gt "$UPPER_LIMIT" ]
+  68&nbsp;do
+  69&nbsp;
+  70&nbsp;if [ "${Primes[i]}" -eq "$PRIME" ]
+  71&nbsp;# Don't bother sieving numbers already sieved (tagged as non-prime).
+  72&nbsp;then
+  73&nbsp;
+  74&nbsp;  t=$i
+  75&nbsp;
+  76&nbsp;  while [ "$t" -le "$UPPER_LIMIT" ]
+  77&nbsp;  do
+  78&nbsp;    let "t += $i "
+  79&nbsp;    Primes[t]=$NON_PRIME
+  80&nbsp;    # Tag as non-prime all multiples.
+  81&nbsp;  done
+  82&nbsp;
+  83&nbsp;fi  
+  84&nbsp;
+  85&nbsp;  let "i += 1"
+  86&nbsp;done  
+  87&nbsp;
+  88&nbsp;
+  89&nbsp;}
+  90&nbsp;
+  91&nbsp;
+  92&nbsp;# ==============================================
+  93&nbsp;# main ()
+  94&nbsp;# Invoke the functions sequentially.
+  95&nbsp;initialize
+  96&nbsp;sift
+  97&nbsp;print_primes
+  98&nbsp;# This is what they call structured programming.
+  99&nbsp;# ==============================================
+ 100&nbsp;
+ 101&nbsp;echo
+ 102&nbsp;
+ 103&nbsp;exit 0
+ 104&nbsp;
+ 105&nbsp;
+ 106&nbsp;
+ 107&nbsp;# -------------------------------------------------------- #
+ 108&nbsp;# Code below line will not execute, because of 'exit.'
+ 109&nbsp;
+ 110&nbsp;#  This improved version of the Sieve, by Stephane Chazelas,
+ 111&nbsp;#+ executes somewhat faster.
+ 112&nbsp;
+ 113&nbsp;# Must invoke with command-line argument (limit of primes).
+ 114&nbsp;
+ 115&nbsp;UPPER_LIMIT=$1                  # From command-line.
+ 116&nbsp;let SPLIT=UPPER_LIMIT/2         # Halfway to max number.
+ 117&nbsp;
+ 118&nbsp;Primes=( '' $(seq $UPPER_LIMIT) )
+ 119&nbsp;
+ 120&nbsp;i=1
+ 121&nbsp;until (( ( i += 1 ) &#62; SPLIT ))  # Need check only halfway.
+ 122&nbsp;do
+ 123&nbsp;  if [[ -n ${Primes[i]} ]]
+ 124&nbsp;  then
+ 125&nbsp;    t=$i
+ 126&nbsp;    until (( ( t += i ) &#62; UPPER_LIMIT ))
+ 127&nbsp;    do
+ 128&nbsp;      Primes[t]=
+ 129&nbsp;    done
+ 130&nbsp;  fi  
+ 131&nbsp;done  
+ 132&nbsp;echo ${Primes[*]}
+ 133&nbsp;
+ 134&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX68A"
+></A
+><P
+><B
+>Example 27-14. The Sieve of Eratosthenes, Optimized</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Optimized Sieve of Eratosthenes
+   3&nbsp;# Script by Jared Martin, with very minor changes by ABS Guide author.
+   4&nbsp;# Used in ABS Guide with permission (thanks!).
+   5&nbsp;
+   6&nbsp;# Based on script in Advanced Bash Scripting Guide.
+   7&nbsp;# http://tldp.org/LDP/abs/html/arrays.html#PRIMES0 (ex68.sh).
+   8&nbsp;
+   9&nbsp;# http://www.cs.hmc.edu/~oneill/papers/Sieve-JFP.pdf (reference)
+  10&nbsp;# Check results against http://primes.utm.edu/lists/small/1000.txt
+  11&nbsp;
+  12&nbsp;# Necessary but not sufficient would be, e.g.,
+  13&nbsp;#     (($(sieve 7919 | wc -w) == 1000)) &#38;&#38; echo "7919 is the 1000th prime"
+  14&nbsp;
+  15&nbsp;UPPER_LIMIT=${1:?"Need an upper limit of primes to search."}
+  16&nbsp;
+  17&nbsp;Primes=( '' $(seq ${UPPER_LIMIT}) )
+  18&nbsp;
+  19&nbsp;typeset -i i t
+  20&nbsp;Primes[i=1]='' # 1 is not a prime.
+  21&nbsp;until (( ( i += 1 ) &#62; (${UPPER_LIMIT}/i) ))  # Need check only ith-way.
+  22&nbsp;  do                                         # Why?
+  23&nbsp;    if ((${Primes[t=i*(i-1), i]}))
+  24&nbsp;    # Obscure, but instructive, use of arithmetic expansion in subscript.
+  25&nbsp;    then
+  26&nbsp;      until (( ( t += i ) &#62; ${UPPER_LIMIT} ))
+  27&nbsp;        do Primes[t]=; done
+  28&nbsp;    fi
+  29&nbsp;  done
+  30&nbsp;
+  31&nbsp;# echo ${Primes[*]}
+  32&nbsp;echo   # Change to original script for pretty-printing (80-col. display).
+  33&nbsp;printf "%8d" ${Primes[*]}
+  34&nbsp;echo; echo
+  35&nbsp;
+  36&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Compare these array-based prime number generators with
+        alternatives that do not use arrays, <A
+HREF="contributed-scripts.html#PRIMES"
+>Example A-15</A
+>,
+        and <A
+HREF="mathc.html#PRIMES2"
+>Example 16-46</A
+>.</P
+><P
+>--</P
+><P
+>Arrays lend themselves, to some extent, to emulating data
+        structures for which Bash has no native support.</P
+><P
+><A
+NAME="STACKEX0"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="STACKEX"
+></A
+><P
+><B
+>Example 27-15. Emulating a push-down stack</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# stack.sh: push-down stack simulation
+   3&nbsp;
+   4&nbsp;#  Similar to the CPU stack, a push-down stack stores data items
+   5&nbsp;#+ sequentially, but releases them in reverse order, last-in first-out.
+   6&nbsp;
+   7&nbsp;
+   8&nbsp;BP=100            #  Base Pointer of stack array.
+   9&nbsp;                  #  Begin at element 100.
+  10&nbsp;
+  11&nbsp;SP=$BP            #  Stack Pointer.
+  12&nbsp;                  #  Initialize it to "base" (bottom) of stack.
+  13&nbsp;
+  14&nbsp;Data=             #  Contents of stack location.  
+  15&nbsp;                  #  Must use global variable,
+  16&nbsp;                  #+ because of limitation on function return range.
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;                  # 100     Base pointer       &#60;-- Base Pointer
+  20&nbsp;                  #  99     First data item
+  21&nbsp;                  #  98     Second data item
+  22&nbsp;                  # ...     More data
+  23&nbsp;                  #         Last data item     &#60;-- Stack pointer
+  24&nbsp;
+  25&nbsp;
+  26&nbsp;declare -a stack
+  27&nbsp;
+  28&nbsp;
+  29&nbsp;push()            # Push item on stack.
+  30&nbsp;{
+  31&nbsp;if [ -z "$1" ]    # Nothing to push?
+  32&nbsp;then
+  33&nbsp;  return
+  34&nbsp;fi
+  35&nbsp;
+  36&nbsp;let "SP -= 1"     # Bump stack pointer.
+  37&nbsp;stack[$SP]=$1
+  38&nbsp;
+  39&nbsp;return
+  40&nbsp;}
+  41&nbsp;
+  42&nbsp;pop()                    # Pop item off stack.
+  43&nbsp;{
+  44&nbsp;Data=                    # Empty out data item.
+  45&nbsp;
+  46&nbsp;if [ "$SP" -eq "$BP" ]   # Stack empty?
+  47&nbsp;then
+  48&nbsp;  return
+  49&nbsp;fi                       #  This also keeps SP from getting past 100,
+  50&nbsp;                         #+ i.e., prevents a runaway stack.
+  51&nbsp;
+  52&nbsp;Data=${stack[$SP]}
+  53&nbsp;let "SP += 1"            # Bump stack pointer.
+  54&nbsp;return
+  55&nbsp;}
+  56&nbsp;
+  57&nbsp;status_report()          # Find out what's happening.
+  58&nbsp;{
+  59&nbsp;echo "-------------------------------------"
+  60&nbsp;echo "REPORT"
+  61&nbsp;echo "Stack Pointer = $SP"
+  62&nbsp;echo "Just popped \""$Data"\" off the stack."
+  63&nbsp;echo "-------------------------------------"
+  64&nbsp;echo
+  65&nbsp;}
+  66&nbsp;
+  67&nbsp;
+  68&nbsp;# =======================================================
+  69&nbsp;# Now, for some fun.
+  70&nbsp;
+  71&nbsp;echo
+  72&nbsp;
+  73&nbsp;# See if you can pop anything off empty stack.
+  74&nbsp;pop
+  75&nbsp;status_report
+  76&nbsp;
+  77&nbsp;echo
+  78&nbsp;
+  79&nbsp;push garbage
+  80&nbsp;pop
+  81&nbsp;status_report     # Garbage in, garbage out.      
+  82&nbsp;
+  83&nbsp;value1=23;        push $value1
+  84&nbsp;value2=skidoo;    push $value2
+  85&nbsp;value3=LAST;      push $value3
+  86&nbsp;
+  87&nbsp;pop               # LAST
+  88&nbsp;status_report
+  89&nbsp;pop               # skidoo
+  90&nbsp;status_report
+  91&nbsp;pop               # 23
+  92&nbsp;status_report     # Last-in, first-out!
+  93&nbsp;
+  94&nbsp;#  Notice how the stack pointer decrements with each push,
+  95&nbsp;#+ and increments with each pop.
+  96&nbsp;
+  97&nbsp;echo
+  98&nbsp;
+  99&nbsp;exit 0
+ 100&nbsp;
+ 101&nbsp;# =======================================================
+ 102&nbsp;
+ 103&nbsp;
+ 104&nbsp;# Exercises:
+ 105&nbsp;# ---------
+ 106&nbsp;
+ 107&nbsp;# 1)  Modify the "push()" function to permit pushing
+ 108&nbsp;#   + multiple element on the stack with a single function call.
+ 109&nbsp;
+ 110&nbsp;# 2)  Modify the "pop()" function to permit popping
+ 111&nbsp;#   + multiple element from the stack with a single function call.
+ 112&nbsp;
+ 113&nbsp;# 3)  Add error checking to the critical functions.
+ 114&nbsp;#     That is, return an error code, depending on
+ 115&nbsp;#   + successful or unsuccessful completion of the operation,
+ 116&nbsp;#   + and take appropriate action.
+ 117&nbsp;
+ 118&nbsp;# 4)  Using this script as a starting point,
+ 119&nbsp;#   + write a stack-based 4-function calculator.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>--</P
+><P
+>Fancy manipulation of array <SPAN
+CLASS="QUOTE"
+>"subscripts"</SPAN
+> may require
+        intermediate variables. For projects involving this, again consider
+	using a more powerful programming language, such as Perl or C.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="QFUNCTION"
+></A
+><P
+><B
+>Example 27-16. Complex array application:
+             <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Exploring a weird mathematical series</I
+></SPAN
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;# Douglas Hofstadter's notorious "Q-series":
+   4&nbsp;
+   5&nbsp;# Q(1) = Q(2) = 1
+   6&nbsp;# Q(n) = Q(n - Q(n-1)) + Q(n - Q(n-2)), for n&#62;2
+   7&nbsp;
+   8&nbsp;#  This is a "chaotic" integer series with strange
+   9&nbsp;#+ and unpredictable behavior.
+  10&nbsp;#  The first 20 terms of the series are:
+  11&nbsp;#  1 1 2 3 3 4 5 5 6 6 6 8 8 8 10 9 10 11 11 12 
+  12&nbsp;
+  13&nbsp;#  See Hofstadter's book, _Goedel, Escher, Bach: An Eternal Golden Braid_,
+  14&nbsp;#+ p. 137, ff.
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;LIMIT=100     # Number of terms to calculate.
+  18&nbsp;LINEWIDTH=20  # Number of terms printed per line.
+  19&nbsp;
+  20&nbsp;Q[1]=1        # First two terms of series are 1.
+  21&nbsp;Q[2]=1
+  22&nbsp;
+  23&nbsp;echo
+  24&nbsp;echo "Q-series [$LIMIT terms]:"
+  25&nbsp;echo -n "${Q[1]} "             # Output first two terms.
+  26&nbsp;echo -n "${Q[2]} "
+  27&nbsp;
+  28&nbsp;for ((n=3; n &#60;= $LIMIT; n++))  # C-like loop expression.
+  29&nbsp;do   # Q[n] = Q[n - Q[n-1]] + Q[n - Q[n-2]]  for n&#62;2
+  30&nbsp;#    Need to break the expression into intermediate terms,
+  31&nbsp;#+   since Bash doesn't handle complex array arithmetic very well.
+  32&nbsp;
+  33&nbsp;  let "n1 = $n - 1"        # n-1
+  34&nbsp;  let "n2 = $n - 2"        # n-2
+  35&nbsp;  
+  36&nbsp;  t0=`expr $n - ${Q[n1]}`  # n - Q[n-1]
+  37&nbsp;  t1=`expr $n - ${Q[n2]}`  # n - Q[n-2]
+  38&nbsp;  
+  39&nbsp;  T0=${Q[t0]}              # Q[n - Q[n-1]]
+  40&nbsp;  T1=${Q[t1]}              # Q[n - Q[n-2]]
+  41&nbsp;
+  42&nbsp;Q[n]=`expr $T0 + $T1`      # Q[n - Q[n-1]] + Q[n - Q[n-2]]
+  43&nbsp;echo -n "${Q[n]} "
+  44&nbsp;
+  45&nbsp;if [ `expr $n % $LINEWIDTH` -eq 0 ]    # Format output.
+  46&nbsp;then   #      ^ modulo
+  47&nbsp;  echo # Break lines into neat chunks.
+  48&nbsp;fi
+  49&nbsp;
+  50&nbsp;done
+  51&nbsp;
+  52&nbsp;echo
+  53&nbsp;
+  54&nbsp;exit 0
+  55&nbsp;
+  56&nbsp;#  This is an iterative implementation of the Q-series.
+  57&nbsp;#  The more intuitive recursive implementation is left as an exercise.
+  58&nbsp;#  Warning: calculating this series recursively takes a VERY long time
+  59&nbsp;#+ via a script. C/C++ would be orders of magnitude faster.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>--</P
+><P
+><A
+NAME="ARRAYMULTIDIM"
+></A
+></P
+><P
+>Bash supports only one-dimensional arrays, though a little
+        trickery permits simulating multi-dimensional ones.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="TWODIM"
+></A
+><P
+><B
+>Example 27-17. Simulating a two-dimensional array, then tilting it</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# twodim.sh: Simulating a two-dimensional array.
+   3&nbsp;
+   4&nbsp;# A one-dimensional array consists of a single row.
+   5&nbsp;# A two-dimensional array stores rows sequentially.
+   6&nbsp;
+   7&nbsp;Rows=5
+   8&nbsp;Columns=5
+   9&nbsp;# 5 X 5 Array.
+  10&nbsp;
+  11&nbsp;declare -a alpha     # char alpha [Rows] [Columns];
+  12&nbsp;                     # Unnecessary declaration. Why?
+  13&nbsp;
+  14&nbsp;load_alpha ()
+  15&nbsp;{
+  16&nbsp;local rc=0
+  17&nbsp;local index
+  18&nbsp;
+  19&nbsp;for i in A B C D E F G H I J K L M N O P Q R S T U V W X Y
+  20&nbsp;do     # Use different symbols if you like.
+  21&nbsp;  local row=`expr $rc / $Columns`
+  22&nbsp;  local column=`expr $rc % $Rows`
+  23&nbsp;  let "index = $row * $Rows + $column"
+  24&nbsp;  alpha[$index]=$i
+  25&nbsp;# alpha[$row][$column]
+  26&nbsp;  let "rc += 1"
+  27&nbsp;done  
+  28&nbsp;
+  29&nbsp;#  Simpler would be
+  30&nbsp;#+   declare -a alpha=( A B C D E F G H I J K L M N O P Q R S T U V W X Y )
+  31&nbsp;#+ but this somehow lacks the "flavor" of a two-dimensional array.
+  32&nbsp;}
+  33&nbsp;
+  34&nbsp;print_alpha ()
+  35&nbsp;{
+  36&nbsp;local row=0
+  37&nbsp;local index
+  38&nbsp;
+  39&nbsp;echo
+  40&nbsp;
+  41&nbsp;while [ "$row" -lt "$Rows" ]   #  Print out in "row major" order:
+  42&nbsp;do                             #+ columns vary,
+  43&nbsp;                               #+ while row (outer loop) remains the same.
+  44&nbsp;  local column=0
+  45&nbsp;
+  46&nbsp;  echo -n "       "            #  Lines up "square" array with rotated one.
+  47&nbsp;  
+  48&nbsp;  while [ "$column" -lt "$Columns" ]
+  49&nbsp;  do
+  50&nbsp;    let "index = $row * $Rows + $column"
+  51&nbsp;    echo -n "${alpha[index]} "  # alpha[$row][$column]
+  52&nbsp;    let "column += 1"
+  53&nbsp;  done
+  54&nbsp;
+  55&nbsp;  let "row += 1"
+  56&nbsp;  echo
+  57&nbsp;
+  58&nbsp;done  
+  59&nbsp;
+  60&nbsp;# The simpler equivalent is
+  61&nbsp;#     echo ${alpha[*]} | xargs -n $Columns
+  62&nbsp;
+  63&nbsp;echo
+  64&nbsp;}
+  65&nbsp;
+  66&nbsp;filter ()     # Filter out negative array indices.
+  67&nbsp;{
+  68&nbsp;
+  69&nbsp;echo -n "  "  # Provides the tilt.
+  70&nbsp;              # Explain how.
+  71&nbsp;
+  72&nbsp;if [[ "$1" -ge 0 &#38;&#38;  "$1" -lt "$Rows" &#38;&#38; "$2" -ge 0 &#38;&#38; "$2" -lt "$Columns" ]]
+  73&nbsp;then
+  74&nbsp;    let "index = $1 * $Rows + $2"
+  75&nbsp;    # Now, print it rotated.
+  76&nbsp;    echo -n " ${alpha[index]}"
+  77&nbsp;    #           alpha[$row][$column]
+  78&nbsp;fi    
+  79&nbsp;
+  80&nbsp;}
+  81&nbsp;  
+  82&nbsp;
+  83&nbsp;
+  84&nbsp;
+  85&nbsp;rotate ()  #  Rotate the array 45 degrees --
+  86&nbsp;{          #+ "balance" it on its lower lefthand corner.
+  87&nbsp;local row
+  88&nbsp;local column
+  89&nbsp;
+  90&nbsp;for (( row = Rows; row &#62; -Rows; row-- ))
+  91&nbsp;  do       # Step through the array backwards. Why?
+  92&nbsp;
+  93&nbsp;  for (( column = 0; column &#60; Columns; column++ ))
+  94&nbsp;  do
+  95&nbsp;
+  96&nbsp;    if [ "$row" -ge 0 ]
+  97&nbsp;    then
+  98&nbsp;      let "t1 = $column - $row"
+  99&nbsp;      let "t2 = $column"
+ 100&nbsp;    else
+ 101&nbsp;      let "t1 = $column"
+ 102&nbsp;      let "t2 = $column + $row"
+ 103&nbsp;    fi  
+ 104&nbsp;
+ 105&nbsp;    filter $t1 $t2   # Filter out negative array indices.
+ 106&nbsp;                     # What happens if you don't do this?
+ 107&nbsp;  done
+ 108&nbsp;
+ 109&nbsp;  echo; echo
+ 110&nbsp;
+ 111&nbsp;done 
+ 112&nbsp;
+ 113&nbsp;#  Array rotation inspired by examples (pp. 143-146) in
+ 114&nbsp;#+ "Advanced C Programming on the IBM PC," by Herbert Mayer
+ 115&nbsp;#+ (see bibliography).
+ 116&nbsp;#  This just goes to show that much of what can be done in C
+ 117&nbsp;#+ can also be done in shell scripting.
+ 118&nbsp;
+ 119&nbsp;}
+ 120&nbsp;
+ 121&nbsp;
+ 122&nbsp;#--------------- Now, let the show begin. ------------#
+ 123&nbsp;load_alpha     # Load the array.
+ 124&nbsp;print_alpha    # Print it out.  
+ 125&nbsp;rotate         # Rotate it 45 degrees counterclockwise.
+ 126&nbsp;#-----------------------------------------------------#
+ 127&nbsp;
+ 128&nbsp;exit 0
+ 129&nbsp;
+ 130&nbsp;# This is a rather contrived, not to mention inelegant simulation.
+ 131&nbsp;
+ 132&nbsp;# Exercises:
+ 133&nbsp;# ---------
+ 134&nbsp;# 1)  Rewrite the array loading and printing functions
+ 135&nbsp;#     in a more intuitive and less kludgy fashion.
+ 136&nbsp;#
+ 137&nbsp;# 2)  Figure out how the array rotation functions work.
+ 138&nbsp;#     Hint: think about the implications of backwards-indexing an array.
+ 139&nbsp;#
+ 140&nbsp;# 3)  Rewrite this script to handle a non-square array,
+ 141&nbsp;#     such as a 6 X 4 one.
+ 142&nbsp;#     Try to minimize "distortion" when the array is rotated.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>A two-dimensional array is essentially equivalent to a
+	one-dimensional one, but with additional addressing modes
+	for referencing and manipulating the individual elements by
+	<I
+CLASS="FIRSTTERM"
+>row</I
+> and <I
+CLASS="FIRSTTERM"
+>column</I
+>
+	position.</P
+><P
+>For an even more elaborate example of simulating a
+        two-dimensional array, see <A
+HREF="contributed-scripts.html#LIFESLOW"
+>Example A-10</A
+>.</P
+><P
+>--</P
+><P
+>For more interesting scripts using arrays, see:
+       <UL
+><LI
+><P
+><A
+HREF="commandsub.html#AGRAM2"
+>Example 12-3</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="mathc.html#PRIMES2"
+>Example 16-46</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="contributed-scripts.html#HASHEX2"
+>Example A-22</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="contributed-scripts.html#HOMEWORK"
+>Example A-44</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="contributed-scripts.html#QKY"
+>Example A-41</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="contributed-scripts.html#NIM"
+>Example A-42</A
+></P
+></LI
+></UL
+>
+     </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="list-cons.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="ivr.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>List Constructs</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part5.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Indirect References</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,1269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Starting Off With a Sha-Bang</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Introduction"
+HREF="part1.html"><LINK
+REL="PREVIOUS"
+TITLE="Shell Programming!"
+HREF="why-shell.html"><LINK
+REL="NEXT"
+TITLE="Preliminary Exercises"
+HREF="prelimexer.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="why-shell.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="prelimexer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="SHA-BANG"
+></A
+>Chapter 2. Starting Off With a Sha-Bang</H1
+><TABLE
+BORDER="0"
+WIDTH="100%"
+CELLSPACING="0"
+CELLPADDING="0"
+CLASS="EPIGRAPH"
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+><P
+><I
+>Shell programming is a 1950s juke box . . .</I
+></P
+><P
+><I
+>--Larry Wall</I
+></P
+></I
+></TD
+></TR
+></TABLE
+><P
+>In the simplest case, a script is nothing more than a list
+      of system commands stored in a file. At the very least, this saves
+      the effort of retyping that particular sequence of commands each
+      time it is invoked.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX1"
+></A
+><P
+><B
+>Example 2-1. <I
+CLASS="FIRSTTERM"
+>cleanup</I
+>: A script to clean up log
+      files in /var/log </B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Cleanup
+   2&nbsp;# Run as root, of course.
+   3&nbsp;
+   4&nbsp;cd /var/log
+   5&nbsp;cat /dev/null &#62; messages
+   6&nbsp;cat /dev/null &#62; wtmp
+   7&nbsp;echo "Log files cleaned up."</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>There is nothing unusual here, only a set of commands that
+      could just as easily have been invoked one by one from the
+      command-line on the console or in a terminal window.
+      The advantages of placing the commands in a script go far beyond
+      not having to retype them time and again. The script becomes a
+      <I
+CLASS="FIRSTTERM"
+>program</I
+> -- a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>tool</I
+></SPAN
+> --
+      and it can easily be modified or customized for a particular
+      application.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX1A"
+></A
+><P
+><B
+>Example 2-2. <I
+CLASS="FIRSTTERM"
+>cleanup</I
+>: An improved clean-up
+      script</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Proper header for a Bash script.
+   3&nbsp;
+   4&nbsp;# Cleanup, version 2
+   5&nbsp;
+   6&nbsp;# Run as root, of course.
+   7&nbsp;# Insert code here to print error message and exit if not root.
+   8&nbsp;
+   9&nbsp;LOG_DIR=/var/log
+  10&nbsp;# Variables are better than hard-coded values.
+  11&nbsp;cd $LOG_DIR
+  12&nbsp;
+  13&nbsp;cat /dev/null &#62; messages
+  14&nbsp;cat /dev/null &#62; wtmp
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;echo "Logs cleaned up."
+  18&nbsp;
+  19&nbsp;exit #  The right and proper method of "exiting" from a script.
+  20&nbsp;     #  A bare "exit" (no parameter) returns the exit status
+  21&nbsp;     #+ of the preceding command. </PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Now <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>that's</I
+></SPAN
+> beginning to look like a real
+      script. But we can go even farther . . .</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX2"
+></A
+><P
+><B
+>Example 2-3. <I
+CLASS="FIRSTTERM"
+>cleanup</I
+>: An enhanced
+      and generalized version of above scripts.</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Cleanup, version 3
+   3&nbsp;
+   4&nbsp;#  Warning:
+   5&nbsp;#  -------
+   6&nbsp;#  This script uses quite a number of features that will be explained
+   7&nbsp;#+ later on.
+   8&nbsp;#  By the time you've finished the first half of the book,
+   9&nbsp;#+ there should be nothing mysterious about it.
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;LOG_DIR=/var/log
+  14&nbsp;ROOT_UID=0     # Only users with $UID 0 have root privileges.
+  15&nbsp;LINES=50       # Default number of lines saved.
+  16&nbsp;E_XCD=86       # Can't change directory?
+  17&nbsp;E_NOTROOT=87   # Non-root exit error.
+  18&nbsp;
+  19&nbsp;
+  20&nbsp;# Run as root, of course.
+  21&nbsp;if [ "$UID" -ne "$ROOT_UID" ]
+  22&nbsp;then
+  23&nbsp;  echo "Must be root to run this script."
+  24&nbsp;  exit $E_NOTROOT
+  25&nbsp;fi  
+  26&nbsp;
+  27&nbsp;if [ -n "$1" ]
+  28&nbsp;# Test whether command-line argument is present (non-empty).
+  29&nbsp;then
+  30&nbsp;  lines=$1
+  31&nbsp;else  
+  32&nbsp;  lines=$LINES # Default, if not specified on command-line.
+  33&nbsp;fi  
+  34&nbsp;
+  35&nbsp;
+  36&nbsp;#  Stephane Chazelas suggests the following,
+  37&nbsp;#+ as a better way of checking command-line arguments,
+  38&nbsp;#+ but this is still a bit advanced for this stage of the tutorial.
+  39&nbsp;#
+  40&nbsp;#    E_WRONGARGS=85  # Non-numerical argument (bad argument format).
+  41&nbsp;#
+  42&nbsp;#    case "$1" in
+  43&nbsp;#    ""      ) lines=50;;
+  44&nbsp;#    *[!0-9]*) echo "Usage: `basename $0` lines-to-cleanup";
+  45&nbsp;#     exit $E_WRONGARGS;;
+  46&nbsp;#    *       ) lines=$1;;
+  47&nbsp;#    esac
+  48&nbsp;#
+  49&nbsp;#* Skip ahead to "Loops" chapter to decipher all this.
+  50&nbsp;
+  51&nbsp;
+  52&nbsp;cd $LOG_DIR
+  53&nbsp;
+  54&nbsp;if [ `pwd` != "$LOG_DIR" ]  # or   if [ "$PWD" != "$LOG_DIR" ]
+  55&nbsp;                            # Not in /var/log?
+  56&nbsp;then
+  57&nbsp;  echo "Can't change to $LOG_DIR."
+  58&nbsp;  exit $E_XCD
+  59&nbsp;fi  # Doublecheck if in right directory before messing with log file.
+  60&nbsp;
+  61&nbsp;# Far more efficient is:
+  62&nbsp;#
+  63&nbsp;# cd /var/log || {
+  64&nbsp;#   echo "Cannot change to necessary directory." &#62;&#38;2
+  65&nbsp;#   exit $E_XCD;
+  66&nbsp;# }
+  67&nbsp;
+  68&nbsp;
+  69&nbsp;
+  70&nbsp;
+  71&nbsp;tail -n $lines messages &#62; mesg.temp # Save last section of message log file.
+  72&nbsp;mv mesg.temp messages               # Rename it as system log file.
+  73&nbsp;
+  74&nbsp;
+  75&nbsp;#  cat /dev/null &#62; messages
+  76&nbsp;#* No longer needed, as the above method is safer.
+  77&nbsp;
+  78&nbsp;cat /dev/null &#62; wtmp  #  ': &#62; wtmp' and '&#62; wtmp'  have the same effect.
+  79&nbsp;echo "Log files cleaned up."
+  80&nbsp;#  Note that there are other log files in /var/log not affected
+  81&nbsp;#+ by this script.
+  82&nbsp;
+  83&nbsp;exit 0
+  84&nbsp;#  A zero return value from the script upon exit indicates success
+  85&nbsp;#+ to the shell.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Since you may not wish to wipe out the entire system log,
+      this version of the script keeps the last section of the message
+      log intact. You will constantly discover ways of fine-tuning
+      previously written scripts for increased effectiveness.</P
+><P
+><A
+NAME="SHABANGREF"
+></A
+>* * *</P
+><P
+><A
+NAME="MAGNUMREF"
+></A
+>The
+      <I
+CLASS="FIRSTTERM"
+> sha-bang</I
+>
+      (<SPAN
+CLASS="TOKEN"
+>	 #!</SPAN
+>)
+
+	  <A
+NAME="AEN203"
+HREF="#FTN.AEN203"
+>[1]</A
+>
+
+      at the head of a script tells your system that this file is a set
+      of commands to be fed to the command interpreter indicated. The
+      <SPAN
+CLASS="TOKEN"
+>#!</SPAN
+> is actually a two-byte
+
+        <A
+NAME="AEN212"
+HREF="#FTN.AEN212"
+>[2]</A
+>
+
+	
+	<I
+CLASS="FIRSTTERM"
+>magic number</I
+>, a special marker that
+	designates a file type, or in this case an executable shell
+	script (type <TT
+CLASS="USERINPUT"
+><B
+>man magic</B
+></TT
+> for more
+	details on this fascinating topic). Immediately following
+	the <I
+CLASS="FIRSTTERM"
+>sha-bang</I
+> is a <I
+CLASS="FIRSTTERM"
+>path
+	name</I
+>. This is the path to the program that interprets
+	the commands in the script, whether it be a shell, a programming
+	language, or a utility. This command interpreter then executes
+	the commands in the script, starting at the top (the line
+	following the <I
+CLASS="FIRSTTERM"
+>sha-bang</I
+> line), and ignoring
+	comments.
+
+	  <A
+NAME="AEN224"
+HREF="#FTN.AEN224"
+>[3]</A
+>
+
+	</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/sh
+   2&nbsp;#!/bin/bash
+   3&nbsp;#!/usr/bin/perl
+   4&nbsp;#!/usr/bin/tcl
+   5&nbsp;#!/bin/sed -f
+   6&nbsp;#!/bin/awk -f</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Each of the above script header lines calls a different command
+      interpreter, be it <TT
+CLASS="FILENAME"
+>/bin/sh</TT
+>, the default shell
+      (<B
+CLASS="COMMAND"
+>bash</B
+> in a Linux system) or otherwise.
+
+        <A
+NAME="AEN240"
+HREF="#FTN.AEN240"
+>[4]</A
+>
+
+      Using <TT
+CLASS="USERINPUT"
+><B
+>#!/bin/sh</B
+></TT
+>, the default Bourne shell
+      in most commercial variants of UNIX, makes the script <A
+HREF="portabilityissues.html"
+>portable</A
+> to non-Linux machines,
+      though you <A
+HREF="gotchas.html#BINSH"
+>sacrifice Bash-specific
+      features</A
+>.  The script will, however, conform to the
+      <SPAN
+CLASS="ACRONYM"
+>POSIX</SPAN
+>
+
+	 <A
+NAME="AEN254"
+HREF="#FTN.AEN254"
+>[5]</A
+>
+
+      <B
+CLASS="COMMAND"
+>sh</B
+> standard.</P
+><P
+>Note that the path given at the <SPAN
+CLASS="QUOTE"
+>"sha-bang"</SPAN
+> must
+      be correct, otherwise an error message -- usually <SPAN
+CLASS="QUOTE"
+>"Command
+      not found."</SPAN
+> -- will be the only result of running the
+      script.
+        <A
+NAME="AEN267"
+HREF="#FTN.AEN267"
+>[6]</A
+>
+      
+      </P
+><P
+><SPAN
+CLASS="TOKEN"
+>#!</SPAN
+> can be omitted if the script consists only
+      of a set of generic system commands, using no internal
+      shell directives.  The second example, above, requires the
+      initial <SPAN
+CLASS="TOKEN"
+>#!</SPAN
+>, since the variable assignment line,
+      <TT
+CLASS="USERINPUT"
+><B
+>lines=50</B
+></TT
+>, uses a shell-specific construct.
+	<A
+NAME="AEN277"
+HREF="#FTN.AEN277"
+>[7]</A
+>
+      Note again that <TT
+CLASS="USERINPUT"
+><B
+>#!/bin/sh</B
+></TT
+> invokes the default
+      shell interpreter, which defaults to <TT
+CLASS="FILENAME"
+>/bin/bash</TT
+>
+      on a Linux machine.</P
+><DIV
+CLASS="TIP"
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/tip.png"
+HSPACE="5"
+ALT="Tip"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>This tutorial encourages a modular approach
+	to constructing a script. Make note of and collect
+	<SPAN
+CLASS="QUOTE"
+>"boilerplate"</SPAN
+> code snippets that might be useful
+	in future scripts. Eventually you will build quite an extensive
+	library of nifty routines. As an example, the following script
+	prolog tests whether the script has been invoked with the correct
+	number of parameters.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;E_WRONG_ARGS=85
+   2&nbsp;script_parameters="-a -h -m -z"
+   3&nbsp;#                  -a = all, -h = help, etc.
+   4&nbsp;
+   5&nbsp;if [ $# -ne $Number_of_expected_args ]
+   6&nbsp;then
+   7&nbsp;  echo "Usage: `basename $0` $script_parameters"
+   8&nbsp;  # `basename $0` is the script's filename.
+   9&nbsp;  exit $E_WRONG_ARGS
+  10&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+><P
+>Many times, you will write a script that carries out one
+        particular task. The first script in this chapter is an
+        example. Later, it might occur to you to generalize
+        the script to do other, similar tasks. Replacing the literal
+        (<SPAN
+CLASS="QUOTE"
+>"hard-wired"</SPAN
+>) constants by variables is a step in
+        that direction, as is replacing repetitive code blocks by <A
+HREF="functions.html#FUNCTIONREF"
+>functions</A
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INVOKING"
+></A
+>2.1. Invoking the script</H1
+><P
+>Having written the script, you can invoke it by <TT
+CLASS="USERINPUT"
+><B
+>sh
+	scriptname</B
+></TT
+>,
+
+	  <A
+NAME="AEN298"
+HREF="#FTN.AEN298"
+>[8]</A
+>
+
+	or alternatively <TT
+CLASS="USERINPUT"
+><B
+>bash scriptname</B
+></TT
+>. (Not
+	recommended is using <TT
+CLASS="USERINPUT"
+><B
+>sh &#60;scriptname</B
+></TT
+>,
+	since this effectively disables reading from
+	<A
+HREF="ioredirintro.html#STDINOUTDEF"
+><TT
+CLASS="FILENAME"
+>stdin</TT
+></A
+>
+	within the script.) Much more convenient is to make
+	the script itself directly executable with a <A
+HREF="external.html#CHMODREF"
+>chmod</A
+>.
+
+	<DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Either:</DT
+><DD
+><P
+><TT
+CLASS="USERINPUT"
+><B
+>chmod 555 scriptname</B
+></TT
+> (gives
+	      everyone read/execute permission)
+	        <A
+NAME="AEN313"
+HREF="#FTN.AEN313"
+>[9]</A
+>
+	      </P
+></DD
+><DT
+>or</DT
+><DD
+><P
+><TT
+CLASS="USERINPUT"
+><B
+>chmod +rx scriptname</B
+></TT
+> (gives
+	      everyone read/execute permission)</P
+><P
+><TT
+CLASS="USERINPUT"
+><B
+>chmod
+	      u+rx scriptname</B
+></TT
+> (gives only the
+		script owner read/execute permission)</P
+></DD
+></DL
+></DIV
+>
+      </P
+><P
+>Having made the script executable, you may now test it by
+	<TT
+CLASS="USERINPUT"
+><B
+>./scriptname</B
+></TT
+>.
+	
+	  <A
+NAME="AEN325"
+HREF="#FTN.AEN325"
+>[10]</A
+>
+
+	If it begins with a <SPAN
+CLASS="QUOTE"
+>"sha-bang"</SPAN
+> line, invoking the
+	script calls the correct command interpreter to run it.</P
+><P
+>As a final step, after testing and debugging,
+	you would likely want to move it to <TT
+CLASS="FILENAME"
+>/usr/local/bin</TT
+> (as
+	<I
+CLASS="FIRSTTERM"
+>root</I
+>, of course), to make the script
+	available to yourself and all other users as a systemwide
+	executable.  The script could then be invoked by simply typing
+	<B
+CLASS="COMMAND"
+>scriptname</B
+> <B
+CLASS="KEYCAP"
+>[ENTER]</B
+> from the
+	command-line.</P
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN203"
+HREF="sha-bang.html#AEN203"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>More commonly seen in the literature as
+	  <I
+CLASS="FIRSTTERM"
+>she-bang</I
+> or <I
+CLASS="FIRSTTERM"
+>sh-bang</I
+>.
+	  This derives from the concatenation of the tokens
+	  <I
+CLASS="FIRSTTERM"
+>sharp</I
+> (<SPAN
+CLASS="TOKEN"
+>#</SPAN
+>) and
+	  <I
+CLASS="FIRSTTERM"
+>bang</I
+> (<SPAN
+CLASS="TOKEN"
+>!</SPAN
+>).</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN212"
+HREF="sha-bang.html#AEN212"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>Some flavors of UNIX (those based on 4.2 BSD)
+          allegedly take a four-byte magic number, requiring
+          a blank after the <SPAN
+CLASS="TOKEN"
+>!</SPAN
+> --
+	  <TT
+CLASS="USERINPUT"
+><B
+>#! /bin/sh</B
+></TT
+>. <A
+HREF="http://www.in-ulm.de/~mascheck/various/shebang/#details"
+TARGET="_top"
+>	  According to Sven Mascheck</A
+> this is probably a myth.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN224"
+HREF="sha-bang.html#AEN224"
+>[3]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>The <SPAN
+CLASS="TOKEN"
+>#!</SPAN
+> line in a shell script
+	      will be the first thing the command interpreter
+	      (<B
+CLASS="COMMAND"
+>sh</B
+> or <B
+CLASS="COMMAND"
+>bash</B
+>)
+	      sees. Since this line begins with a <SPAN
+CLASS="TOKEN"
+>#</SPAN
+>,
+	      it will be correctly interpreted as a comment when the
+	      command interpreter finally executes the script. The
+	      line has already served its purpose - calling the command
+	      interpreter.</P
+><P
+>If, in fact, the script includes an
+	      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>extra</I
+></SPAN
+> <SPAN
+CLASS="TOKEN"
+>#!</SPAN
+> line, then
+	      <B
+CLASS="COMMAND"
+>bash</B
+> will interpret it as a comment.
+	        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;echo "Part 1 of script."
+   4&nbsp;a=1
+   5&nbsp;
+   6&nbsp;#!/bin/bash
+   7&nbsp;# This does *not* launch a new script.
+   8&nbsp;
+   9&nbsp;echo "Part 2 of script."
+  10&nbsp;echo $a  # Value of $a stays at 1.</PRE
+></TD
+></TR
+></TABLE
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN240"
+HREF="sha-bang.html#AEN240"
+>[4]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>This allows some cute tricks.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/rm
+   2&nbsp;# Self-deleting script.
+   3&nbsp;
+   4&nbsp;# Nothing much seems to happen when you run this... except that the file disappears.
+   5&nbsp;
+   6&nbsp;WHATEVER=85
+   7&nbsp;
+   8&nbsp;echo "This line will never print (betcha!)."
+   9&nbsp;
+  10&nbsp;exit $WHATEVER  # Doesn't matter. The script will not exit here.
+  11&nbsp;                # Try an echo $? after script termination.
+  12&nbsp;                # You'll get a 0, not a 85.</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Also, try starting a <TT
+CLASS="FILENAME"
+>README</TT
+> file with a
+        <TT
+CLASS="USERINPUT"
+><B
+>#!/bin/more</B
+></TT
+>, and making it executable.
+        The result is a self-listing documentation file. (A <A
+HREF="here-docs.html#HEREDOCREF"
+>here document</A
+> using
+	<A
+HREF="external.html#CATREF"
+>cat</A
+> is possibly a better alternative
+	-- see <A
+HREF="here-docs.html#EX71"
+>Example 19-3</A
+>).</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN254"
+HREF="sha-bang.html#AEN254"
+>[5]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><A
+NAME="POSIX2REF"
+></A
+><SPAN
+CLASS="strong"
+><B
+CLASS="EMPHASIS"
+>P</B
+></SPAN
+>ortable
+	 <SPAN
+CLASS="strong"
+><B
+CLASS="EMPHASIS"
+>O</B
+></SPAN
+>perating
+	 <SPAN
+CLASS="strong"
+><B
+CLASS="EMPHASIS"
+>S</B
+></SPAN
+>ystem <SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>I</B
+></SPAN
+>nterface, an attempt to
+	 standardize UNI<SPAN
+CLASS="strong"
+><B
+CLASS="EMPHASIS"
+>X</B
+></SPAN
+>-like
+	 OSes. The POSIX specifications are listed on the <A
+HREF="http://www.opengroup.org/onlinepubs/007904975/toc.htm"
+TARGET="_top"
+>Open
+	 Group site</A
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN267"
+HREF="sha-bang.html#AEN267"
+>[6]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>To avoid this possibility, a script may begin
+	  with a <A
+HREF="system.html#ENVV2REF"
+>#!/bin/env bash</A
+>
+	  <I
+CLASS="FIRSTTERM"
+>sha-bang</I
+> line. This may be
+	  useful on UNIX machines where <I
+CLASS="FIRSTTERM"
+>bash</I
+>
+	  is not located in <TT
+CLASS="FILENAME"
+>/bin</TT
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN277"
+HREF="sha-bang.html#AEN277"
+>[7]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>If <I
+CLASS="FIRSTTERM"
+>Bash</I
+> is your default
+	shell, then the <SPAN
+CLASS="TOKEN"
+>#!</SPAN
+> isn't necessary at the
+	beginning of a script.	However, if launching a script from
+	a different shell, such as <I
+CLASS="FIRSTTERM"
+>tcsh</I
+>,
+	then you <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>will</I
+></SPAN
+> need the
+	<SPAN
+CLASS="TOKEN"
+>#!</SPAN
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN298"
+HREF="sha-bang.html#AEN298"
+>[8]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>Caution: invoking a <I
+CLASS="FIRSTTERM"
+>Bash</I
+>
+	  script by <TT
+CLASS="USERINPUT"
+><B
+>sh scriptname</B
+></TT
+> turns off
+	  Bash-specific extensions, and the script may therefore fail
+	  to execute.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN313"
+HREF="sha-bang.html#AEN313"
+>[9]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>A script needs <I
+CLASS="FIRSTTERM"
+>read</I
+>, as
+		well as execute permission for it to run, since the shell
+		needs to be able to read it.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN325"
+HREF="sha-bang.html#AEN325"
+>[10]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>Why not simply invoke the script with
+	  <TT
+CLASS="USERINPUT"
+><B
+>scriptname</B
+></TT
+>? If the directory you
+	  are in (<A
+HREF="variables2.html#PWDREF"
+>$PWD</A
+>) is where
+	  <TT
+CLASS="FILENAME"
+>scriptname</TT
+> is located, why doesn't
+	  this work? This fails because, for security reasons, the
+	  current directory (<TT
+CLASS="FILENAME"
+>./</TT
+>)
+	  is not by default included in a user's <A
+HREF="variables2.html#PATHREF"
+>$PATH</A
+>. It is therefore necessary to
+	  explicitly invoke the script in the current directory with
+	  a <TT
+CLASS="USERINPUT"
+><B
+>./scriptname</B
+></TT
+>.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="why-shell.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="prelimexer.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Shell Programming!</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part1.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Preliminary Exercises</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,1805 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Parameter Substitution</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Manipulating Variables"
+HREF="manipulatingvars.html"><LINK
+REL="PREVIOUS"
+TITLE="Manipulating Variables"
+HREF="manipulatingvars.html"><LINK
+REL="NEXT"
+TITLE="Loops and Branches"
+HREF="loops.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="manipulatingvars.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Manipulating Variables</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="loops.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PARAMETER-SUBSTITUTION"
+></A
+>10.2. Parameter Substitution</H1
+><P
+><A
+NAME="PARAMSUBREF"
+></A
+></P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="PSSUB1"
+></A
+>Manipulating and/or expanding variables</B
+></P
+><DL
+><DT
+><TT
+CLASS="USERINPUT"
+><B
+>${parameter}</B
+></TT
+></DT
+><DD
+><P
+>Same as <TT
+CLASS="REPLACEABLE"
+><I
+>$parameter</I
+></TT
+>, i.e.,
+		  value of the variable
+		  <TT
+CLASS="REPLACEABLE"
+><I
+>parameter</I
+></TT
+>.
+		  In certain contexts, only the less ambiguous
+		  <TT
+CLASS="REPLACEABLE"
+><I
+>${parameter}</I
+></TT
+> form
+		  works.</P
+><P
+>May be used for concatenating variables with strings.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;your_id=${USER}-on-${HOSTNAME}
+   2&nbsp;echo "$your_id"
+   3&nbsp;#
+   4&nbsp;echo "Old \$PATH = $PATH"
+   5&nbsp;PATH=${PATH}:/opt/bin  # Add /opt/bin to $PATH for duration of script.
+   6&nbsp;echo "New \$PATH = $PATH"</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+><A
+NAME="DEFPARAM1"
+></A
+><TT
+CLASS="USERINPUT"
+><B
+>${parameter-default}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${parameter:-default}</B
+></TT
+></DT
+><DD
+><P
+>If parameter not set, use default.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;var1=1
+   2&nbsp;var2=2
+   3&nbsp;# var3 is unset.
+   4&nbsp;
+   5&nbsp;echo ${var1-$var2}   # 1
+   6&nbsp;echo ${var3-$var2}   # 2
+   7&nbsp;#           ^          Note the $ prefix.
+   8&nbsp;
+   9&nbsp;
+  10&nbsp;
+  11&nbsp;echo ${username-`whoami`}
+  12&nbsp;# Echoes the result of `whoami`, if variable $username is still unset.</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><A
+NAME="UNDDR"
+></A
+><TT
+CLASS="REPLACEABLE"
+><I
+>${parameter-default}</I
+></TT
+>
+		  and <TT
+CLASS="REPLACEABLE"
+><I
+>${parameter:-default}</I
+></TT
+>
+		  are almost equivalent. The extra <SPAN
+CLASS="TOKEN"
+>:</SPAN
+> makes
+		  a difference only when <TT
+CLASS="PARAMETER"
+><I
+>parameter</I
+></TT
+>
+		  has been declared, but is null.  </P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# param-sub.sh
+   3&nbsp;
+   4&nbsp;#  Whether a variable has been declared
+   5&nbsp;#+ affects triggering of the default option
+   6&nbsp;#+ even if the variable is null.
+   7&nbsp;
+   8&nbsp;username0=
+   9&nbsp;echo "username0 has been declared, but is set to null."
+  10&nbsp;echo "username0 = ${username0-`whoami`}"
+  11&nbsp;# Will not echo.
+  12&nbsp;
+  13&nbsp;echo
+  14&nbsp;
+  15&nbsp;echo username1 has not been declared.
+  16&nbsp;echo "username1 = ${username1-`whoami`}"
+  17&nbsp;# Will echo.
+  18&nbsp;
+  19&nbsp;username2=
+  20&nbsp;echo "username2 has been declared, but is set to null."
+  21&nbsp;echo "username2 = ${username2:-`whoami`}"
+  22&nbsp;#                            ^
+  23&nbsp;# Will echo because of :- rather than just - in condition test.
+  24&nbsp;# Compare to first instance, above.
+  25&nbsp;
+  26&nbsp;
+  27&nbsp;#
+  28&nbsp;
+  29&nbsp;# Once again:
+  30&nbsp;
+  31&nbsp;variable=
+  32&nbsp;# variable has been declared, but is set to null.
+  33&nbsp;
+  34&nbsp;echo "${variable-0}"    # (no output)
+  35&nbsp;echo "${variable:-1}"   # 1
+  36&nbsp;#               ^
+  37&nbsp;
+  38&nbsp;unset variable
+  39&nbsp;
+  40&nbsp;echo "${variable-2}"    # 2
+  41&nbsp;echo "${variable:-3}"   # 3
+  42&nbsp;
+  43&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The <I
+CLASS="FIRSTTERM"
+>default parameter</I
+> construct
+		  finds use in providing <SPAN
+CLASS="QUOTE"
+>"missing"</SPAN
+> command-line
+		  arguments in scripts.</P
+><P
+>		  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;DEFAULT_FILENAME=generic.data
+   2&nbsp;filename=${1:-$DEFAULT_FILENAME}
+   3&nbsp;#  If not otherwise specified, the following command block operates
+   4&nbsp;#+ on the file "generic.data".
+   5&nbsp;#  Begin-Command-Block
+   6&nbsp;#  ...
+   7&nbsp;#  ...
+   8&nbsp;#  ...
+   9&nbsp;#  End-Command-Block
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;#  From "hanoi2.bash" example:
+  14&nbsp;DISKS=${1:-E_NOPARAM}   # Must specify how many disks.
+  15&nbsp;#  Set $DISKS to $1 command-line-parameter,
+  16&nbsp;#+ or to $E_NOPARAM if that is unset.</PRE
+></TD
+></TR
+></TABLE
+>
+		</P
+><P
+>See also <A
+HREF="special-chars.html#EX58"
+>Example 3-4</A
+>, <A
+HREF="zeros.html#EX73"
+>Example 31-2</A
+>, and <A
+HREF="contributed-scripts.html#COLLATZ"
+>Example A-6</A
+>.</P
+><P
+>Compare this method with <A
+HREF="list-cons.html#ANDDEFAULT"
+>using an <I
+CLASS="FIRSTTERM"
+>and
+		  list</I
+> to supply a default command-line
+		  argument</A
+>.</P
+></DD
+><DT
+><TT
+CLASS="USERINPUT"
+><B
+>${parameter=default}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${parameter:=default}</B
+></TT
+></DT
+><DD
+><P
+><A
+NAME="DEFPARAM"
+></A
+></P
+><P
+>If parameter not set, set it to
+		  <I
+CLASS="FIRSTTERM"
+>default</I
+>.</P
+><P
+>Both forms nearly equivalent. The <SPAN
+CLASS="TOKEN"
+>:</SPAN
+>
+		  makes a difference only when <TT
+CLASS="VARNAME"
+>$parameter</TT
+>
+		  has been declared and is null,
+		    <A
+NAME="AEN6306"
+HREF="#FTN.AEN6306"
+>[1]</A
+>
+		  as above.
+		    </P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo ${var=abc}   # abc
+   2&nbsp;echo ${var=xyz}   # abc
+   3&nbsp;# $var had already been set to abc, so it did not change.</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+><A
+NAME="PARAMALTV"
+></A
+><TT
+CLASS="USERINPUT"
+><B
+>${parameter+alt_value}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${parameter:+alt_value}</B
+></TT
+></DT
+><DD
+><P
+>If parameter set, use
+		    <TT
+CLASS="USERINPUT"
+><B
+>alt_value</B
+></TT
+>, else use null
+		    string.</P
+><P
+>Both forms nearly equivalent. The <SPAN
+CLASS="TOKEN"
+>:</SPAN
+>
+		    makes a difference only when
+		    <TT
+CLASS="PARAMETER"
+><I
+>parameter</I
+></TT
+>
+		    has been declared and is null, see below.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo "###### \${parameter+alt_value} ########"
+   2&nbsp;echo
+   3&nbsp;
+   4&nbsp;a=${param1+xyz}
+   5&nbsp;echo "a = $a"      # a =
+   6&nbsp;
+   7&nbsp;param2=
+   8&nbsp;a=${param2+xyz}
+   9&nbsp;echo "a = $a"      # a = xyz
+  10&nbsp;
+  11&nbsp;param3=123
+  12&nbsp;a=${param3+xyz}
+  13&nbsp;echo "a = $a"      # a = xyz
+  14&nbsp;
+  15&nbsp;echo
+  16&nbsp;echo "###### \${parameter:+alt_value} ########"
+  17&nbsp;echo
+  18&nbsp;
+  19&nbsp;a=${param4:+xyz}
+  20&nbsp;echo "a = $a"      # a =
+  21&nbsp;
+  22&nbsp;param5=
+  23&nbsp;a=${param5:+xyz}
+  24&nbsp;echo "a = $a"      # a =
+  25&nbsp;# Different result from   a=${param5+xyz}
+  26&nbsp;
+  27&nbsp;param6=123
+  28&nbsp;a=${param6:+xyz}
+  29&nbsp;echo "a = $a"      # a = xyz</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+><A
+NAME="QERRMSG"
+></A
+><TT
+CLASS="USERINPUT"
+><B
+>${parameter?err_msg}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${parameter:?err_msg}</B
+></TT
+></DT
+><DD
+><P
+>If parameter set, use it, else print
+                <I
+CLASS="FIRSTTERM"
+>err_msg</I
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>abort
+                the script</I
+></SPAN
+> with an <A
+HREF="exit-status.html#EXITSTATUSREF"
+>exit status</A
+> of
+                <SPAN
+CLASS="ERRORCODE"
+>1</SPAN
+>.</P
+><P
+>Both forms nearly equivalent. The <SPAN
+CLASS="TOKEN"
+>:</SPAN
+>
+		  makes a difference only when <TT
+CLASS="PARAMETER"
+><I
+>parameter</I
+></TT
+>
+		  has been declared and is null, as above.</P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX6"
+></A
+><P
+><B
+>Example 10-7. Using parameter substitution and error messages</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  Check some of the system's environmental variables.
+   4&nbsp;#  This is good preventative maintenance.
+   5&nbsp;#  If, for example, $USER, the name of the person at the console, is not set,
+   6&nbsp;#+ the machine will not recognize you.
+   7&nbsp;
+   8&nbsp;: ${HOSTNAME?} ${USER?} ${HOME?} ${MAIL?}
+   9&nbsp;  echo
+  10&nbsp;  echo "Name of the machine is $HOSTNAME."
+  11&nbsp;  echo "You are $USER."
+  12&nbsp;  echo "Your home directory is $HOME."
+  13&nbsp;  echo "Your mail INBOX is located in $MAIL."
+  14&nbsp;  echo
+  15&nbsp;  echo "If you are reading this message,"
+  16&nbsp;  echo "critical environmental variables have been set."
+  17&nbsp;  echo
+  18&nbsp;  echo
+  19&nbsp;
+  20&nbsp;# ------------------------------------------------------
+  21&nbsp;
+  22&nbsp;#  The ${variablename?} construction can also check
+  23&nbsp;#+ for variables set within the script.
+  24&nbsp;
+  25&nbsp;ThisVariable=Value-of-ThisVariable
+  26&nbsp;#  Note, by the way, that string variables may be set
+  27&nbsp;#+ to characters disallowed in their names.
+  28&nbsp;: ${ThisVariable?}
+  29&nbsp;echo "Value of ThisVariable is $ThisVariable".
+  30&nbsp;
+  31&nbsp;echo; echo
+  32&nbsp;
+  33&nbsp;
+  34&nbsp;: ${ZZXy23AB?"ZZXy23AB has not been set."}
+  35&nbsp;#  Since ZZXy23AB has not been set,
+  36&nbsp;#+ then the script terminates with an error message.
+  37&nbsp;
+  38&nbsp;# You can specify the error message.
+  39&nbsp;# : ${variablename?"ERROR MESSAGE"}
+  40&nbsp;
+  41&nbsp;
+  42&nbsp;# Same result with:   dummy_variable=${ZZXy23AB?}
+  43&nbsp;#                     dummy_variable=${ZZXy23AB?"ZXy23AB has not been set."}
+  44&nbsp;#
+  45&nbsp;#                     echo ${ZZXy23AB?} &#62;/dev/null
+  46&nbsp;
+  47&nbsp;#  Compare these methods of checking whether a variable has been set
+  48&nbsp;#+ with "set -u" . . .
+  49&nbsp;
+  50&nbsp;
+  51&nbsp;
+  52&nbsp;echo "You will not see this message, because script already terminated."
+  53&nbsp;
+  54&nbsp;HERE=0
+  55&nbsp;exit $HERE   # Will NOT exit here.
+  56&nbsp;
+  57&nbsp;# In fact, this script will return an exit status (echo $?) of 1.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="USAGEMESSAGE"
+></A
+><P
+><B
+>Example 10-8. Parameter substitution and <SPAN
+CLASS="QUOTE"
+>"usage"</SPAN
+> messages</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# usage-message.sh
+   3&nbsp;
+   4&nbsp;: ${1?"Usage: $0 ARGUMENT"}
+   5&nbsp;#  Script exits here if command-line parameter absent,
+   6&nbsp;#+ with following error message.
+   7&nbsp;#    usage-message.sh: 1: Usage: usage-message.sh ARGUMENT
+   8&nbsp;
+   9&nbsp;echo "These two lines echo only if command-line parameter given."
+  10&nbsp;echo "command-line parameter = \"$1\""
+  11&nbsp;
+  12&nbsp;exit 0  # Will exit here only if command-line parameter present.
+  13&nbsp;
+  14&nbsp;# Check the exit status, both with and without command-line parameter.
+  15&nbsp;# If command-line parameter present, then "$?" is 0.
+  16&nbsp;# If not, then "$?" is 1.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="FORMALPARA"
+><P
+><B
+>Parameter substitution and/or expansion. </B
+><A
+NAME="PSUB2"
+></A
+>The following expressions are
+		the complement to the <B
+CLASS="COMMAND"
+>match</B
+>
+		<TT
+CLASS="REPLACEABLE"
+><I
+>in</I
+></TT
+> <B
+CLASS="COMMAND"
+>expr</B
+>
+		string operations (see <A
+HREF="moreadv.html#EX45"
+>Example 16-9</A
+>).
+		These particular ones are used mostly in parsing file
+		path names.</P
+></DIV
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="PSOREX1"
+></A
+>Variable length / Substring removal</B
+></P
+><DL
+><DT
+><TT
+CLASS="USERINPUT"
+><B
+>${#var}</B
+></TT
+></DT
+><DD
+><P
+><TT
+CLASS="USERINPUT"
+><B
+>String length</B
+></TT
+> (number
+		    of characters in <TT
+CLASS="VARNAME"
+>$var</TT
+>). For
+		    an <A
+HREF="arrays.html#ARRAYREF"
+>array</A
+>,
+		    <B
+CLASS="COMMAND"
+>${#array}</B
+> is the length of the
+		    first element in the array.</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>		    Exceptions:
+
+		  <UL
+><LI
+><P
+><A
+NAME="NUMPOSPARAM"
+></A
+></P
+><P
+>		      <B
+CLASS="COMMAND"
+>${#*}</B
+> and
+		      <B
+CLASS="COMMAND"
+>${#@}</B
+> give the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>number
+		      of positional parameters</I
+></SPAN
+>.
+		    </P
+></LI
+><LI
+><P
+>		      For an array, <B
+CLASS="COMMAND"
+>${#array[*]}</B
+> and
+		      <B
+CLASS="COMMAND"
+>${#array[@]}</B
+> give the number
+		      of elements in the array.
+		    </P
+></LI
+></UL
+>
+		  </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="LENGTH"
+></A
+><P
+><B
+>Example 10-9. Length of a variable</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# length.sh
+   3&nbsp;
+   4&nbsp;E_NO_ARGS=65
+   5&nbsp;
+   6&nbsp;if [ $# -eq 0 ]  # Must have command-line args to demo script.
+   7&nbsp;then
+   8&nbsp;  echo "Please invoke this script with one or more command-line arguments."
+   9&nbsp;  exit $E_NO_ARGS
+  10&nbsp;fi  
+  11&nbsp;
+  12&nbsp;var01=abcdEFGH28ij
+  13&nbsp;echo "var01 = ${var01}"
+  14&nbsp;echo "Length of var01 = ${#var01}"
+  15&nbsp;# Now, let's try embedding a space.
+  16&nbsp;var02="abcd EFGH28ij"
+  17&nbsp;echo "var02 = ${var02}"
+  18&nbsp;echo "Length of var02 = ${#var02}"
+  19&nbsp;
+  20&nbsp;echo "Number of command-line arguments passed to script = ${#@}"
+  21&nbsp;echo "Number of command-line arguments passed to script = ${#*}"
+  22&nbsp;
+  23&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="PSOREX2"
+></A
+><TT
+CLASS="USERINPUT"
+><B
+>${var#Pattern}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${var##Pattern}</B
+></TT
+></DT
+><DD
+><P
+><A
+NAME="PSOREXSH"
+></A
+></P
+><P
+><B
+CLASS="COMMAND"
+>${var#Pattern} </B
+>
+		  Remove from <TT
+CLASS="VARNAME"
+>$var</TT
+>
+		  the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>shortest</I
+></SPAN
+> part of
+		  <TT
+CLASS="VARNAME"
+>$Pattern</TT
+> that matches
+		  the <TT
+CLASS="REPLACEABLE"
+><I
+>front end</I
+></TT
+> of
+		  <TT
+CLASS="VARNAME"
+>$var</TT
+>.
+		</P
+><P
+><A
+NAME="PSOREXLO"
+></A
+></P
+><P
+><B
+CLASS="COMMAND"
+>${var##Pattern} </B
+>
+		  Remove from <TT
+CLASS="VARNAME"
+>$var</TT
+>
+		  the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>longest</I
+></SPAN
+> part of
+		  <TT
+CLASS="VARNAME"
+>$Pattern</TT
+> that matches
+		  the <TT
+CLASS="REPLACEABLE"
+><I
+>front end</I
+></TT
+> of
+		  <TT
+CLASS="VARNAME"
+>$var</TT
+>.
+		</P
+><P
+>A usage illustration from <A
+HREF="contributed-scripts.html#DAYSBETWEEN"
+>Example A-7</A
+>:
+		<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Function from "days-between.sh" example.
+   2&nbsp;# Strips leading zero(s) from argument passed.
+   3&nbsp;
+   4&nbsp;strip_leading_zero () #  Strip possible leading zero(s)
+   5&nbsp;{                     #+ from argument passed.
+   6&nbsp;  return=${1#0}       #  The "1" refers to "$1" -- passed arg.
+   7&nbsp;}                     #  The "0" is what to remove from "$1" -- strips zeros.</PRE
+></TD
+></TR
+></TABLE
+>
+		</P
+><P
+>Manfred Schwarb's more elaborate variation of the
+			above:</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;strip_leading_zero2 () # Strip possible leading zero(s), since otherwise
+   2&nbsp;{                      # Bash will interpret such numbers as octal values.
+   3&nbsp;  shopt -s extglob     # Turn on extended globbing.
+   4&nbsp;  local val=${1##+(0)} # Use local variable, longest matching series of 0's.
+   5&nbsp;  shopt -u extglob     # Turn off extended globbing.
+   6&nbsp;  _strip_leading_zero2=${val:-0}
+   7&nbsp;                       # If input was 0, return 0 instead of "".
+   8&nbsp;}</PRE
+></TD
+></TR
+></TABLE
+>
+		</P
+><P
+>Another usage illustration:</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo `basename $PWD`        # Basename of current working directory.
+   2&nbsp;echo "${PWD##*/}"           # Basename of current working directory.
+   3&nbsp;echo
+   4&nbsp;echo `basename $0`          # Name of script.
+   5&nbsp;echo $0                     # Name of script.
+   6&nbsp;echo "${0##*/}"             # Name of script.
+   7&nbsp;echo
+   8&nbsp;filename=test.data
+   9&nbsp;echo "${filename##*.}"      # data
+  10&nbsp;                            # Extension of filename.</PRE
+></TD
+></TR
+></TABLE
+>
+		</P
+></DD
+><DT
+><A
+NAME="PCTPATREF"
+></A
+><TT
+CLASS="USERINPUT"
+><B
+>${var%Pattern}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${var%%Pattern}</B
+></TT
+></DT
+><DD
+><P
+><A
+NAME="PCTREP1"
+></A
+></P
+><P
+><B
+CLASS="COMMAND"
+>${var%Pattern}</B
+>
+		  Remove from <TT
+CLASS="VARNAME"
+>$var</TT
+>
+		  the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>shortest</I
+></SPAN
+> part of
+		  <TT
+CLASS="VARNAME"
+>$Pattern</TT
+> that matches
+		  the <TT
+CLASS="REPLACEABLE"
+><I
+>back end</I
+></TT
+> of
+		  <TT
+CLASS="VARNAME"
+>$var</TT
+>.  </P
+><P
+><A
+NAME="PCTREP2"
+></A
+></P
+><P
+><B
+CLASS="COMMAND"
+>${var%%Pattern}</B
+>
+		  Remove from <TT
+CLASS="VARNAME"
+>$var</TT
+>
+		  the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>longest</I
+></SPAN
+> part of
+		  <TT
+CLASS="VARNAME"
+>$Pattern</TT
+> that matches
+		  the <TT
+CLASS="REPLACEABLE"
+><I
+>back end</I
+></TT
+> of
+		  <TT
+CLASS="VARNAME"
+>$var</TT
+>.  </P
+></DD
+></DL
+></DIV
+><P
+><A
+HREF="bash2.html#BASH2REF"
+>Version 2</A
+> of Bash added
+	      additional options.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="PATTMATCHING"
+></A
+><P
+><B
+>Example 10-10. Pattern matching in parameter substitution</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# patt-matching.sh
+   3&nbsp;
+   4&nbsp;# Pattern matching  using the # ## % %% parameter substitution operators.
+   5&nbsp;
+   6&nbsp;var1=abcd12345abc6789
+   7&nbsp;pattern1=a*c  # * (wild card) matches everything between a - c.
+   8&nbsp;
+   9&nbsp;echo
+  10&nbsp;echo "var1 = $var1"           # abcd12345abc6789
+  11&nbsp;echo "var1 = ${var1}"         # abcd12345abc6789
+  12&nbsp;                              # (alternate form)
+  13&nbsp;echo "Number of characters in ${var1} = ${#var1}"
+  14&nbsp;echo
+  15&nbsp;
+  16&nbsp;echo "pattern1 = $pattern1"   # a*c  (everything between 'a' and 'c')
+  17&nbsp;echo "--------------"
+  18&nbsp;echo '${var1#$pattern1}  =' "${var1#$pattern1}"    #         d12345abc6789
+  19&nbsp;# Shortest possible match, strips out first 3 characters  abcd12345abc6789
+  20&nbsp;#                                     ^^^^^               |-|
+  21&nbsp;echo '${var1##$pattern1} =' "${var1##$pattern1}"   #                  6789      
+  22&nbsp;# Longest possible match, strips out first 12 characters  abcd12345abc6789
+  23&nbsp;#                                    ^^^^^                |----------|
+  24&nbsp;
+  25&nbsp;echo; echo; echo
+  26&nbsp;
+  27&nbsp;pattern2=b*9            # everything between 'b' and '9'
+  28&nbsp;echo "var1 = $var1"     # Still  abcd12345abc6789
+  29&nbsp;echo
+  30&nbsp;echo "pattern2 = $pattern2"
+  31&nbsp;echo "--------------"
+  32&nbsp;echo '${var1%pattern2}  =' "${var1%$pattern2}"     #     abcd12345a
+  33&nbsp;# Shortest possible match, strips out last 6 characters  abcd12345abc6789
+  34&nbsp;#                                     ^^^^                         |----|
+  35&nbsp;echo '${var1%%pattern2} =' "${var1%%$pattern2}"    #     a
+  36&nbsp;# Longest possible match, strips out last 12 characters  abcd12345abc6789
+  37&nbsp;#                                    ^^^^                 |-------------|
+  38&nbsp;
+  39&nbsp;# Remember, # and ## work from the left end (beginning) of string,
+  40&nbsp;#           % and %% work from the right end.
+  41&nbsp;
+  42&nbsp;echo
+  43&nbsp;
+  44&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RFE"
+></A
+><P
+><B
+>Example 10-11. Renaming file extensions<SPAN
+CLASS="TOKEN"
+>:</SPAN
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# rfe.sh: Renaming file extensions.
+   3&nbsp;#
+   4&nbsp;#         rfe old_extension new_extension
+   5&nbsp;#
+   6&nbsp;# Example:
+   7&nbsp;# To rename all *.gif files in working directory to *.jpg,
+   8&nbsp;#          rfe gif jpg
+   9&nbsp;
+  10&nbsp;
+  11&nbsp;E_BADARGS=65
+  12&nbsp;
+  13&nbsp;case $# in
+  14&nbsp;  0|1)             # The vertical bar means "or" in this context.
+  15&nbsp;  echo "Usage: `basename $0` old_file_suffix new_file_suffix"
+  16&nbsp;  exit $E_BADARGS  # If 0 or 1 arg, then bail out.
+  17&nbsp;  ;;
+  18&nbsp;esac
+  19&nbsp;
+  20&nbsp;
+  21&nbsp;for filename in *.$1
+  22&nbsp;# Traverse list of files ending with 1st argument.
+  23&nbsp;do
+  24&nbsp;  mv $filename ${filename%$1}$2
+  25&nbsp;  #  Strip off part of filename matching 1st argument,
+  26&nbsp;  #+ then append 2nd argument.
+  27&nbsp;done
+  28&nbsp;
+  29&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="EXPREPL1"
+></A
+>Variable expansion / Substring
+	      replacement</B
+></P
+><DL
+><DT
+></DT
+><DD
+><P
+>These constructs have been adopted from
+		  <I
+CLASS="FIRSTTERM"
+>ksh</I
+>.</P
+></DD
+><DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var:pos}</B
+></TT
+></DT
+><DD
+><P
+>Variable <TT
+CLASS="REPLACEABLE"
+><I
+>var</I
+></TT
+> expanded,
+		    starting from offset <TT
+CLASS="REPLACEABLE"
+><I
+>pos</I
+></TT
+>.
+		  </P
+></DD
+><DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var:pos:len}</B
+></TT
+></DT
+><DD
+><P
+>Expansion to a max of <TT
+CLASS="REPLACEABLE"
+><I
+>len</I
+></TT
+>
+		    characters of variable <TT
+CLASS="REPLACEABLE"
+><I
+>var</I
+></TT
+>, from offset
+		    <TT
+CLASS="REPLACEABLE"
+><I
+>pos</I
+></TT
+>. See <A
+HREF="contributed-scripts.html#PW"
+>Example A-13</A
+>
+		    for an example of the creative use of this operator.
+		  </P
+></DD
+><DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var/Pattern/Replacement}</B
+></TT
+></DT
+><DD
+><P
+>First match of <TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>,
+		    within <TT
+CLASS="REPLACEABLE"
+><I
+>var</I
+></TT
+> replaced with
+		    <TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+>.</P
+><P
+>If <TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+> is
+		    omitted, then the first match of
+		    <TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+> is replaced by
+		    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>nothing</I
+></SPAN
+>, that is, deleted.</P
+></DD
+><DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var//Pattern/Replacement}</B
+></TT
+></DT
+><DD
+><DIV
+CLASS="FORMALPARA"
+><P
+><B
+>Global replacement. </B
+><A
+NAME="PSGLOB"
+></A
+>
+		    All matches of <TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>,
+		    within <TT
+CLASS="REPLACEABLE"
+><I
+>var</I
+></TT
+> replaced with
+		    <TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+>.</P
+></DIV
+><P
+>As above, if <TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+>
+		    is omitted, then all occurrences of
+		    <TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+> are replaced by
+		    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>nothing</I
+></SPAN
+>, that is, deleted.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX7"
+></A
+><P
+><B
+>Example 10-12. Using pattern matching to parse arbitrary strings</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;var1=abcd-1234-defg
+   4&nbsp;echo "var1 = $var1"
+   5&nbsp;
+   6&nbsp;t=${var1#*-*}
+   7&nbsp;echo "var1 (with everything, up to and including first - stripped out) = $t"
+   8&nbsp;#  t=${var1#*-}  works just the same,
+   9&nbsp;#+ since # matches the shortest string,
+  10&nbsp;#+ and * matches everything preceding, including an empty string.
+  11&nbsp;# (Thanks, Stephane Chazelas, for pointing this out.)
+  12&nbsp;
+  13&nbsp;t=${var1##*-*}
+  14&nbsp;echo "If var1 contains a \"-\", returns empty string...   var1 = $t"
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;t=${var1%*-*}
+  18&nbsp;echo "var1 (with everything from the last - on stripped out) = $t"
+  19&nbsp;
+  20&nbsp;echo
+  21&nbsp;
+  22&nbsp;# -------------------------------------------
+  23&nbsp;path_name=/home/bozo/ideas/thoughts.for.today
+  24&nbsp;# -------------------------------------------
+  25&nbsp;echo "path_name = $path_name"
+  26&nbsp;t=${path_name##/*/}
+  27&nbsp;echo "path_name, stripped of prefixes = $t"
+  28&nbsp;# Same effect as   t=`basename $path_name` in this particular case.
+  29&nbsp;#  t=${path_name%/}; t=${t##*/}   is a more general solution,
+  30&nbsp;#+ but still fails sometimes.
+  31&nbsp;#  If $path_name ends with a newline, then `basename $path_name` will not work,
+  32&nbsp;#+ but the above expression will.
+  33&nbsp;# (Thanks, S.C.)
+  34&nbsp;
+  35&nbsp;t=${path_name%/*.*}
+  36&nbsp;# Same effect as   t=`dirname $path_name`
+  37&nbsp;echo "path_name, stripped of suffixes = $t"
+  38&nbsp;# These will fail in some cases, such as "../", "/foo////", # "foo/", "/".
+  39&nbsp;#  Removing suffixes, especially when the basename has no suffix,
+  40&nbsp;#+ but the dirname does, also complicates matters.
+  41&nbsp;# (Thanks, S.C.)
+  42&nbsp;
+  43&nbsp;echo
+  44&nbsp;
+  45&nbsp;t=${path_name:11}
+  46&nbsp;echo "$path_name, with first 11 chars stripped off = $t"
+  47&nbsp;t=${path_name:11:5}
+  48&nbsp;echo "$path_name, with first 11 chars stripped off, length 5 = $t"
+  49&nbsp;
+  50&nbsp;echo
+  51&nbsp;
+  52&nbsp;t=${path_name/bozo/clown}
+  53&nbsp;echo "$path_name with \"bozo\" replaced  by \"clown\" = $t"
+  54&nbsp;t=${path_name/today/}
+  55&nbsp;echo "$path_name with \"today\" deleted = $t"
+  56&nbsp;t=${path_name//o/O}
+  57&nbsp;echo "$path_name with all o's capitalized = $t"
+  58&nbsp;t=${path_name//o/}
+  59&nbsp;echo "$path_name with all o's deleted = $t"
+  60&nbsp;
+  61&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var/#Pattern/Replacement}</B
+></TT
+></DT
+><DD
+><P
+>If <I
+CLASS="FIRSTTERM"
+>prefix</I
+> of
+		  <TT
+CLASS="REPLACEABLE"
+><I
+>var</I
+></TT
+> matches
+		  <TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>, then substitute
+		  <TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+> for
+		  <TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>.</P
+></DD
+><DT
+><TT
+CLASS="USERINPUT"
+><B
+>${var/%Pattern/Replacement}</B
+></TT
+></DT
+><DD
+><P
+>If <I
+CLASS="FIRSTTERM"
+>suffix</I
+> of
+		  <TT
+CLASS="REPLACEABLE"
+><I
+>var</I
+></TT
+> matches
+		  <TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>, then substitute
+		  <TT
+CLASS="REPLACEABLE"
+><I
+>Replacement</I
+></TT
+> for
+		  <TT
+CLASS="REPLACEABLE"
+><I
+>Pattern</I
+></TT
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="VARMATCH"
+></A
+><P
+><B
+>Example 10-13. Matching patterns at prefix or suffix of string</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# var-match.sh:
+   3&nbsp;# Demo of pattern replacement at prefix / suffix of string.
+   4&nbsp;
+   5&nbsp;v0=abc1234zip1234abc    # Original variable.
+   6&nbsp;echo "v0 = $v0"         # abc1234zip1234abc
+   7&nbsp;echo
+   8&nbsp;
+   9&nbsp;# Match at prefix (beginning) of string.
+  10&nbsp;v1=${v0/#abc/ABCDEF}    # abc1234zip1234abc
+  11&nbsp;                        # |-|
+  12&nbsp;echo "v1 = $v1"         # ABCDEF1234zip1234abc
+  13&nbsp;                        # |----|
+  14&nbsp;
+  15&nbsp;# Match at suffix (end) of string.
+  16&nbsp;v2=${v0/%abc/ABCDEF}    # abc1234zip123abc
+  17&nbsp;                        #              |-|
+  18&nbsp;echo "v2 = $v2"         # abc1234zip1234ABCDEF
+  19&nbsp;                        #               |----|
+  20&nbsp;
+  21&nbsp;echo
+  22&nbsp;
+  23&nbsp;#  ----------------------------------------------------
+  24&nbsp;#  Must match at beginning / end of string,
+  25&nbsp;#+ otherwise no replacement results.
+  26&nbsp;#  ----------------------------------------------------
+  27&nbsp;v3=${v0/#123/000}       # Matches, but not at beginning.
+  28&nbsp;echo "v3 = $v3"         # abc1234zip1234abc
+  29&nbsp;                        # NO REPLACEMENT.
+  30&nbsp;v4=${v0/%123/000}       # Matches, but not at end.
+  31&nbsp;echo "v4 = $v4"         # abc1234zip1234abc
+  32&nbsp;                        # NO REPLACEMENT.
+  33&nbsp;
+  34&nbsp;exit 0			</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="VARPREFIXM"
+></A
+><TT
+CLASS="USERINPUT"
+><B
+>${!varprefix*}</B
+></TT
+>, <TT
+CLASS="USERINPUT"
+><B
+>${!varprefix@}</B
+></TT
+></DT
+><DD
+><P
+>Matches <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>names</I
+></SPAN
+> of all
+		  previously declared variables beginning
+		    with <TT
+CLASS="PARAMETER"
+><I
+>varprefix</I
+></TT
+>.
+		      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# This is a variation on indirect reference, but with a * or @.
+   2&nbsp;# Bash, version 2.04, adds this feature.
+   3&nbsp;
+   4&nbsp;xyz23=whatever
+   5&nbsp;xyz24=
+   6&nbsp;
+   7&nbsp;a=${!xyz*}         #  Expands to *names* of declared variables
+   8&nbsp;# ^ ^   ^           + beginning with "xyz".
+   9&nbsp;echo "a = $a"      #  a = xyz23 xyz24
+  10&nbsp;a=${!xyz@}         #  Same as above.
+  11&nbsp;echo "a = $a"      #  a = xyz23 xyz24
+  12&nbsp;
+  13&nbsp;echo "---"
+  14&nbsp;
+  15&nbsp;abc23=something_else
+  16&nbsp;b=${!abc*}
+  17&nbsp;echo "b = $b"      #  b = abc23
+  18&nbsp;c=${!b}            #  Now, the more familiar type of indirect reference.
+  19&nbsp;echo $c            #  something_else</PRE
+></TD
+></TR
+></TABLE
+>
+                  </P
+></DD
+></DL
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN6306"
+HREF="parameter-substitution.html#AEN6306"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>If $parameter is null in a
+		      non-interactive script, it will terminate with a <A
+HREF="exitcodes.html#EXITCODESREF"
+><SPAN
+CLASS="RETURNVALUE"
+>127</SPAN
+>
+		      exit status</A
+> (the Bash error code for
+		      <SPAN
+CLASS="QUOTE"
+>"command not found"</SPAN
+>).</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="manipulatingvars.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="loops.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Manipulating Variables</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="manipulatingvars.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Loops and Branches</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

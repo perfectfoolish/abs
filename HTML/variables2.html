@@ -1,0 +1,4122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Another Look at Variables</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Beyond the Basics"
+HREF="part3.html"><LINK
+REL="PREVIOUS"
+TITLE="Beyond the Basics"
+HREF="part3.html"><LINK
+REL="NEXT"
+TITLE="Typing variables: declare or
+	  typeset"
+HREF="declareref.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="part3.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="declareref.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="VARIABLES2"
+></A
+>Chapter 9. Another Look at Variables</H1
+><P
+>Used properly, variables can add power and flexibility
+	  to scripts. This requires learning their subtleties and
+	  nuances.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INTERNALVARIABLES"
+></A
+>9.1. Internal Variables</H1
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="REPLACEABLE"
+><I
+><A
+HREF="internal.html#BUILTINREF"
+>Builtin</A
+> variables:</I
+></TT
+></DT
+><DD
+><P
+>variables affecting bash script behavior</P
+></DD
+><DT
+><A
+NAME="BASHVARREF"
+></A
+><TT
+CLASS="VARNAME"
+>$BASH</TT
+></DT
+><DD
+><P
+>The path to the <I
+CLASS="FIRSTTERM"
+>Bash</I
+>
+	    binary itself
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $BASH</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/bin/bash</TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></DD
+><DT
+><A
+NAME="BASHENVREF"
+></A
+><TT
+CLASS="VARNAME"
+>$BASH_ENV</TT
+></DT
+><DD
+><P
+>An <A
+HREF="othertypesv.html#ENVREF"
+>environmental
+	  variable</A
+> pointing to a Bash startup file to be read
+	  when a script is invoked</P
+></DD
+><DT
+><A
+NAME="BASHSUBSHELLREF"
+></A
+><TT
+CLASS="VARNAME"
+>$BASH_SUBSHELL</TT
+></DT
+><DD
+><P
+>A variable indicating the <A
+HREF="subshells.html#SUBSHELLSREF"
+>subshell</A
+> level. This is a
+	      new addition to Bash, <A
+HREF="bashver3.html#BASH3REF"
+>version 3</A
+>.</P
+><P
+>See <A
+HREF="subshells.html#SUBSHELL"
+>Example 21-1</A
+> for usage.</P
+></DD
+><DT
+><A
+NAME="BASHPIDREF"
+></A
+><TT
+CLASS="VARNAME"
+>$BASHPID</TT
+></DT
+><DD
+><P
+><I
+CLASS="FIRSTTERM"
+>Process ID</I
+>
+            of the current instance of Bash. This is not the same as the
+            <A
+HREF="variables2.html#PROCCID"
+>$$</A
+> variable, but it often
+            gives the same result.</P
+><P
+>		  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash4$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $$</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>11015</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash4$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $BASHPID</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>11015</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash4$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ps ax | grep bash4</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>11015 pts/2    R      0:00 bash4</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><P
+><A
+NAME="BASHPIDREF2"
+></A
+>But ...</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash4
+   2&nbsp;
+   3&nbsp;echo "\$\$ outside of subshell = $$"                              # 9602
+   4&nbsp;echo "\$BASH_SUBSHELL  outside of subshell = $BASH_SUBSHELL"      # 0
+   5&nbsp;echo "\$BASHPID outside of subshell = $BASHPID"                   # 9602
+   6&nbsp;
+   7&nbsp;echo
+   8&nbsp;
+   9&nbsp;( echo "\$\$ inside of subshell = $$"                             # 9602
+  10&nbsp;  echo "\$BASH_SUBSHELL inside of subshell = $BASH_SUBSHELL"      # 1
+  11&nbsp;  echo "\$BASHPID inside of subshell = $BASHPID" )                # 9603
+  12&nbsp;  # Note that $$ returns PID of parent process.</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$BASH_VERSINFO[n]</TT
+></DT
+><DD
+><P
+>A 6-element <A
+HREF="arrays.html#ARRAYREF"
+>array</A
+>
+	    containing version information about the installed release
+	    of Bash. This is similar to <TT
+CLASS="VARNAME"
+>$BASH_VERSION</TT
+>,
+	    below, but a bit more detailed.</P
+><P
+>	  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Bash version info:
+   2&nbsp;
+   3&nbsp;for n in 0 1 2 3 4 5
+   4&nbsp;do
+   5&nbsp;  echo "BASH_VERSINFO[$n] = ${BASH_VERSINFO[$n]}"
+   6&nbsp;done  
+   7&nbsp;
+   8&nbsp;# BASH_VERSINFO[0] = 3                      # Major version no.
+   9&nbsp;# BASH_VERSINFO[1] = 00                     # Minor version no.
+  10&nbsp;# BASH_VERSINFO[2] = 14                     # Patch level.
+  11&nbsp;# BASH_VERSINFO[3] = 1                      # Build version.
+  12&nbsp;# BASH_VERSINFO[4] = release                # Release status.
+  13&nbsp;# BASH_VERSINFO[5] = i386-redhat-linux-gnu  # Architecture
+  14&nbsp;                                            # (same as $MACHTYPE).</PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$BASH_VERSION</TT
+></DT
+><DD
+><P
+>The version of Bash installed on the system</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $BASH_VERSION</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>3.2.25(1)-release</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>tcsh% </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $BASH_VERSION</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>BASH_VERSION: Undefined variable.</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><P
+>Checking $BASH_VERSION is a good method of determining which
+	    shell is running. <A
+HREF="variables2.html#SHELLVARREF"
+>$SHELL</A
+>
+	    does not necessarily give the correct answer.</P
+></DD
+><DT
+><A
+NAME="CDPATHREF"
+></A
+><TT
+CLASS="VARNAME"
+>$CDPATH</TT
+></DT
+><DD
+><P
+>A colon-separated list of search paths
+	    available to the <A
+HREF="internal.html#CDREF"
+>cd</A
+>
+	    command, similar in function to the <A
+HREF="variables2.html#PATHREF"
+>$PATH</A
+> variable for binaries.
+            The <TT
+CLASS="VARNAME"
+>$CDPATH</TT
+> variable may be set in the
+	    local <A
+HREF="sample-bashrc.html#BASHRC"
+><TT
+CLASS="FILENAME"
+>~/.bashrc</TT
+></A
+>
+	    file.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cd bash-doc</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bash: cd: bash-doc: No such file or directory</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>CDPATH=/usr/share/doc</B
+></TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cd bash-doc</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/usr/share/doc/bash-doc</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $PWD</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/usr/share/doc/bash-doc</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+           </P
+></DD
+><DT
+><A
+NAME="DIRSTACKREF"
+></A
+><TT
+CLASS="VARNAME"
+>$DIRSTACK</TT
+></DT
+><DD
+><P
+>The top value in the directory stack
+
+              <A
+NAME="AEN4668"
+HREF="#FTN.AEN4668"
+>[1]</A
+>
+
+	    (affected by <A
+HREF="internal.html#PUSHDREF"
+>pushd</A
+> and <A
+HREF="internal.html#POPDREF"
+>popd</A
+>)</P
+><P
+>This builtin
+	    variable corresponds to the <A
+HREF="internal.html#DIRSD"
+>dirs</A
+>
+	    command, however <B
+CLASS="COMMAND"
+>dirs</B
+> shows the entire
+	    contents of the directory stack.</P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$EDITOR</TT
+></DT
+><DD
+><P
+>The default editor invoked by a script, usually
+	      <B
+CLASS="COMMAND"
+>vi</B
+> or <B
+CLASS="COMMAND"
+>emacs</B
+>.</P
+></DD
+><DT
+><A
+NAME="EUIDREF"
+></A
+><TT
+CLASS="VARNAME"
+>$EUID</TT
+></DT
+><DD
+><P
+><SPAN
+CLASS="QUOTE"
+>"effective"</SPAN
+> user ID number</P
+><P
+>Identification number of whatever identity the
+	      current user has assumed, perhaps by means of <A
+HREF="system.html#SUREF"
+>su</A
+>.</P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The <TT
+CLASS="VARNAME"
+>$EUID</TT
+> is not necessarily
+	      the same as the <A
+HREF="variables2.html#UIDREF"
+>$UID</A
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$FUNCNAME</TT
+></DT
+><DD
+><P
+>Name of the current function</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;xyz23 ()
+   2&nbsp;{
+   3&nbsp;  echo "$FUNCNAME now executing."  # xyz23 now executing.
+   4&nbsp;}
+   5&nbsp;
+   6&nbsp;xyz23
+   7&nbsp;
+   8&nbsp;echo "FUNCNAME = $FUNCNAME"        # FUNCNAME =
+   9&nbsp;                                   # Null value outside a function.</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+><P
+>See also <A
+HREF="contributed-scripts.html#USEGETOPT"
+>Example A-50</A
+>.</P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$GLOBIGNORE</TT
+></DT
+><DD
+><P
+>A list of filename patterns to be excluded from
+	    matching in <A
+HREF="globbingref.html"
+>globbing</A
+>.</P
+></DD
+><DT
+><A
+NAME="GROUPSREF"
+></A
+><TT
+CLASS="VARNAME"
+>$GROUPS</TT
+></DT
+><DD
+><P
+>Groups current user belongs to</P
+><P
+>This is a listing (array) of the group id numbers for
+	      current user, as  recorded in
+	      <A
+HREF="files.html#DATAFILESREF1"
+><TT
+CLASS="FILENAME"
+>/etc/passwd</TT
+></A
+>
+	      and <TT
+CLASS="FILENAME"
+>/etc/group</TT
+>.
+	    </P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>root# </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $GROUPS</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>root# </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${GROUPS[1]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>1</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>root# </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${GROUPS[5]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>6</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+></DD
+><DT
+><A
+NAME="HOMEDIRREF"
+></A
+><TT
+CLASS="VARNAME"
+>$HOME</TT
+></DT
+><DD
+><P
+>Home directory of the user, usually <TT
+CLASS="FILENAME"
+>/home/username</TT
+> (see <A
+HREF="parameter-substitution.html#EX6"
+>Example 10-7</A
+>)</P
+></DD
+><DT
+><A
+NAME="HOSTNAMEREF"
+></A
+><TT
+CLASS="VARNAME"
+>$HOSTNAME</TT
+></DT
+><DD
+><P
+>The <A
+HREF="system.html#HNAMEREF"
+>hostname</A
+> command
+	    assigns the system host name at bootup in an init script.
+	    However, the <TT
+CLASS="FUNCTION"
+>gethostname()</TT
+> function
+	    sets the Bash internal variable <TT
+CLASS="VARNAME"
+>$HOSTNAME</TT
+>.
+	    See also <A
+HREF="parameter-substitution.html#EX6"
+>Example 10-7</A
+>.</P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$HOSTTYPE</TT
+></DT
+><DD
+><P
+>host type</P
+><P
+>Like <A
+HREF="variables2.html#MACHTYPEREF"
+>$MACHTYPE</A
+>,
+	      identifies the system hardware.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $HOSTTYPE</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>i686</TT
+></PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+><A
+NAME="IFSREF"
+></A
+><TT
+CLASS="VARNAME"
+>$IFS</TT
+></DT
+><DD
+><P
+>internal field separator</P
+><P
+>This variable determines how Bash recognizes <A
+HREF="special-chars.html#FIELDREF"
+>fields</A
+>, or word boundaries,
+	      when it interprets character strings.</P
+><P
+><A
+NAME="IFSWS"
+></A
+></P
+><P
+>$IFS defaults to <A
+HREF="special-chars.html#WHITESPACEREF"
+>whitespace</A
+> (space,
+	      tab, and newline), but may be changed, for example,
+	      to parse a comma-separated data file. Note that
+	      <A
+HREF="variables2.html#APPREF"
+>$*</A
+> uses the first
+	      character held in <TT
+CLASS="VARNAME"
+>$IFS</TT
+>. See <A
+HREF="quoting.html#WEIRDVARS"
+>Example 5-1</A
+>.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo "$IFS"</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>(With $IFS set to default, a blank line displays.)</TT
+>
+ 	      
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo "$IFS" | cat -vte</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+> ^I$
+ $</TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>(Show whitespace: here a single space, ^I [horizontal tab],
+  and newline, and display "$" at end-of-line.)</TT
+>
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>bash -c 'set w x y z; IFS=":-;"; echo "$*"'</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>w:x:y:z</TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>(Read commands from string and assign any arguments to pos params.)</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+><P
+>Set <TT
+CLASS="VARNAME"
+>$IFS</TT
+> to eliminate whitespace
+		  in <A
+HREF="special-chars.html#PATHNAMEREF"
+>pathnames</A
+>.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;IFS="$(printf '\n\t')"   # Per David Wheeler.</PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><TT
+CLASS="VARNAME"
+>$IFS</TT
+> does not handle whitespace
+	    the same as it does other characters.
+
+	  <DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="IFSH"
+></A
+><P
+><B
+>Example 9-1. $IFS and whitespace</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# ifs.sh
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;var1="a+b+c"
+   6&nbsp;var2="d-e-f"
+   7&nbsp;var3="g,h,i"
+   8&nbsp;
+   9&nbsp;IFS=+
+  10&nbsp;# The plus sign will be interpreted as a separator.
+  11&nbsp;echo $var1     # a b c
+  12&nbsp;echo $var2     # d-e-f
+  13&nbsp;echo $var3     # g,h,i
+  14&nbsp;
+  15&nbsp;echo
+  16&nbsp;
+  17&nbsp;IFS="-"
+  18&nbsp;# The plus sign reverts to default interpretation.
+  19&nbsp;# The minus sign will be interpreted as a separator.
+  20&nbsp;echo $var1     # a+b+c
+  21&nbsp;echo $var2     # d e f
+  22&nbsp;echo $var3     # g,h,i
+  23&nbsp;
+  24&nbsp;echo
+  25&nbsp;
+  26&nbsp;IFS=","
+  27&nbsp;# The comma will be interpreted as a separator.
+  28&nbsp;# The minus sign reverts to default interpretation.
+  29&nbsp;echo $var1     # a+b+c
+  30&nbsp;echo $var2     # d-e-f
+  31&nbsp;echo $var3     # g h i
+  32&nbsp;
+  33&nbsp;echo
+  34&nbsp;
+  35&nbsp;IFS=" "
+  36&nbsp;# The space character will be interpreted as a separator.
+  37&nbsp;# The comma reverts to default interpretation.
+  38&nbsp;echo $var1     # a+b+c
+  39&nbsp;echo $var2     # d-e-f
+  40&nbsp;echo $var3     # g,h,i
+  41&nbsp;
+  42&nbsp;# ======================================================== #
+  43&nbsp;
+  44&nbsp;# However ...
+  45&nbsp;# $IFS treats whitespace differently than other characters.
+  46&nbsp;
+  47&nbsp;output_args_one_per_line()
+  48&nbsp;{
+  49&nbsp;  for arg
+  50&nbsp;  do
+  51&nbsp;    echo "[$arg]"
+  52&nbsp;  done #  ^    ^   Embed within brackets, for your viewing pleasure.
+  53&nbsp;}
+  54&nbsp;
+  55&nbsp;echo; echo "IFS=\" \""
+  56&nbsp;echo "-------"
+  57&nbsp;
+  58&nbsp;IFS=" "
+  59&nbsp;var=" a  b c   "
+  60&nbsp;#    ^ ^^   ^^^
+  61&nbsp;output_args_one_per_line $var  # output_args_one_per_line `echo " a  b c   "`
+  62&nbsp;# [a]
+  63&nbsp;# [b]
+  64&nbsp;# [c]
+  65&nbsp;
+  66&nbsp;
+  67&nbsp;echo; echo "IFS=:"
+  68&nbsp;echo "-----"
+  69&nbsp;
+  70&nbsp;IFS=:
+  71&nbsp;var=":a::b:c:::"               # Same pattern as above,
+  72&nbsp;#    ^ ^^   ^^^                #+ but substituting ":" for " "  ...
+  73&nbsp;output_args_one_per_line $var
+  74&nbsp;# []
+  75&nbsp;# [a]
+  76&nbsp;# []
+  77&nbsp;# [b]
+  78&nbsp;# [c]
+  79&nbsp;# []
+  80&nbsp;# []
+  81&nbsp;
+  82&nbsp;# Note "empty" brackets.
+  83&nbsp;# The same thing happens with the "FS" field separator in awk.
+  84&nbsp;
+  85&nbsp;
+  86&nbsp;echo
+  87&nbsp;
+  88&nbsp;exit</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+>
+
+	  </P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>(Many thanks, Stéphane Chazelas, for clarification
+	  and above examples.)</P
+><P
+>See also <A
+HREF="communications.html#ISSPAMMER"
+>Example 16-41</A
+>, <A
+HREF="loops.html#BINGREP"
+>Example 11-8</A
+>, and <A
+HREF="here-docs.html#MAILBOXGREP"
+>Example 19-14</A
+>
+             for instructive examples of using
+             <TT
+CLASS="VARNAME"
+>$IFS</TT
+>.</P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$IGNOREEOF</TT
+></DT
+><DD
+><P
+>Ignore EOF: how many end-of-files (control-D)
+	    the shell will ignore before logging out.</P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$LC_COLLATE</TT
+></DT
+><DD
+><P
+>Often set in the <A
+HREF="sample-bashrc.html"
+><TT
+CLASS="FILENAME"
+>.bashrc</TT
+></A
+>
+	    or <TT
+CLASS="FILENAME"
+>/etc/profile</TT
+> files, this
+	    variable controls collation order in filename
+	    expansion and pattern matching. If mishandled,
+	    <TT
+CLASS="VARNAME"
+>LC_COLLATE</TT
+> can cause unexpected results in
+	    <A
+HREF="globbingref.html"
+>filename globbing</A
+>.</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>As of version 2.05 of Bash,
+	    filename globbing no longer distinguishes between lowercase
+	    and uppercase letters in a character range between
+	    brackets. For example, <B
+CLASS="COMMAND"
+>ls [A-M]*</B
+>
+	    would match both <TT
+CLASS="FILENAME"
+>File1.txt</TT
+>
+	    and <TT
+CLASS="FILENAME"
+>file1.txt</TT
+>. To revert to
+	    the customary behavior of bracket matching, set
+	    <TT
+CLASS="VARNAME"
+>LC_COLLATE</TT
+> to <TT
+CLASS="OPTION"
+>C</TT
+>
+	    by an <TT
+CLASS="USERINPUT"
+><B
+>export LC_COLLATE=C</B
+></TT
+>
+	    in <TT
+CLASS="FILENAME"
+>/etc/profile</TT
+> and/or
+	    <TT
+CLASS="FILENAME"
+>~/.bashrc</TT
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$LC_CTYPE</TT
+></DT
+><DD
+><P
+>This internal variable controls character interpretation
+	    in <A
+HREF="globbingref.html"
+>globbing</A
+> and pattern
+	    matching.</P
+></DD
+><DT
+><A
+NAME="LINENOREF"
+></A
+><TT
+CLASS="VARNAME"
+>$LINENO</TT
+></DT
+><DD
+><P
+>This variable is the line number of the shell
+	    script in which this variable appears. It has significance only
+	    within the script in which it appears, and is chiefly useful for
+	    debugging purposes.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# *** BEGIN DEBUG BLOCK ***
+   2&nbsp;last_cmd_arg=$_  # Save it.
+   3&nbsp;
+   4&nbsp;echo "At line number $LINENO, variable \"v1\" = $v1"
+   5&nbsp;echo "Last command argument processed = $last_cmd_arg"
+   6&nbsp;# *** END DEBUG BLOCK ***</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+><A
+NAME="MACHTYPEREF"
+></A
+><TT
+CLASS="VARNAME"
+>$MACHTYPE</TT
+></DT
+><DD
+><P
+>machine type</P
+><P
+>Identifies the system hardware.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $MACHTYPE</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>i686</TT
+></PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+><A
+NAME="OLDPWD"
+></A
+><TT
+CLASS="VARNAME"
+>$OLDPWD</TT
+></DT
+><DD
+><P
+>Old working directory
+	  (<SPAN
+CLASS="QUOTE"
+>"OLD-Print-Working-Directory"</SPAN
+>,
+	    previous directory you were in).</P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$OSTYPE</TT
+></DT
+><DD
+><P
+>operating system type</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $OSTYPE</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>linux</TT
+></PRE
+></TD
+></TR
+></TABLE
+></DD
+><DT
+><A
+NAME="PATHREF"
+></A
+><TT
+CLASS="VARNAME"
+>$PATH</TT
+></DT
+><DD
+><P
+>Path to binaries, usually 
+	      <TT
+CLASS="FILENAME"
+>/usr/bin/</TT
+>, 
+	      <TT
+CLASS="FILENAME"
+>/usr/X11R6/bin/</TT
+>, 
+	      <TT
+CLASS="FILENAME"
+>/usr/local/bin</TT
+>, etc.</P
+><P
+>When given a command, the shell automatically does
+	      a hash table search on the directories listed in the
+	      <I
+CLASS="FIRSTTERM"
+>path</I
+> for the executable. The path
+	      is stored in the <A
+HREF="othertypesv.html#ENVREF"
+>environmental
+	      variable</A
+>, <TT
+CLASS="VARNAME"
+>$PATH</TT
+>, a list
+	      of directories, separated by colons. Normally,
+	      the system stores the <TT
+CLASS="VARNAME"
+>$PATH</TT
+>
+	      definition in <TT
+CLASS="FILENAME"
+>/etc/profile</TT
+>
+	      and/or <A
+HREF="sample-bashrc.html"
+><TT
+CLASS="FILENAME"
+>~/.bashrc</TT
+></A
+>
+	      (see <A
+HREF="files.html"
+>Appendix H</A
+>).</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><B
+CLASS="COMMAND"
+>echo $PATH</B
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin:/sbin:/usr/sbin</TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+              </P
+><P
+><TT
+CLASS="USERINPUT"
+><B
+>PATH=${PATH}:/opt/bin</B
+></TT
+> appends
+	      the <TT
+CLASS="FILENAME"
+>/opt/bin</TT
+>
+	      directory to the current path. In a script, it may be
+	      expedient to temporarily add a directory to the path
+	      in this way. When the script exits, this restores the
+	      original <TT
+CLASS="VARNAME"
+>$PATH</TT
+> (a child process, such
+	      as a script, may not change the environment of the parent
+	      process, the shell).</P
+><P
+><A
+NAME="CURRENTWDREF"
+></A
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The current <SPAN
+CLASS="QUOTE"
+>"working directory"</SPAN
+>, 
+	      <TT
+CLASS="FILENAME"
+>./</TT
+>, is usually
+	      omitted from the <TT
+CLASS="VARNAME"
+>$PATH</TT
+> as a security
+	      measure.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="PIPESTATUSREF"
+></A
+><TT
+CLASS="VARNAME"
+>$PIPESTATUS</TT
+></DT
+><DD
+><P
+><A
+HREF="arrays.html#ARRAYREF"
+>Array</A
+> variable holding
+            <A
+HREF="exit-status.html#EXITSTATUSREF"
+>exit status</A
+>(es) of
+	    last executed <I
+CLASS="FIRSTTERM"
+>foreground</I
+> <A
+HREF="special-chars.html#PIPEREF"
+>pipe</A
+>.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $PIPESTATUS</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -al | bogus_command</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bash: bogus_command: command not found</TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${PIPESTATUS[1]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>127</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>ls -al | bogus_command</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bash: bogus_command: command not found</TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $?</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>127</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+><P
+>The members of the <TT
+CLASS="VARNAME"
+>$PIPESTATUS</TT
+>
+		array hold the exit status of each respective command
+		executed in a pipe. <TT
+CLASS="VARNAME"
+>$PIPESTATUS[0]</TT
+>
+		holds the exit status of the first command in the pipe,
+		<TT
+CLASS="VARNAME"
+>$PIPESTATUS[1]</TT
+> the exit status of
+		the second command, and so on.</P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	      The <TT
+CLASS="VARNAME"
+>$PIPESTATUS</TT
+> variable
+              may contain an erroneous <SPAN
+CLASS="ERRORCODE"
+>0</SPAN
+> value
+              in a login shell (in releases prior to 3.0 of Bash).
+              </P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>tcsh% </TT
+><TT
+CLASS="USERINPUT"
+><B
+>bash</B
+></TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>who | grep nobody | sort</B
+></TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${PIPESTATUS[*]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+><P
+>	      The above lines contained in a script would produce the expected
+	      <TT
+CLASS="COMPUTEROUTPUT"
+>0 1 0</TT
+> output.
+              </P
+><P
+>	      Thank you, Wayne Pollock for pointing this out and supplying the
+	      above example.
+	      </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The <TT
+CLASS="VARNAME"
+>$PIPESTATUS</TT
+> variable gives
+	        unexpected results in some contexts.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $BASH_VERSION</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>3.00.14(1)-release</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>$ ls | bogus_command | wc</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bash: bogus_command: command not found
+ 0       0       0</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${PIPESTATUS[@]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>141 127 0</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+><P
+>Chet Ramey attributes the above output to the behavior of
+		<A
+HREF="external.html#LSREF"
+>ls</A
+>. If <I
+CLASS="FIRSTTERM"
+>ls</I
+>
+		writes to a <I
+CLASS="FIRSTTERM"
+>pipe</I
+> whose output is not
+		read, then <TT
+CLASS="REPLACEABLE"
+><I
+>SIGPIPE</I
+></TT
+> kills it,
+		and its <A
+HREF="exit-status.html#EXITSTATUSREF"
+>exit status</A
+>
+		is <SPAN
+CLASS="RETURNVALUE"
+>141</SPAN
+>. Otherwise
+		its exit status is <SPAN
+CLASS="RETURNVALUE"
+>0</SPAN
+>,
+		as expected. This likewise is the case for <A
+HREF="textproc.html#TRREF"
+>tr</A
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><TT
+CLASS="VARNAME"
+>$PIPESTATUS</TT
+> is a
+		    <SPAN
+CLASS="QUOTE"
+>"volatile"</SPAN
+> variable. It needs to be
+		    captured immediately after the pipe in question, before
+		    any other command intervenes.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>$ ls | bogus_command | wc</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bash: bogus_command: command not found
+ 0       0       0</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${PIPESTATUS[@]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0 127 0</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo ${PIPESTATUS[@]}</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The <A
+HREF="bashver3.html#PIPEFAILREF"
+>pipefail option</A
+>
+		    may be useful in cases where
+		    <TT
+CLASS="VARNAME"
+>$PIPESTATUS</TT
+> does not give the desired
+		    information.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="PPIDREF"
+></A
+><TT
+CLASS="VARNAME"
+>$PPID</TT
+></DT
+><DD
+><P
+></P
+><P
+>The <TT
+CLASS="VARNAME"
+>$PPID</TT
+> of a process is
+	    the process ID (<TT
+CLASS="VARNAME"
+>pid</TT
+>) of its parent process.
+
+	      <A
+NAME="AEN5151"
+HREF="#FTN.AEN5151"
+>[2]</A
+>
+	      </P
+><P
+>Compare this with the <A
+HREF="system.html#PIDOFREF"
+>pidof</A
+> command.</P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$PROMPT_COMMAND</TT
+></DT
+><DD
+><P
+>A variable holding a command to be executed
+	      just before the primary prompt, <TT
+CLASS="VARNAME"
+>$PS1</TT
+>
+	      is to be displayed.</P
+></DD
+><DT
+><A
+NAME="PS1REF"
+></A
+><TT
+CLASS="VARNAME"
+>$PS1</TT
+></DT
+><DD
+><P
+>This is the main prompt, seen at the command-line.</P
+></DD
+><DT
+><A
+NAME="SECPROMPTREF"
+></A
+><TT
+CLASS="VARNAME"
+>$PS2</TT
+></DT
+><DD
+><P
+>The secondary prompt, seen when additional input is
+	      expected. It displays as <SPAN
+CLASS="QUOTE"
+>"&#62;"</SPAN
+>.</P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$PS3</TT
+></DT
+><DD
+><P
+>The tertiary prompt, displayed in a
+	    <A
+HREF="testbranch.html#SELECTREF"
+>select</A
+> loop (see <A
+HREF="testbranch.html#EX31"
+>Example 11-30</A
+>).</P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$PS4</TT
+></DT
+><DD
+><P
+>The quartenary prompt, shown at the beginning of
+	    each line of output when invoking a script with the
+	    <SPAN
+CLASS="TOKEN"
+>-x</SPAN
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[verbose trace]</I
+></SPAN
+>
+	    <A
+HREF="options.html#OPTIONSREF"
+>option</A
+>. It displays as
+	    <SPAN
+CLASS="QUOTE"
+>"+"</SPAN
+>.</P
+><P
+>As a debugging aid, it may be useful to embed diagnostic
+	    information in <TT
+CLASS="VARNAME"
+>$PS4</TT
+>.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;P4='$(read time junk &#60; /proc/$$/schedstat; echo "@@@ $time @@@ " )'
+   2&nbsp;# Per suggestion by Erik Brandsberg.
+   3&nbsp;set -x
+   4&nbsp;# Various commands follow ...</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+><A
+NAME="PWDREF"
+></A
+><TT
+CLASS="VARNAME"
+>$PWD</TT
+></DT
+><DD
+><P
+>Working directory (directory you are in at the time)</P
+><P
+>This is the analog to the <A
+HREF="internal.html#PWD2REF"
+>pwd</A
+>
+	    builtin command.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;E_WRONG_DIRECTORY=85
+   4&nbsp;
+   5&nbsp;clear # Clear the screen.
+   6&nbsp;
+   7&nbsp;TargetDirectory=/home/bozo/projects/GreatAmericanNovel
+   8&nbsp;
+   9&nbsp;cd $TargetDirectory
+  10&nbsp;echo "Deleting stale files in $TargetDirectory."
+  11&nbsp;
+  12&nbsp;if [ "$PWD" != "$TargetDirectory" ]
+  13&nbsp;then    # Keep from wiping out wrong directory by accident.
+  14&nbsp;  echo "Wrong directory!"
+  15&nbsp;  echo "In $PWD, rather than $TargetDirectory!"
+  16&nbsp;  echo "Bailing out!"
+  17&nbsp;  exit $E_WRONG_DIRECTORY
+  18&nbsp;fi  
+  19&nbsp;
+  20&nbsp;rm -rf *
+  21&nbsp;rm .[A-Za-z0-9]*    # Delete dotfiles.
+  22&nbsp;# rm -f .[^.]* ..?*   to remove filenames beginning with multiple dots.
+  23&nbsp;# (shopt -s dotglob; rm -f *)   will also work.
+  24&nbsp;# Thanks, S.C. for pointing this out.
+  25&nbsp;
+  26&nbsp;#  A filename (`basename`) may contain all characters in the 0 - 255 range,
+  27&nbsp;#+ except "/".
+  28&nbsp;#  Deleting files beginning with weird characters, such as -
+  29&nbsp;#+ is left as an exercise. (Hint: rm ./-weirdname or rm -- -weirdname)
+  30&nbsp;result=$?   # Result of delete operations. If successful = 0.
+  31&nbsp;
+  32&nbsp;echo
+  33&nbsp;ls -al              # Any files left?
+  34&nbsp;echo "Done."
+  35&nbsp;echo "Old files deleted in $TargetDirectory."
+  36&nbsp;echo
+  37&nbsp;
+  38&nbsp;# Various other operations here, as necessary.
+  39&nbsp;
+  40&nbsp;exit $result</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+><A
+NAME="REPLYREF"
+></A
+><TT
+CLASS="VARNAME"
+>$REPLY</TT
+></DT
+><DD
+><P
+>The default value when a variable is not
+	    supplied to <A
+HREF="internal.html#READREF"
+>read</A
+>. Also
+	    applicable to <A
+HREF="testbranch.html#SELECTREF"
+>select</A
+> menus,
+	    but only supplies the item number of the variable chosen,
+	    not the value of the variable itself.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# reply.sh
+   3&nbsp;
+   4&nbsp;# REPLY is the default value for a 'read' command.
+   5&nbsp;
+   6&nbsp;echo
+   7&nbsp;echo -n "What is your favorite vegetable? "
+   8&nbsp;read
+   9&nbsp;
+  10&nbsp;echo "Your favorite vegetable is $REPLY."
+  11&nbsp;#  REPLY holds the value of last "read" if and only if
+  12&nbsp;#+ no variable supplied.
+  13&nbsp;
+  14&nbsp;echo
+  15&nbsp;echo -n "What is your favorite fruit? "
+  16&nbsp;read fruit
+  17&nbsp;echo "Your favorite fruit is $fruit."
+  18&nbsp;echo "but..."
+  19&nbsp;echo "Value of \$REPLY is still $REPLY."
+  20&nbsp;#  $REPLY is still set to its previous value because
+  21&nbsp;#+ the variable $fruit absorbed the new "read" value.
+  22&nbsp;
+  23&nbsp;echo
+  24&nbsp;
+  25&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$SECONDS</TT
+></DT
+><DD
+><P
+>The number of seconds the script has been running.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;TIME_LIMIT=10
+   4&nbsp;INTERVAL=1
+   5&nbsp;
+   6&nbsp;echo
+   7&nbsp;echo "Hit Control-C to exit before $TIME_LIMIT seconds."
+   8&nbsp;echo
+   9&nbsp;
+  10&nbsp;while [ "$SECONDS" -le "$TIME_LIMIT" ]
+  11&nbsp;do   #   $SECONDS is an internal shell variable.
+  12&nbsp;  if [ "$SECONDS" -eq 1 ]
+  13&nbsp;  then
+  14&nbsp;    units=second
+  15&nbsp;  else  
+  16&nbsp;    units=seconds
+  17&nbsp;  fi
+  18&nbsp;
+  19&nbsp;  echo "This script has been running $SECONDS $units."
+  20&nbsp;  #  On a slow or overburdened machine, the script may skip a count
+  21&nbsp;  #+ every once in a while.
+  22&nbsp;  sleep $INTERVAL
+  23&nbsp;done
+  24&nbsp;
+  25&nbsp;echo -e "\a"  # Beep!
+  26&nbsp;
+  27&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+><TT
+CLASS="VARNAME"
+>$SHELLOPTS</TT
+></DT
+><DD
+><P
+>The list of enabled shell <A
+HREF="options.html#OPTIONSREF"
+>options</A
+>, a readonly variable.
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $SHELLOPTS</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>braceexpand:hashall:histexpand:monitor:history:interactive-comments:emacs</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></DD
+><DT
+><A
+NAME="SHLVLREF"
+></A
+><TT
+CLASS="VARNAME"
+>$SHLVL</TT
+></DT
+><DD
+><P
+>Shell level, how deeply Bash is nested.
+	      <A
+NAME="AEN5317"
+HREF="#FTN.AEN5317"
+>[3]</A
+>
+	    If, at the command-line, $SHLVL is 1, then in a script it
+	    will increment to 2.</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>This variable is <A
+HREF="subshells.html#SUBSHNLEVREF"
+>	      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> affected by
+	      subshells</A
+>. Use <A
+HREF="variables2.html#BASHSUBSHELLREF"
+>$BASH_SUBSHELL</A
+> when you
+	      need an indication of subshell nesting.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="TMOUTREF"
+></A
+><TT
+CLASS="VARNAME"
+>$TMOUT</TT
+></DT
+><DD
+><P
+>If the <TT
+CLASS="REPLACEABLE"
+><I
+>$TMOUT</I
+></TT
+>
+	  environmental variable is set to a non-zero value
+	  <TT
+CLASS="VARNAME"
+>time</TT
+>, then the shell prompt will time out
+	  after <TT
+CLASS="VARNAME"
+>$time</TT
+> seconds. This will cause a
+	  logout.</P
+><P
+>As of version 2.05b of Bash, it is now possible to use
+	    <TT
+CLASS="REPLACEABLE"
+><I
+>$TMOUT</I
+></TT
+> in a script in combination
+	    with <A
+HREF="internal.html#READREF"
+>read</A
+>.</P
+><P
+>	  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Works in scripts for Bash, versions 2.05b and later.
+   2&nbsp;
+   3&nbsp;TMOUT=3    # Prompt times out at three seconds.
+   4&nbsp;
+   5&nbsp;echo "What is your favorite song?"
+   6&nbsp;echo "Quickly now, you only have $TMOUT seconds to answer!"
+   7&nbsp;read song
+   8&nbsp;
+   9&nbsp;if [ -z "$song" ]
+  10&nbsp;then
+  11&nbsp;  song="(no answer)"
+  12&nbsp;  # Default response.
+  13&nbsp;fi
+  14&nbsp;
+  15&nbsp;echo "Your favorite song is $song."</PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+><P
+><A
+NAME="TIMINGLOOP"
+></A
+></P
+><P
+>There are other, more complex, ways of implementing
+	    timed input in a script. One alternative is to set up
+	    a timing loop to signal the script when it times out.
+	    This also requires a signal handling routine to <A
+HREF="debugging.html#TRAPREF1"
+>trap</A
+> (see <A
+HREF="debugging.html#EX76"
+>Example 32-5</A
+>)
+	    the interrupt generated by the timing loop (whew!).</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="TMDIN"
+></A
+><P
+><B
+>Example 9-2. Timed Input</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# timed-input.sh
+   3&nbsp;
+   4&nbsp;# TMOUT=3    Also works, as of newer versions of Bash.
+   5&nbsp;
+   6&nbsp;TIMER_INTERRUPT=14
+   7&nbsp;TIMELIMIT=3  # Three seconds in this instance.
+   8&nbsp;             # May be set to different value.
+   9&nbsp;
+  10&nbsp;PrintAnswer()
+  11&nbsp;{
+  12&nbsp;  if [ "$answer" = TIMEOUT ]
+  13&nbsp;  then
+  14&nbsp;    echo $answer
+  15&nbsp;  else       # Don't want to mix up the two instances. 
+  16&nbsp;    echo "Your favorite veggie is $answer"
+  17&nbsp;    kill $!  #  Kills no-longer-needed TimerOn function
+  18&nbsp;             #+ running in background.
+  19&nbsp;             #  $! is PID of last job running in background.
+  20&nbsp;  fi
+  21&nbsp;
+  22&nbsp;}  
+  23&nbsp;
+  24&nbsp;
+  25&nbsp;TimerOn()
+  26&nbsp;{
+  27&nbsp;  sleep $TIMELIMIT &#38;&#38; kill -s 14 $$ &#38;
+  28&nbsp;  # Waits 3 seconds, then sends sigalarm to script.
+  29&nbsp;}  
+  30&nbsp;
+  31&nbsp;
+  32&nbsp;Int14Vector()
+  33&nbsp;{
+  34&nbsp;  answer="TIMEOUT"
+  35&nbsp;  PrintAnswer
+  36&nbsp;  exit $TIMER_INTERRUPT
+  37&nbsp;}  
+  38&nbsp;
+  39&nbsp;trap Int14Vector $TIMER_INTERRUPT
+  40&nbsp;# Timer interrupt (14) subverted for our purposes.
+  41&nbsp;
+  42&nbsp;echo "What is your favorite vegetable "
+  43&nbsp;TimerOn
+  44&nbsp;read answer
+  45&nbsp;PrintAnswer
+  46&nbsp;
+  47&nbsp;
+  48&nbsp;#  Admittedly, this is a kludgy implementation of timed input.
+  49&nbsp;#  However, the "-t" option to "read" simplifies this task.
+  50&nbsp;#  See the "t-out.sh" script.
+  51&nbsp;#  However, what about timing not just single user input,
+  52&nbsp;#+ but an entire script?
+  53&nbsp;
+  54&nbsp;#  If you need something really elegant ...
+  55&nbsp;#+ consider writing the application in C or C++,
+  56&nbsp;#+ using appropriate library functions, such as 'alarm' and 'setitimer.'
+  57&nbsp;
+  58&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="STTYTO"
+></A
+></P
+><P
+>An alternative is using <A
+HREF="system.html#STTYREF"
+>stty</A
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="TIMEOUT"
+></A
+><P
+><B
+>Example 9-3. Once more, timed input</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# timeout.sh
+   3&nbsp;
+   4&nbsp;#  Written by Stephane Chazelas,
+   5&nbsp;#+ and modified by the document author.
+   6&nbsp;
+   7&nbsp;INTERVAL=5                # timeout interval
+   8&nbsp;
+   9&nbsp;timedout_read() {
+  10&nbsp;  timeout=$1
+  11&nbsp;  varname=$2
+  12&nbsp;  old_tty_settings=`stty -g`
+  13&nbsp;  stty -icanon min 0 time ${timeout}0
+  14&nbsp;  eval read $varname      # or just  read $varname
+  15&nbsp;  stty "$old_tty_settings"
+  16&nbsp;  # See man page for "stty."
+  17&nbsp;}
+  18&nbsp;
+  19&nbsp;echo; echo -n "What's your name? Quick! "
+  20&nbsp;timedout_read $INTERVAL your_name
+  21&nbsp;
+  22&nbsp;#  This may not work on every terminal type.
+  23&nbsp;#  The maximum timeout depends on the terminal.
+  24&nbsp;#+ (it is often 25.5 seconds).
+  25&nbsp;
+  26&nbsp;echo
+  27&nbsp;
+  28&nbsp;if [ ! -z "$your_name" ]  # If name input before timeout ...
+  29&nbsp;then
+  30&nbsp;  echo "Your name is $your_name."
+  31&nbsp;else
+  32&nbsp;  echo "Timed out."
+  33&nbsp;fi
+  34&nbsp;
+  35&nbsp;echo
+  36&nbsp;
+  37&nbsp;# The behavior of this script differs somewhat from "timed-input.sh."
+  38&nbsp;# At each keystroke, the counter resets.
+  39&nbsp;
+  40&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Perhaps the simplest method is using the
+	    <TT
+CLASS="OPTION"
+>-t</TT
+> option to <A
+HREF="internal.html#READREF"
+>read</A
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="TOUT"
+></A
+><P
+><B
+>Example 9-4. Timed <I
+CLASS="FIRSTTERM"
+>read</I
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# t-out.sh [time-out]
+   3&nbsp;# Inspired by a suggestion from "syngin seven" (thanks).
+   4&nbsp;
+   5&nbsp;
+   6&nbsp;TIMELIMIT=4         # 4 seconds
+   7&nbsp;
+   8&nbsp;read -t $TIMELIMIT variable &#60;&#38;1
+   9&nbsp;#                           ^^^
+  10&nbsp;#  In this instance, "&#60;&#38;1" is needed for Bash 1.x and 2.x,
+  11&nbsp;#  but unnecessary for Bash 3+.
+  12&nbsp;
+  13&nbsp;echo
+  14&nbsp;
+  15&nbsp;if [ -z "$variable" ]  # Is null?
+  16&nbsp;then
+  17&nbsp;  echo "Timed out, variable still unset."
+  18&nbsp;else  
+  19&nbsp;  echo "variable = $variable"
+  20&nbsp;fi  
+  21&nbsp;
+  22&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="UIDREF"
+></A
+><TT
+CLASS="VARNAME"
+>$UID</TT
+></DT
+><DD
+><P
+>User ID number</P
+><P
+>Current user's user identification number, as
+	      recorded in <A
+HREF="files.html#DATAFILESREF1"
+><TT
+CLASS="FILENAME"
+>/etc/passwd</TT
+></A
+></P
+><P
+>This is the current user's real id, even if she has
+	      temporarily assumed another identity through <A
+HREF="system.html#SUREF"
+>su</A
+>. <TT
+CLASS="VARNAME"
+>$UID</TT
+> is a
+	      readonly variable, not subject to change from the command
+	      line or within a script, and is the counterpart to the
+	      <A
+HREF="system.html#IDREF"
+>id</A
+> builtin.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="AMIROOT"
+></A
+><P
+><B
+>Example 9-5. Am I root?</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# am-i-root.sh:   Am I root or not?
+   3&nbsp;
+   4&nbsp;ROOT_UID=0   # Root has $UID 0.
+   5&nbsp;
+   6&nbsp;if [ "$UID" -eq "$ROOT_UID" ]  # Will the real "root" please stand up?
+   7&nbsp;then
+   8&nbsp;  echo "You are root."
+   9&nbsp;else
+  10&nbsp;  echo "You are just an ordinary user (but mom loves you just the same)."
+  11&nbsp;fi
+  12&nbsp;
+  13&nbsp;exit 0
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;# ============================================================= #
+  17&nbsp;# Code below will not execute, because the script already exited.
+  18&nbsp;
+  19&nbsp;# An alternate method of getting to the root of matters:
+  20&nbsp;
+  21&nbsp;ROOTUSER_NAME=root
+  22&nbsp;
+  23&nbsp;username=`id -nu`              # Or...   username=`whoami`
+  24&nbsp;if [ "$username" = "$ROOTUSER_NAME" ]
+  25&nbsp;then
+  26&nbsp;  echo "Rooty, toot, toot. You are root."
+  27&nbsp;else
+  28&nbsp;  echo "You are just a regular fella."
+  29&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>See also <A
+HREF="sha-bang.html#EX2"
+>Example 2-3</A
+>.</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The variables <TT
+CLASS="VARNAME"
+>$ENV</TT
+>,
+	  <TT
+CLASS="VARNAME"
+>$LOGNAME</TT
+>, <TT
+CLASS="VARNAME"
+>$MAIL</TT
+>,
+	  <TT
+CLASS="VARNAME"
+>$TERM</TT
+>, <TT
+CLASS="VARNAME"
+>$USER</TT
+>, and
+	  <TT
+CLASS="VARNAME"
+>$USERNAME</TT
+> are <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+>
+	  Bash <A
+HREF="internal.html#BUILTINREF"
+>builtins</A
+>. These are,
+	  however, often set as <A
+HREF="othertypesv.html#ENVREF"
+>environmental
+	  variables</A
+> in one of the Bash <A
+HREF="files.html#FILESREF1"
+>startup files</A
+>.  <A
+NAME="SHELLVARREF"
+></A
+><TT
+CLASS="VARNAME"
+>$SHELL</TT
+>,
+	  the name of the user's login shell, may be set from
+	  <TT
+CLASS="FILENAME"
+>/etc/passwd</TT
+> or in an <SPAN
+CLASS="QUOTE"
+>"init"</SPAN
+>
+	  script, and it is likewise not a Bash builtin.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>tcsh% </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $LOGNAME</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bozo</TT
+>
+ <TT
+CLASS="PROMPT"
+>tcsh% </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $SHELL</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/bin/tcsh</TT
+>
+ <TT
+CLASS="PROMPT"
+>tcsh% </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $TERM</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>rxvt</TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $LOGNAME</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>bozo</TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $SHELL</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>/bin/tcsh</TT
+>
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $TERM</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>rxvt</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+></DL
+></DIV
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+>Positional Parameters</B
+></P
+><DL
+><DT
+><A
+NAME="POSPARAMREF"
+></A
+><TT
+CLASS="VARNAME"
+>$0</TT
+>, <TT
+CLASS="VARNAME"
+>$1</TT
+>,
+	  <TT
+CLASS="VARNAME"
+>$2</TT
+>, etc.</DT
+><DD
+><P
+>Positional parameters, passed from command
+	      line to script, passed to a function, or <A
+HREF="internal.html#SETREF"
+>set</A
+> to a variable (see <A
+HREF="othertypesv.html#EX17"
+>Example 4-5</A
+> and <A
+HREF="internal.html#EX34"
+>Example 15-16</A
+>)</P
+></DD
+><DT
+><A
+NAME="CLACOUNTREF"
+></A
+><TT
+CLASS="VARNAME"
+>$#</TT
+></DT
+><DD
+><P
+>Number of command-line arguments
+		<A
+NAME="AEN5475"
+HREF="#FTN.AEN5475"
+>[4]</A
+>
+	    or positional parameters (see <A
+HREF="wrapper.html#EX4"
+>Example 36-2</A
+>)</P
+></DD
+><DT
+><A
+NAME="APPREF"
+></A
+><TT
+CLASS="VARNAME"
+>$*</TT
+></DT
+><DD
+><P
+>All of the positional parameters, seen as a single word</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><SPAN
+CLASS="QUOTE"
+>"<TT
+CLASS="VARNAME"
+>$*</TT
+>"</SPAN
+> must be
+	    quoted.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="APPREF2"
+></A
+><TT
+CLASS="VARNAME"
+>$@</TT
+></DT
+><DD
+><P
+>Same as <SPAN
+CLASS="TOKEN"
+>$*</SPAN
+>, but each parameter is a
+	      quoted string, that is, the parameters are passed on
+	      intact, without interpretation or expansion. This means,
+	      among other things, that each parameter in the argument
+	      list is seen as a separate word.</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Of course, <SPAN
+CLASS="QUOTE"
+>"<TT
+CLASS="VARNAME"
+>$@</TT
+>"</SPAN
+>
+	    should be quoted.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ARGLIST"
+></A
+><P
+><B
+>Example 9-6. <I
+CLASS="FIRSTTERM"
+>arglist</I
+>: Listing arguments
+	      with $* and $@</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# arglist.sh
+   3&nbsp;# Invoke this script with several arguments, such as "one two three" ...
+   4&nbsp;
+   5&nbsp;E_BADARGS=85
+   6&nbsp;
+   7&nbsp;if [ ! -n "$1" ]
+   8&nbsp;then
+   9&nbsp;  echo "Usage: `basename $0` argument1 argument2 etc."
+  10&nbsp;  exit $E_BADARGS
+  11&nbsp;fi  
+  12&nbsp;
+  13&nbsp;echo
+  14&nbsp;
+  15&nbsp;index=1          # Initialize count.
+  16&nbsp;
+  17&nbsp;echo "Listing args with \"\$*\":"
+  18&nbsp;for arg in "$*"  # Doesn't work properly if "$*" isn't quoted.
+  19&nbsp;do
+  20&nbsp;  echo "Arg #$index = $arg"
+  21&nbsp;  let "index+=1"
+  22&nbsp;done             # $* sees all arguments as single word. 
+  23&nbsp;echo "Entire arg list seen as single word."
+  24&nbsp;
+  25&nbsp;echo
+  26&nbsp;
+  27&nbsp;index=1          # Reset count.
+  28&nbsp;                 # What happens if you forget to do this?
+  29&nbsp;
+  30&nbsp;echo "Listing args with \"\$@\":"
+  31&nbsp;for arg in "$@"
+  32&nbsp;do
+  33&nbsp;  echo "Arg #$index = $arg"
+  34&nbsp;  let "index+=1"
+  35&nbsp;done             # $@ sees arguments as separate words. 
+  36&nbsp;echo "Arg list seen as separate words."
+  37&nbsp;
+  38&nbsp;echo
+  39&nbsp;
+  40&nbsp;index=1          # Reset count.
+  41&nbsp;
+  42&nbsp;echo "Listing args with \$* (unquoted):"
+  43&nbsp;for arg in $*
+  44&nbsp;do
+  45&nbsp;  echo "Arg #$index = $arg"
+  46&nbsp;  let "index+=1"
+  47&nbsp;done             # Unquoted $* sees arguments as separate words. 
+  48&nbsp;echo "Arg list seen as separate words."
+  49&nbsp;
+  50&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Following a <B
+CLASS="COMMAND"
+>shift</B
+>, the
+	      <TT
+CLASS="VARNAME"
+>$@</TT
+> holds the remaining command-line
+	      parameters, lacking the previous <TT
+CLASS="VARNAME"
+>$1</TT
+>,
+	      which was lost.
+	        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Invoke with ./scriptname 1 2 3 4 5
+   3&nbsp;
+   4&nbsp;echo "$@"    # 1 2 3 4 5
+   5&nbsp;shift
+   6&nbsp;echo "$@"    # 2 3 4 5
+   7&nbsp;shift
+   8&nbsp;echo "$@"    # 3 4 5
+   9&nbsp;
+  10&nbsp;# Each "shift" loses parameter $1.
+  11&nbsp;# "$@" then contains the remaining parameters.</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+><P
+>The <TT
+CLASS="VARNAME"
+>$@</TT
+> special parameter finds
+	      use as a tool for filtering input into shell scripts. The
+	      <B
+CLASS="COMMAND"
+>cat "$@"</B
+> construction accepts input
+	      to a script either from <TT
+CLASS="FILENAME"
+>stdin</TT
+> or
+	      from files given as parameters to the script. See <A
+HREF="textproc.html#ROT13"
+>Example 16-24</A
+> and <A
+HREF="textproc.html#CRYPTOQUOTE"
+>Example 16-25</A
+>.</P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The <TT
+CLASS="VARNAME"
+>$*</TT
+> and <TT
+CLASS="VARNAME"
+>$@</TT
+>
+	      parameters sometimes display inconsistent and
+	      puzzling behavior, depending on the setting of <A
+HREF="variables2.html#IFSREF"
+>$IFS</A
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="INCOMPAT"
+></A
+><P
+><B
+>Example 9-7. Inconsistent <TT
+CLASS="VARNAME"
+>$*</TT
+> and <TT
+CLASS="VARNAME"
+>$@</TT
+> behavior</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  Erratic behavior of the "$*" and "$@" internal Bash variables,
+   4&nbsp;#+ depending on whether or not they are quoted.
+   5&nbsp;#  Demonstrates inconsistent handling of word splitting and linefeeds.
+   6&nbsp;
+   7&nbsp;
+   8&nbsp;set -- "First one" "second" "third:one" "" "Fifth: :one"
+   9&nbsp;# Setting the script arguments, $1, $2, $3, etc.
+  10&nbsp;
+  11&nbsp;echo
+  12&nbsp;
+  13&nbsp;echo 'IFS unchanged, using "$*"'
+  14&nbsp;c=0
+  15&nbsp;for i in "$*"               # quoted
+  16&nbsp;do echo "$((c+=1)): [$i]"   # This line remains the same in every instance.
+  17&nbsp;                            # Echo args.
+  18&nbsp;done
+  19&nbsp;echo ---
+  20&nbsp;
+  21&nbsp;echo 'IFS unchanged, using $*'
+  22&nbsp;c=0
+  23&nbsp;for i in $*                 # unquoted
+  24&nbsp;do echo "$((c+=1)): [$i]"
+  25&nbsp;done
+  26&nbsp;echo ---
+  27&nbsp;
+  28&nbsp;echo 'IFS unchanged, using "$@"'
+  29&nbsp;c=0
+  30&nbsp;for i in "$@"
+  31&nbsp;do echo "$((c+=1)): [$i]"
+  32&nbsp;done
+  33&nbsp;echo ---
+  34&nbsp;
+  35&nbsp;echo 'IFS unchanged, using $@'
+  36&nbsp;c=0
+  37&nbsp;for i in $@
+  38&nbsp;do echo "$((c+=1)): [$i]"
+  39&nbsp;done
+  40&nbsp;echo ---
+  41&nbsp;
+  42&nbsp;IFS=:
+  43&nbsp;echo 'IFS=":", using "$*"'
+  44&nbsp;c=0
+  45&nbsp;for i in "$*"
+  46&nbsp;do echo "$((c+=1)): [$i]"
+  47&nbsp;done
+  48&nbsp;echo ---
+  49&nbsp;
+  50&nbsp;echo 'IFS=":", using $*'
+  51&nbsp;c=0
+  52&nbsp;for i in $*
+  53&nbsp;do echo "$((c+=1)): [$i]"
+  54&nbsp;done
+  55&nbsp;echo ---
+  56&nbsp;
+  57&nbsp;var=$*
+  58&nbsp;echo 'IFS=":", using "$var" (var=$*)'
+  59&nbsp;c=0
+  60&nbsp;for i in "$var"
+  61&nbsp;do echo "$((c+=1)): [$i]"
+  62&nbsp;done
+  63&nbsp;echo ---
+  64&nbsp;
+  65&nbsp;echo 'IFS=":", using $var (var=$*)'
+  66&nbsp;c=0
+  67&nbsp;for i in $var
+  68&nbsp;do echo "$((c+=1)): [$i]"
+  69&nbsp;done
+  70&nbsp;echo ---
+  71&nbsp;
+  72&nbsp;var="$*"
+  73&nbsp;echo 'IFS=":", using $var (var="$*")'
+  74&nbsp;c=0
+  75&nbsp;for i in $var
+  76&nbsp;do echo "$((c+=1)): [$i]"
+  77&nbsp;done
+  78&nbsp;echo ---
+  79&nbsp;
+  80&nbsp;echo 'IFS=":", using "$var" (var="$*")'
+  81&nbsp;c=0
+  82&nbsp;for i in "$var"
+  83&nbsp;do echo "$((c+=1)): [$i]"
+  84&nbsp;done
+  85&nbsp;echo ---
+  86&nbsp;
+  87&nbsp;echo 'IFS=":", using "$@"'
+  88&nbsp;c=0
+  89&nbsp;for i in "$@"
+  90&nbsp;do echo "$((c+=1)): [$i]"
+  91&nbsp;done
+  92&nbsp;echo ---
+  93&nbsp;
+  94&nbsp;echo 'IFS=":", using $@'
+  95&nbsp;c=0
+  96&nbsp;for i in $@
+  97&nbsp;do echo "$((c+=1)): [$i]"
+  98&nbsp;done
+  99&nbsp;echo ---
+ 100&nbsp;
+ 101&nbsp;var=$@
+ 102&nbsp;echo 'IFS=":", using $var (var=$@)'
+ 103&nbsp;c=0
+ 104&nbsp;for i in $var
+ 105&nbsp;do echo "$((c+=1)): [$i]"
+ 106&nbsp;done
+ 107&nbsp;echo ---
+ 108&nbsp;
+ 109&nbsp;echo 'IFS=":", using "$var" (var=$@)'
+ 110&nbsp;c=0
+ 111&nbsp;for i in "$var"
+ 112&nbsp;do echo "$((c+=1)): [$i]"
+ 113&nbsp;done
+ 114&nbsp;echo ---
+ 115&nbsp;
+ 116&nbsp;var="$@"
+ 117&nbsp;echo 'IFS=":", using "$var" (var="$@")'
+ 118&nbsp;c=0
+ 119&nbsp;for i in "$var"
+ 120&nbsp;do echo "$((c+=1)): [$i]"
+ 121&nbsp;done
+ 122&nbsp;echo ---
+ 123&nbsp;
+ 124&nbsp;echo 'IFS=":", using $var (var="$@")'
+ 125&nbsp;c=0
+ 126&nbsp;for i in $var
+ 127&nbsp;do echo "$((c+=1)): [$i]"
+ 128&nbsp;done
+ 129&nbsp;
+ 130&nbsp;echo
+ 131&nbsp;
+ 132&nbsp;# Try this script with ksh or zsh -y.
+ 133&nbsp;
+ 134&nbsp;exit 0
+ 135&nbsp;
+ 136&nbsp;#  This example script written by Stephane Chazelas,
+ 137&nbsp;#+ and slightly modified by the document author.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The <B
+CLASS="COMMAND"
+>$@</B
+> and <B
+CLASS="COMMAND"
+>$*</B
+>
+	      parameters differ only when between double quotes.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="IFSEMPTY"
+></A
+><P
+><B
+>Example 9-8. <TT
+CLASS="VARNAME"
+>$*</TT
+> and <TT
+CLASS="VARNAME"
+>$@</TT
+> when
+	        <TT
+CLASS="VARNAME"
+>$IFS</TT
+> is empty</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  If $IFS set, but empty,
+   4&nbsp;#+ then "$*" and "$@" do not echo positional params as expected.
+   5&nbsp;
+   6&nbsp;mecho ()       # Echo positional parameters.
+   7&nbsp;{
+   8&nbsp;echo "$1,$2,$3";
+   9&nbsp;}
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;IFS=""         # Set, but empty.
+  13&nbsp;set a b c      # Positional parameters.
+  14&nbsp;
+  15&nbsp;mecho "$*"     # abc,,
+  16&nbsp;#                   ^^
+  17&nbsp;mecho $*       # a,b,c
+  18&nbsp;
+  19&nbsp;mecho $@       # a,b,c
+  20&nbsp;mecho "$@"     # a,b,c
+  21&nbsp;
+  22&nbsp;#  The behavior of $* and $@ when $IFS is empty depends
+  23&nbsp;#+ on which Bash or sh version being run.
+  24&nbsp;#  It is therefore inadvisable to depend on this "feature" in a script.
+  25&nbsp;
+  26&nbsp;
+  27&nbsp;# Thanks, Stephane Chazelas.
+  28&nbsp;
+  29&nbsp;exit</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+></DL
+></DIV
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+>Other Special Parameters</B
+></P
+><DL
+><DT
+><A
+NAME="FLPREF"
+></A
+><TT
+CLASS="VARNAME"
+>$-</TT
+></DT
+><DD
+><P
+>Flags passed to script (using <A
+HREF="internal.html#SETREF"
+>set</A
+>). See <A
+HREF="internal.html#EX34"
+>Example 15-16</A
+>.</P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>This was originally a <I
+CLASS="FIRSTTERM"
+>ksh</I
+>
+	      construct adopted into Bash, and unfortunately it does not
+	      seem to work reliably in Bash scripts. One possible use
+	      for it is to have a script <A
+HREF="miscellany.html#IITEST"
+>self-test
+	      whether it is interactive</A
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="PIDVARREF"
+></A
+><TT
+CLASS="VARNAME"
+>$!</TT
+></DT
+><DD
+><P
+><A
+HREF="special-chars.html#PROCESSIDDEF"
+>PID</A
+> (process ID) of last
+	      job run in background</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;LOG=$0.log
+   2&nbsp;
+   3&nbsp;COMMAND1="sleep 100"
+   4&nbsp;
+   5&nbsp;echo "Logging PIDs background commands for script: $0" &#62;&#62; "$LOG"
+   6&nbsp;# So they can be monitored, and killed as necessary.
+   7&nbsp;echo &#62;&#62; "$LOG"
+   8&nbsp;
+   9&nbsp;# Logging commands.
+  10&nbsp;
+  11&nbsp;echo -n "PID of \"$COMMAND1\":  " &#62;&#62; "$LOG"
+  12&nbsp;${COMMAND1} &#38;
+  13&nbsp;echo $! &#62;&#62; "$LOG"
+  14&nbsp;# PID of "sleep 100":  1506
+  15&nbsp;
+  16&nbsp;# Thank you, Jacques Lederer, for suggesting this.</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+><P
+>Using <TT
+CLASS="VARNAME"
+>$!</TT
+> for job control:</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;possibly_hanging_job &#38; { sleep ${TIMEOUT}; eval 'kill -9 $!' &#38;&#62; /dev/null; }
+   2&nbsp;# Forces completion of an ill-behaved program.
+   3&nbsp;# Useful, for example, in init scripts.
+   4&nbsp;
+   5&nbsp;# Thank you, Sylvain Fourmanoit, for this creative use of the "!" variable.</PRE
+></TD
+></TR
+></TABLE
+>
+
+            </P
+><P
+>Or, alternately:</P
+><P
+>              <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# This example by Matthew Sage.
+   2&nbsp;# Used with permission.
+   3&nbsp;
+   4&nbsp;TIMEOUT=30   # Timeout value in seconds
+   5&nbsp;count=0
+   6&nbsp;
+   7&nbsp;possibly_hanging_job &#38; {
+   8&nbsp;        while ((count &#60; TIMEOUT )); do
+   9&nbsp;                eval '[ ! -d "/proc/$!" ] &#38;&#38; ((count = TIMEOUT))'
+  10&nbsp;                # /proc is where information about running processes is found.
+  11&nbsp;                # "-d" tests whether it exists (whether directory exists).
+  12&nbsp;                # So, we're waiting for the job in question to show up.
+  13&nbsp;                ((count++))
+  14&nbsp;                sleep 1
+  15&nbsp;        done
+  16&nbsp;        eval '[ -d "/proc/$!" ] &#38;&#38; kill -15 $!'
+  17&nbsp;        # If the hanging job is running, kill it.
+  18&nbsp;}
+  19&nbsp;
+  20&nbsp;#  -------------------------------------------------------------- #
+  21&nbsp;
+  22&nbsp;#  However, this may not not work as specified if another process
+  23&nbsp;#+ begins to run after the "hanging_job" . . .
+  24&nbsp;#  In such a case, the wrong job may be killed.
+  25&nbsp;#  Ariel Meragelman suggests the following fix.
+  26&nbsp;
+  27&nbsp;TIMEOUT=30
+  28&nbsp;count=0
+  29&nbsp;# Timeout value in seconds
+  30&nbsp;possibly_hanging_job &#38; {
+  31&nbsp;
+  32&nbsp;while ((count &#60; TIMEOUT )); do
+  33&nbsp;  eval '[ ! -d "/proc/$lastjob" ] &#38;&#38; ((count = TIMEOUT))'
+  34&nbsp;  lastjob=$!
+  35&nbsp;  ((count++))
+  36&nbsp;  sleep 1
+  37&nbsp;done
+  38&nbsp;eval '[ -d "/proc/$lastjob" ] &#38;&#38; kill -15 $lastjob'
+  39&nbsp;
+  40&nbsp;}
+  41&nbsp;
+  42&nbsp;exit</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></DD
+><DT
+><A
+NAME="UNDERSCOREREF"
+></A
+><TT
+CLASS="VARNAME"
+>$_</TT
+></DT
+><DD
+><P
+>Special variable set to final argument of previous command
+	        executed.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="USCREF"
+></A
+><P
+><B
+>Example 9-9. Underscore variable</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;echo $_              #  /bin/bash
+   4&nbsp;                     #  Just called /bin/bash to run the script.
+   5&nbsp;                     #  Note that this will vary according to
+   6&nbsp;                     #+ how the script is invoked.
+   7&nbsp;
+   8&nbsp;du &#62;/dev/null        #  So no output from command.
+   9&nbsp;echo $_              #  du
+  10&nbsp;
+  11&nbsp;ls -al &#62;/dev/null    #  So no output from command.
+  12&nbsp;echo $_              #  -al  (last argument)
+  13&nbsp;
+  14&nbsp;:
+  15&nbsp;echo $_              #  :</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="XSTATVARREF"
+></A
+><TT
+CLASS="VARNAME"
+>$?</TT
+></DT
+><DD
+><P
+><A
+HREF="exit-status.html#EXITSTATUSREF"
+>Exit status</A
+>
+	    of a command, <A
+HREF="functions.html#FUNCTIONREF"
+>function</A
+>,
+	    or the script itself (see <A
+HREF="functions.html#MAX"
+>Example 24-7</A
+>)</P
+></DD
+><DT
+><A
+NAME="PROCCID"
+></A
+><TT
+CLASS="VARNAME"
+>$$</TT
+></DT
+><DD
+><P
+>Process ID (<I
+CLASS="FIRSTTERM"
+>PID</I
+>) of
+            the script itself.
+
+	      <A
+NAME="AEN5650"
+HREF="#FTN.AEN5650"
+>[5]</A
+>
+
+            The <TT
+CLASS="VARNAME"
+>$$</TT
+> variable often
+	    finds use in scripts to construct <SPAN
+CLASS="QUOTE"
+>"unique"</SPAN
+>
+	    temp file names (see <A
+HREF="debugging.html#ONLINE"
+>Example 32-6</A
+>, <A
+HREF="filearchiv.html#DERPM"
+>Example 16-31</A
+>, and <A
+HREF="internal.html#SELFDESTRUCT"
+>Example 15-27</A
+>).
+	    This is usually simpler than invoking <A
+HREF="filearchiv.html#MKTEMPREF"
+>mktemp</A
+>.</P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN4668"
+HREF="variables2.html#AEN4668"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><A
+NAME="STACKDEFREF"
+></A
+>
+              A <I
+CLASS="FIRSTTERM"
+>stack register</I
+>
+              is a set of consecutive memory locations, such that
+	      the values stored (<I
+CLASS="FIRSTTERM"
+>pushed</I
+>)
+	      are retrieved (<I
+CLASS="FIRSTTERM"
+>popped</I
+>)
+	      in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>reverse</I
+></SPAN
+> order. The last
+	      value stored is the first retrieved. This is
+	      sometimes called a <TT
+CLASS="REPLACEABLE"
+><I
+>LIFO</I
+></TT
+>
+	      (<I
+CLASS="FIRSTTERM"
+>last-in-first-out</I
+>) or
+	      <I
+CLASS="FIRSTTERM"
+>pushdown</I
+> stack.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN5151"
+HREF="variables2.html#AEN5151"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>The PID of the currently running script is
+		  <TT
+CLASS="VARNAME"
+>$$</TT
+>, of course.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN5317"
+HREF="variables2.html#AEN5317"
+>[3]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>		Somewhat analogous to <A
+HREF="localvar.html#RECURSIONREF"
+>recursion</A
+>, in this context
+		<I
+CLASS="FIRSTTERM"
+>nesting</I
+> refers to a pattern
+		embedded within a larger pattern. One of the definitions
+		of <I
+CLASS="FIRSTTERM"
+>nest</I
+>, according to the 1913
+		edition of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Webster's Dictionary</I
+></SPAN
+>,
+		illustrates this beautifully: <SPAN
+CLASS="QUOTE"
+>"<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>A collection of
+		boxes, cases, or the like, of graduated size, each put
+		within the one next larger.</I
+></SPAN
+>"</SPAN
+>
+	      </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN5475"
+HREF="variables2.html#AEN5475"
+>[4]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>The words <SPAN
+CLASS="QUOTE"
+>"argument"</SPAN
+>
+		and <SPAN
+CLASS="QUOTE"
+>"parameter"</SPAN
+> are often used
+		interchangeably. In the context of this document, they
+		have the same precise meaning: <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>a variable passed
+		to a script or function.</I
+></SPAN
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN5650"
+HREF="variables2.html#AEN5650"
+>[5]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>Within a script, inside a subshell,
+              <TT
+CLASS="VARNAME"
+>$$</TT
+> <A
+HREF="variables2.html#BASHPIDREF"
+>returns
+              the PID of the script</A
+>, not the
+              subshell.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="part3.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="declareref.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Beyond the Basics</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part3.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Typing variables: <B
+CLASS="COMMAND"
+>declare</B
+> or
+	  <B
+CLASS="COMMAND"
+>typeset</B
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

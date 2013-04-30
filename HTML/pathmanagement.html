@@ -1,0 +1,383 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Parsing and Managing Pathnames</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Awk"
+HREF="awk.html"><LINK
+REL="NEXT"
+TITLE="Exit Codes With Special Meanings"
+HREF="exitcodes.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="APPENDIX"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="awk.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="exitcodes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="APPENDIX"
+><H1
+><A
+NAME="PATHMANAGEMENT"
+></A
+>Appendix D. Parsing and Managing Pathnames</H1
+><P
+>Emmanual Rouat contributed the following example of parsing
+        and transforming <I
+CLASS="FIRSTTERM"
+>filenames</I
+> and, in
+        particular, <A
+HREF="special-chars.html#PATHNAMEREF"
+>pathnames</A
+>. It draws
+        heavily on the functionality of <I
+CLASS="FIRSTTERM"
+>sed</I
+>.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/usr/bin/env bash
+   2&nbsp;#-----------------------------------------------------------
+   3&nbsp;# Management of PATH, LD_LIBRARY_PATH, MANPATH variables...
+   4&nbsp;# By Emmanuel Rouat &#60;no-email&#62;
+   5&nbsp;# (Inspired by the bash documentation 'pathfuncs' and on
+   6&nbsp;# discussions found on stackoverflow:
+   7&nbsp;# http://stackoverflow.com/questions/370047/
+   8&nbsp;# http://stackoverflow.com/questions/273909/#346860 )
+   9&nbsp;# Last modified: Sat Sep 22 12:01:55 CEST 2012
+  10&nbsp;#
+  11&nbsp;# The following functions handle spaces correctly.
+  12&nbsp;# These functions belong in .bash_profile rather than in
+  13&nbsp;# .bashrc, I guess.
+  14&nbsp;#
+  15&nbsp;# The modular aspect of these functions should make it easy
+  16&nbsp;# to expand them to handle path substitutions instead
+  17&nbsp;# of path removal etc....
+  18&nbsp;#
+  19&nbsp;# See http://www.catonmat.net/blog/awk-one-liners-explained-part-two/
+  20&nbsp;# (item 43) for an explanation of the 'duplicate-entries' removal
+  21&nbsp;# (it's a nice trick!)
+  22&nbsp;#-----------------------------------------------------------
+  23&nbsp;
+  24&nbsp;# Show $@ (usually PATH) as list.
+  25&nbsp;function p_show() { local p="$@" &#38;&#38; for p; do [[ ${!p} ]] &#38;&#38;
+  26&nbsp;echo -e ${!p//:/\\n}; done }
+  27&nbsp;
+  28&nbsp;# Filter out empty lines, multiple/trailing slashes, and duplicate entries.
+  29&nbsp;function p_filter()
+  30&nbsp;{ awk '/^[ \t]*$/ {next} {sub(/\/+$/, "");gsub(/\/+/, "/")}!x[$0]++' ;}
+  31&nbsp;
+  32&nbsp;# Rebuild list of items into ':' separated word (PATH-like).
+  33&nbsp;function p_build() { paste -sd: ;}
+  34&nbsp;
+  35&nbsp;# Clean $1 (typically PATH) and rebuild it
+  36&nbsp;function p_clean()
+  37&nbsp;{ local p=${1} &#38;&#38; eval ${p}='$(p_show ${p} | p_filter | p_build)' ;}
+  38&nbsp;
+  39&nbsp;# Remove $1 from $2 (found on stackoverflow, with modifications).
+  40&nbsp;function p_rm()
+  41&nbsp;{ local d=$(echo $1 | p_filter) p=${2} &#38;&#38;
+  42&nbsp;  eval ${p}='$(p_show ${p} | p_filter | grep -xv "${d}" | p_build)' ;}
+  43&nbsp;
+  44&nbsp;#  Same as previous, but filters on a pattern (dangerous...
+  45&nbsp;#+ don't use 'bin' or '/' as pattern!).
+  46&nbsp;function p_rmpat()
+  47&nbsp;{ local d=$(echo $1 | p_filter) p=${2} &#38;&#38; eval ${p}='$(p_show ${p} |
+  48&nbsp;  p_filter | grep -v "${d}" | p_build)' ;}
+  49&nbsp;
+  50&nbsp;# Delete $1 from $2 and append it cleanly.
+  51&nbsp;function p_append()
+  52&nbsp;{ local d=$(echo $1 | p_filter) p=${2} &#38;&#38; p_rm "${d}" ${p} &#38;&#38;
+  53&nbsp;  eval ${p}='$(p_show ${p} d | p_build)' ;}
+  54&nbsp;
+  55&nbsp;# Delete $1 from $2 and prepend it cleanly.
+  56&nbsp;function p_prepend()
+  57&nbsp;{ local d=$(echo $1 | p_filter) p=${2} &#38;&#38; p_rm "${d}" ${p} &#38;&#38;
+  58&nbsp;  eval ${p}='$(p_show d ${p} | p_build)' ;}
+  59&nbsp;
+  60&nbsp;# Some tests:
+  61&nbsp;echo
+  62&nbsp;MYPATH="/bin:/usr/bin/:/bin://bin/"
+  63&nbsp;p_append "/project//my project/bin" MYPATH
+  64&nbsp;echo "Append '/project//my project/bin' to '/bin:/usr/bin/:/bin://bin/'"
+  65&nbsp;echo "(result should be: /bin:/usr/bin:/project/my project/bin)"
+  66&nbsp;echo $MYPATH
+  67&nbsp;
+  68&nbsp;echo
+  69&nbsp;MYOTHERPATH="/bin:/usr/bin/:/bin:/project//my project/bin"
+  70&nbsp;p_prepend "/project//my project/bin" MYOTHERPATH
+  71&nbsp;echo "Prepend '/project//my project/bin' \
+  72&nbsp;to '/bin:/usr/bin/:/bin:/project//my project/bin/'"
+  73&nbsp;echo "(result should be: /project/my project/bin:/bin:/usr/bin)"
+  74&nbsp;echo $MYOTHERPATH
+  75&nbsp;
+  76&nbsp;echo
+  77&nbsp;p_prepend "/project//my project/bin" FOOPATH  # FOOPATH doesn't exist.
+  78&nbsp;echo "Prepend '/project//my project/bin' to an unset variable"
+  79&nbsp;echo "(result should be: /project/my project/bin)"
+  80&nbsp;echo $FOOPATH
+  81&nbsp;
+  82&nbsp;echo
+  83&nbsp;BARPATH="/a:/b/://b c://a:/my local pub"
+  84&nbsp;p_clean BARPATH
+  85&nbsp;echo "Clean BARPATH='/a:/b/://b c://a:/my local pub'"
+  86&nbsp;echo "(result should be: /a:/b:/b c:/my local pub)"
+  87&nbsp;echo $BARPATH</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>***</P
+><P
+>David Wheeler kindly permitted me to use his instructive
+        examples.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;Doing it correctly: A quick summary
+   2&nbsp;by David Wheeler
+   3&nbsp;http://www.dwheeler.com/essays/filenames-in-shell.html
+   4&nbsp;
+   5&nbsp;So, how can you process filenames correctly in shell? Here's a quick
+   6&nbsp;summary about how to do it correctly, for the impatient who "just want the
+   7&nbsp;answer". In short: Double-quote to use "$variable" instead of $variable,
+   8&nbsp;set IFS to just newline and tab, prefix all globs/filenames so they cannot
+   9&nbsp;begin with "-" when expanded, and use one of a few templates that work
+  10&nbsp;correctly. Here are some of those templates that work correctly:
+  11&nbsp;
+  12&nbsp;
+  13&nbsp; IFS="$(printf '\n\t')"
+  14&nbsp; # Remove SPACE, so filenames with spaces work well.
+  15&nbsp;
+  16&nbsp; #  Correct glob use:
+  17&nbsp; #+ always use "for" loop, prefix glob, check for existence:
+  18&nbsp; for file in ./* ; do          # Use "./*" ... NEVER bare "*" ...
+  19&nbsp;   if [ -e "$file" ] ; then    # Make sure it isn't an empty match.
+  20&nbsp;     COMMAND ... "$file" ...
+  21&nbsp;   fi
+  22&nbsp; done
+  23&nbsp;
+  24&nbsp;
+  25&nbsp;
+  26&nbsp; # Correct glob use, but requires nonstandard bash extension.
+  27&nbsp; shopt -s nullglob  #  Bash extension,
+  28&nbsp;                    #+ so that empty glob matches will work.
+  29&nbsp; for file in ./* ; do        # Use "./*", NEVER bare "*"
+  30&nbsp;   COMMAND ... "$file" ...
+  31&nbsp; done
+  32&nbsp;
+  33&nbsp;
+  34&nbsp;
+  35&nbsp; #  These handle all filenames correctly;
+  36&nbsp; #+ can be unwieldy if COMMAND is large:
+  37&nbsp; find ... -exec COMMAND... {} \;
+  38&nbsp; find ... -exec COMMAND... {} \+ # If multiple files are okay for COMMAND.
+  39&nbsp;
+  40&nbsp;
+  41&nbsp;
+  42&nbsp; #  This skips filenames with control characters
+  43&nbsp; #+ (including tab and newline).
+  44&nbsp; IFS="$(printf '\n\t')"
+  45&nbsp; controlchars="$(printf '*[\001-\037\177]*')"
+  46&nbsp; for file in $(find . ! -name "$controlchars"') ; do
+  47&nbsp;   COMMAND "$file" ...
+  48&nbsp; done
+  49&nbsp;
+  50&nbsp;
+  51&nbsp;
+  52&nbsp; #  Okay if filenames can't contain tabs or newlines --
+  53&nbsp; #+ beware the assumption.
+  54&nbsp; IFS="$(printf '\n\t')"
+  55&nbsp; for file in $(find .) ; do
+  56&nbsp;   COMMAND "$file" ...
+  57&nbsp; done
+  58&nbsp;
+  59&nbsp;
+  60&nbsp;
+  61&nbsp; # Requires nonstandard but common extensions in find and xargs:
+  62&nbsp; find . -print0 | xargs -0 COMMAND
+  63&nbsp;
+  64&nbsp; # Requires nonstandard extensions to find and to shell (bash works).
+  65&nbsp; # variables might not stay set once the loop ends:
+  66&nbsp; find . -print0 | while IFS="" read -r -d "" file ; do ...
+  67&nbsp;   COMMAND "$file" # Use quoted "$file", not $file, everywhere.
+  68&nbsp; done
+  69&nbsp;
+  70&nbsp;
+  71&nbsp;
+  72&nbsp; #  Requires nonstandard extensions to find and to shell (bash works).
+  73&nbsp; #  Underlying system must include named pipes (FIFOs)
+  74&nbsp; #+ or the /dev/fd mechanism.
+  75&nbsp; #  In this version, variables *do* stay set after the loop ends,
+  76&nbsp; #  and you can read from stdin.
+  77&nbsp; #+ (Change the 4 to another number if fd 4 is needed.)
+  78&nbsp;
+  79&nbsp; while IFS="" read -r -d "" file &#60;&#38;4 ; do
+  80&nbsp;   COMMAND "$file"   # Use quoted "$file" -- not $file, everywhere.
+  81&nbsp; done 4&#60; &#60;(find . -print0)
+  82&nbsp;
+  83&nbsp;
+  84&nbsp; #  Named pipe version.
+  85&nbsp; #  Requires nonstandard extensions to find and to shell's read (bash ok).
+  86&nbsp; #  Underlying system must include named pipes (FIFOs).
+  87&nbsp; #  Again, in this version, variables *do* stay set after the loop ends,
+  88&nbsp; #  and you can read from stdin.
+  89&nbsp; # (Change the 4 to something else if fd 4 needed).
+  90&nbsp;
+  91&nbsp; mkfifo mypipe
+  92&nbsp;
+  93&nbsp; find . -print0 &#62; mypipe &#38;
+  94&nbsp; while IFS="" read -r -d "" file &#60;&#38;4 ; do
+  95&nbsp;   COMMAND "$file" # Use quoted "$file", not $file, everywhere.
+  96&nbsp; done 4&#60; mypipe</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="awk.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="exitcodes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Awk</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Exit Codes With Special Meanings</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

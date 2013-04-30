@@ -1,0 +1,604 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Indirect References</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part5.html"><LINK
+REL="PREVIOUS"
+TITLE="Arrays"
+HREF="arrays.html"><LINK
+REL="NEXT"
+TITLE="/dev and /proc"
+HREF="devproc.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="arrays.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devproc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="IVR"
+></A
+>Chapter 28. Indirect References</H1
+><P
+><A
+NAME="IVRREF"
+></A
+></P
+><P
+>We have seen that <A
+HREF="variables.html#VARSUBN"
+>referencing
+        a variable</A
+>, <TT
+CLASS="VARNAME"
+>$var</TT
+>, fetches its
+        <I
+CLASS="FIRSTTERM"
+>value</I
+>. <A
+NAME="EVALINDREF"
+></A
+>But,
+        what about the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>value of a value</I
+></SPAN
+>? What
+        about <TT
+CLASS="VARNAME"
+>$$var</TT
+>?</P
+><P
+>The actual notation is
+	<TT
+CLASS="REPLACEABLE"
+><I
+>\$$var</I
+></TT
+>, usually preceded by
+	an <A
+HREF="internal.html#EVALREF"
+>eval</A
+> (and sometimes an
+	<A
+HREF="internal.html#ECHOREF"
+>echo</A
+>). This is called an
+	<I
+CLASS="FIRSTTERM"
+>indirect reference</I
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="INDREF"
+></A
+><P
+><B
+>Example 28-1. Indirect Variable References</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# ind-ref.sh: Indirect variable referencing.
+   3&nbsp;# Accessing the contents of the contents of a variable.
+   4&nbsp;
+   5&nbsp;# First, let's fool around a little.
+   6&nbsp;
+   7&nbsp;var=23
+   8&nbsp;
+   9&nbsp;echo "\$var   = $var"           # $var   = 23
+  10&nbsp;# So far, everything as expected. But ...
+  11&nbsp;
+  12&nbsp;echo "\$\$var  = $$var"         # $$var  = 4570var
+  13&nbsp;#  Not useful ...
+  14&nbsp;#  \$\$ expanded to PID of the script
+  15&nbsp;#  -- refer to the entry on the $$ variable --
+  16&nbsp;#+ and "var" is echoed as plain text.
+  17&nbsp;#  (Thank you, Jakob Bohm, for pointing this out.)
+  18&nbsp;
+  19&nbsp;echo "\\\$\$var = \$$var"       # \$$var = $23
+  20&nbsp;#  As expected. The first $ is escaped and pasted on to
+  21&nbsp;#+ the value of var ($var = 23 ).
+  22&nbsp;#  Meaningful, but still not useful. 
+  23&nbsp;
+  24&nbsp;# Now, let's start over and do it the right way.
+  25&nbsp;
+  26&nbsp;# ============================================== #
+  27&nbsp;
+  28&nbsp;
+  29&nbsp;a=letter_of_alphabet   # Variable "a" holds the name of another variable.
+  30&nbsp;letter_of_alphabet=z
+  31&nbsp;
+  32&nbsp;echo
+  33&nbsp;
+  34&nbsp;# Direct reference.
+  35&nbsp;echo "a = $a"          # a = letter_of_alphabet
+  36&nbsp;
+  37&nbsp;# Indirect reference.
+  38&nbsp;  eval a=\$$a
+  39&nbsp;# ^^^        Forcing an eval(uation), and ...
+  40&nbsp;#        ^   Escaping the first $ ...
+  41&nbsp;# ------------------------------------------------------------------------
+  42&nbsp;# The 'eval' forces an update of $a, sets it to the updated value of \$$a.
+  43&nbsp;# So, we see why 'eval' so often shows up in indirect reference notation.
+  44&nbsp;# ------------------------------------------------------------------------
+  45&nbsp;  echo "Now a = $a"    # Now a = z
+  46&nbsp;
+  47&nbsp;echo
+  48&nbsp;
+  49&nbsp;
+  50&nbsp;# Now, let's try changing the second-order reference.
+  51&nbsp;
+  52&nbsp;t=table_cell_3
+  53&nbsp;table_cell_3=24
+  54&nbsp;echo "\"table_cell_3\" = $table_cell_3"            # "table_cell_3" = 24
+  55&nbsp;echo -n "dereferenced \"t\" = "; eval echo \$$t    # dereferenced "t" = 24
+  56&nbsp;# In this simple case, the following also works (why?).
+  57&nbsp;#         eval t=\$$t; echo "\"t\" = $t"
+  58&nbsp;
+  59&nbsp;echo
+  60&nbsp;
+  61&nbsp;t=table_cell_3
+  62&nbsp;NEW_VAL=387
+  63&nbsp;table_cell_3=$NEW_VAL
+  64&nbsp;echo "Changing value of \"table_cell_3\" to $NEW_VAL."
+  65&nbsp;echo "\"table_cell_3\" now $table_cell_3"
+  66&nbsp;echo -n "dereferenced \"t\" now "; eval echo \$$t
+  67&nbsp;# "eval" takes the two arguments "echo" and "\$$t" (set equal to $table_cell_3)
+  68&nbsp;
+  69&nbsp;
+  70&nbsp;echo
+  71&nbsp;
+  72&nbsp;# (Thanks, Stephane Chazelas, for clearing up the above behavior.)
+  73&nbsp;
+  74&nbsp;
+  75&nbsp;#   A more straightforward method is the ${!t} notation, discussed in the
+  76&nbsp;#+ "Bash, version 2" section.
+  77&nbsp;#   See also ex78.sh.
+  78&nbsp;
+  79&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="IRRREF"
+></A
+></P
+><TABLE
+CLASS="SIDEBAR"
+BORDER="1"
+CELLPADDING="5"
+><TR
+><TD
+><DIV
+CLASS="SIDEBAR"
+><A
+NAME="AEN18940"
+></A
+><P
+>Indirect referencing in Bash
+        is a multi-step process. First, take the name of a variable:
+	<TT
+CLASS="VARNAME"
+>varname</TT
+>. Then, reference it:
+	<TT
+CLASS="VARNAME"
+>$varname</TT
+>. Then, reference the reference:
+	<TT
+CLASS="VARNAME"
+>$$varname</TT
+>. Then, <I
+CLASS="FIRSTTERM"
+>escape</I
+>
+	the first <SPAN
+CLASS="TOKEN"
+>$</SPAN
+>: <TT
+CLASS="VARNAME"
+>\$$varname</TT
+>.
+	Finally, force a reevaluation of the expression and assign it:
+	<B
+CLASS="COMMAND"
+>eval newvar=\$$varname</B
+>.</P
+></DIV
+></TD
+></TR
+></TABLE
+><P
+>Of what practical use is indirect referencing of
+	  variables? It gives Bash a little of the functionality
+	  of <A
+HREF="variables.html#POINTERREF"
+>pointers</A
+>
+	  in <I
+CLASS="FIRSTTERM"
+>C</I
+>, for instance, in <A
+HREF="bash2.html#RESISTOR"
+>table lookup</A
+>.  And, it also has some
+	  other very interesting applications. . . .</P
+><P
+>Nils Radtke shows how to build <SPAN
+CLASS="QUOTE"
+>"dynamic"</SPAN
+>
+	  variable names and evaluate their contents. This can be useful
+	  when <A
+HREF="internal.html#SOURCEREF"
+>sourcing</A
+> configuration
+	  files.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;
+   4&nbsp;# ---------------------------------------------
+   5&nbsp;# This could be "sourced" from a separate file.
+   6&nbsp;isdnMyProviderRemoteNet=172.16.0.100
+   7&nbsp;isdnYourProviderRemoteNet=10.0.0.10
+   8&nbsp;isdnOnlineService="MyProvider"
+   9&nbsp;# ---------------------------------------------
+  10&nbsp;      
+  11&nbsp;
+  12&nbsp;remoteNet=$(eval "echo \$$(echo isdn${isdnOnlineService}RemoteNet)")
+  13&nbsp;remoteNet=$(eval "echo \$$(echo isdnMyProviderRemoteNet)")
+  14&nbsp;remoteNet=$(eval "echo \$isdnMyProviderRemoteNet")
+  15&nbsp;remoteNet=$(eval "echo $isdnMyProviderRemoteNet")
+  16&nbsp;
+  17&nbsp;echo "$remoteNet"    # 172.16.0.100
+  18&nbsp;
+  19&nbsp;# ================================================================
+  20&nbsp;
+  21&nbsp;#  And, it gets even better.
+  22&nbsp;
+  23&nbsp;#  Consider the following snippet given a variable named getSparc,
+  24&nbsp;#+ but no such variable getIa64:
+  25&nbsp;
+  26&nbsp;chkMirrorArchs () { 
+  27&nbsp;  arch="$1";
+  28&nbsp;  if [ "$(eval "echo \${$(echo get$(echo -ne $arch |
+  29&nbsp;       sed 's/^\(.\).*/\1/g' | tr 'a-z' 'A-Z'; echo $arch |
+  30&nbsp;       sed 's/^.\(.*\)/\1/g')):-false}")" = true ]
+  31&nbsp;  then
+  32&nbsp;     return 0;
+  33&nbsp;  else
+  34&nbsp;     return 1;
+  35&nbsp;  fi;
+  36&nbsp;}
+  37&nbsp;
+  38&nbsp;getSparc="true"
+  39&nbsp;unset getIa64
+  40&nbsp;chkMirrorArchs sparc
+  41&nbsp;echo $?        # 0
+  42&nbsp;               # True
+  43&nbsp;
+  44&nbsp;chkMirrorArchs Ia64
+  45&nbsp;echo $?        # 1
+  46&nbsp;               # False
+  47&nbsp;
+  48&nbsp;# Notes:
+  49&nbsp;# -----
+  50&nbsp;# Even the to-be-substituted variable name part is built explicitly.
+  51&nbsp;# The parameters to the chkMirrorArchs calls are all lower case.
+  52&nbsp;# The variable name is composed of two parts: "get" and "Sparc" . . .</PRE
+></TD
+></TR
+></TABLE
+>
+        </P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="COLTOTALER2"
+></A
+><P
+><B
+>Example 28-2. Passing an indirect reference to <I
+CLASS="FIRSTTERM"
+>awk</I
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  Another version of the "column totaler" script
+   4&nbsp;#+ that adds up a specified column (of numbers) in the target file.
+   5&nbsp;#  This one uses indirect references.
+   6&nbsp;
+   7&nbsp;ARGS=2
+   8&nbsp;E_WRONGARGS=85
+   9&nbsp;
+  10&nbsp;if [ $# -ne "$ARGS" ] # Check for proper number of command-line args.
+  11&nbsp;then
+  12&nbsp;   echo "Usage: `basename $0` filename column-number"
+  13&nbsp;   exit $E_WRONGARGS
+  14&nbsp;fi
+  15&nbsp;
+  16&nbsp;filename=$1         # Name of file to operate on.
+  17&nbsp;column_number=$2    # Which column to total up.
+  18&nbsp;
+  19&nbsp;#===== Same as original script, up to this point =====#
+  20&nbsp;
+  21&nbsp;
+  22&nbsp;# A multi-line awk script is invoked by
+  23&nbsp;#   awk "
+  24&nbsp;#   ...
+  25&nbsp;#   ...
+  26&nbsp;#   ...
+  27&nbsp;#   "
+  28&nbsp;
+  29&nbsp;
+  30&nbsp;# Begin awk script.
+  31&nbsp;# -------------------------------------------------
+  32&nbsp;awk "
+  33&nbsp;
+  34&nbsp;{ total += \$${column_number} # Indirect reference
+  35&nbsp;}
+  36&nbsp;END {
+  37&nbsp;     print total
+  38&nbsp;     }
+  39&nbsp;
+  40&nbsp;     " "$filename"
+  41&nbsp;# Note that awk doesn't need an eval preceding \$$.
+  42&nbsp;# -------------------------------------------------
+  43&nbsp;# End awk script.
+  44&nbsp;
+  45&nbsp;#  Indirect variable reference avoids the hassles
+  46&nbsp;#+ of referencing a shell variable within the embedded awk script.
+  47&nbsp;#  Thanks, Stephane Chazelas.
+  48&nbsp;
+  49&nbsp;
+  50&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>This method of indirect referencing is a bit tricky.
+	If the second order variable changes its value, then the first
+	order variable must be properly dereferenced (as in the above
+	example). <A
+NAME="IVR2"
+></A
+>Fortunately, the
+	<TT
+CLASS="REPLACEABLE"
+><I
+>${!variable}</I
+></TT
+> notation introduced
+	with <A
+HREF="bash2.html#BASH2REF"
+>version 2</A
+> of Bash
+	(see <A
+HREF="bash2.html#EX78"
+>Example 37-2</A
+> and <A
+HREF="contributed-scripts.html#HASHEX2"
+>Example A-22</A
+>) makes
+	indirect referencing more intuitive.</P
+></TD
+></TR
+></TABLE
+></DIV
+><TABLE
+CLASS="SIDEBAR"
+BORDER="1"
+CELLPADDING="5"
+><TR
+><TD
+><DIV
+CLASS="SIDEBAR"
+><A
+NAME="AEN18969"
+></A
+><P
+>Bash does not support pointer arithmetic, and this severely
+	 limits the usefulness of indirect referencing. In fact, indirect
+	 referencing in a scripting language is, at best, something of
+	 an afterthought.</P
+></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="arrays.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devproc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Arrays</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part5.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><TT
+CLASS="FILENAME"
+>/dev</TT
+> and <TT
+CLASS="FILENAME"
+>/proc</TT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

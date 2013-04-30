@@ -1,0 +1,1241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Command Substitution</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Beyond the Basics"
+HREF="part3.html"><LINK
+REL="PREVIOUS"
+TITLE="Testing and Branching"
+HREF="testbranch.html"><LINK
+REL="NEXT"
+TITLE="Arithmetic Expansion"
+HREF="arithexp.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="testbranch.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="arithexp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="COMMANDSUB"
+></A
+>Chapter 12. Command Substitution</H1
+><P
+>	     <A
+NAME="COMMANDSUBREF"
+></A
+><B
+CLASS="COMMAND"
+>Command
+	     substitution</B
+> reassigns the output of a command
+		<A
+NAME="AEN7201"
+HREF="#FTN.AEN7201"
+>[1]</A
+>
+	     or even multiple commands; it literally plugs the command
+	     output into another context.
+
+	        <A
+NAME="AEN7207"
+HREF="#FTN.AEN7207"
+>[2]</A
+>
+	     </P
+><P
+><A
+NAME="BACKQUOTESREF"
+></A
+>The classic form of command
+	      substitution uses <I
+CLASS="FIRSTTERM"
+>backquotes</I
+>
+	      (`...`). Commands within backquotes (backticks) generate
+	      command-line text.
+
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;script_name=`basename $0`
+   2&nbsp;echo "The name of this script is $script_name."</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="FORMALPARA"
+><P
+><B
+>The output of commands can be used as arguments to
+	      another command, to set a variable, and even for generating
+	      the argument list in a <A
+HREF="loops.html#FORLOOPREF1"
+>for</A
+>
+	      loop. </B
+></P
+></DIV
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;rm `cat filename`   # <SPAN
+CLASS="QUOTE"
+>"filename"</SPAN
+> contains a list of files to delete.
+   2&nbsp;#
+   3&nbsp;# S. C. points out that "arg list too long" error might result.
+   4&nbsp;# Better is              xargs rm -- &#60; filename 
+   5&nbsp;# ( -- covers those cases where <SPAN
+CLASS="QUOTE"
+>"filename"</SPAN
+> begins with a <SPAN
+CLASS="QUOTE"
+>"-"</SPAN
+> )
+   6&nbsp;
+   7&nbsp;textfile_listing=`ls *.txt`
+   8&nbsp;# Variable contains names of all *.txt files in current working directory.
+   9&nbsp;echo $textfile_listing
+  10&nbsp;
+  11&nbsp;textfile_listing2=$(ls *.txt)   # The alternative form of command substitution.
+  12&nbsp;echo $textfile_listing2
+  13&nbsp;# Same result.
+  14&nbsp;
+  15&nbsp;# A possible problem with putting a list of files into a single string
+  16&nbsp;# is that a newline may creep in.
+  17&nbsp;#
+  18&nbsp;# A safer way to assign a list of files to a parameter is with an array.
+  19&nbsp;#      shopt -s nullglob    # If no match, filename expands to nothing.
+  20&nbsp;#      textfile_listing=( *.txt )
+  21&nbsp;#
+  22&nbsp;# Thanks, S.C.</PRE
+></TD
+></TR
+></TABLE
+>
+            </P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><A
+NAME="CSSUBSH"
+></A
+>Command substitution
+              invokes a <A
+HREF="subshells.html#SUBSHELLSREF"
+>subshell</A
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><A
+NAME="CSWS"
+></A
+>Command substitution may
+                result in <A
+HREF="quoting.html#WSPLITREF"
+>word splitting</A
+>.
+	        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;COMMAND `echo a b`     # 2 args: a and b
+   2&nbsp;
+   3&nbsp;COMMAND "`echo a b`"   # 1 arg: "a b"
+   4&nbsp;
+   5&nbsp;COMMAND `echo`         # no arg
+   6&nbsp;
+   7&nbsp;COMMAND "`echo`"       # one empty arg
+   8&nbsp;
+   9&nbsp;
+  10&nbsp;# Thanks, S.C.</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><A
+NAME="CSTRNL"
+></A
+></P
+><P
+>Even when there is no word splitting, command
+	        substitution can remove trailing newlines.
+
+		<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# cd "`pwd`"  # This should always work.
+   2&nbsp;# However...
+   3&nbsp;
+   4&nbsp;mkdir 'dir with trailing newline
+   5&nbsp;'
+   6&nbsp;
+   7&nbsp;cd 'dir with trailing newline
+   8&nbsp;'
+   9&nbsp;
+  10&nbsp;cd "`pwd`"  # Error message:
+  11&nbsp;# bash: cd: /tmp/file with trailing newline: No such file or directory
+  12&nbsp;
+  13&nbsp;cd "$PWD"   # Works fine.
+  14&nbsp;
+  15&nbsp;
+  16&nbsp;
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;old_tty_setting=$(stty -g)   # Save old terminal setting.
+  20&nbsp;echo "Hit a key "
+  21&nbsp;stty -icanon -echo           # Disable "canonical" mode for terminal.
+  22&nbsp;                             # Also, disable *local* echo.
+  23&nbsp;key=$(dd bs=1 count=1 2&#62; /dev/null)   # Using 'dd' to get a keypress.
+  24&nbsp;stty "$old_tty_setting"      # Restore old setting. 
+  25&nbsp;echo "You hit ${#key} key."  # ${#variable} = number of characters in $variable
+  26&nbsp;#
+  27&nbsp;# Hit any key except RETURN, and the output is "You hit 1 key."
+  28&nbsp;# Hit RETURN, and it's "You hit 0 key."
+  29&nbsp;# The newline gets eaten in the command substitution.
+  30&nbsp;
+  31&nbsp;#Code snippet by Stéphane Chazelas.</PRE
+></TD
+></TR
+></TABLE
+>
+              </P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Using <B
+CLASS="COMMAND"
+>echo</B
+> to output an
+		<I
+CLASS="FIRSTTERM"
+>unquoted</I
+> variable set with command
+		substitution removes trailing newlines characters from
+		the output of the reassigned command(s). This can cause
+		unpleasant surprises.
+
+		<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;dir_listing=`ls -l`
+   2&nbsp;echo $dir_listing     # unquoted
+   3&nbsp;
+   4&nbsp;# Expecting a nicely ordered directory listing.
+   5&nbsp;
+   6&nbsp;# However, what you get is:
+   7&nbsp;# total 3 -rw-rw-r-- 1 bozo bozo 30 May 13 17:15 1.txt -rw-rw-r-- 1 bozo
+   8&nbsp;# bozo 51 May 15 20:57 t2.sh -rwxr-xr-x 1 bozo bozo 217 Mar 5 21:13 wi.sh
+   9&nbsp;
+  10&nbsp;# The newlines disappeared.
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;echo "$dir_listing"   # quoted
+  14&nbsp;# -rw-rw-r--    1 bozo       30 May 13 17:15 1.txt
+  15&nbsp;# -rw-rw-r--    1 bozo       51 May 15 20:57 t2.sh
+  16&nbsp;# -rwxr-xr-x    1 bozo      217 Mar  5 21:13 wi.sh</PRE
+></TD
+></TR
+></TABLE
+>
+              </P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Command substitution even permits setting a variable to the
+	       contents of a file, using either <A
+HREF="io-redirection.html#IOREDIRREF"
+>redirection</A
+> or the <A
+HREF="external.html#CATREF"
+>cat</A
+> command.</P
+><P
+>	         <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;variable1=`&#60;file1`      #  Set "variable1" to contents of "file1".
+   2&nbsp;variable2=`cat file2`   #  Set "variable2" to contents of "file2".
+   3&nbsp;                        #  This, however, forks a new process,
+   4&nbsp;                        #+ so the line of code executes slower than the above version.
+   5&nbsp;
+   6&nbsp;#  Note that the variables may contain embedded whitespace,
+   7&nbsp;#+ or even (horrors), control characters.
+   8&nbsp;
+   9&nbsp;#  It is not necessary to explicitly assign a variable.
+  10&nbsp;echo "` &#60;$0`"           # Echoes the script itself to stdout.</PRE
+></TD
+></TR
+></TABLE
+>
+             </P
+><P
+>	         <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#  Excerpts from system file, /etc/rc.d/rc.sysinit
+   2&nbsp;#+ (on a Red Hat Linux installation)
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;if [ -f /fsckoptions ]; then
+   6&nbsp;        fsckoptions=`cat /fsckoptions`
+   7&nbsp;...
+   8&nbsp;fi
+   9&nbsp;#
+  10&nbsp;#
+  11&nbsp;if [ -e "/proc/ide/${disk[$device]}/media" ] ; then
+  12&nbsp;             hdmedia=`cat /proc/ide/${disk[$device]}/media`
+  13&nbsp;...
+  14&nbsp;fi
+  15&nbsp;#
+  16&nbsp;#
+  17&nbsp;if [ ! -n "`uname -r | grep -- "-"`" ]; then
+  18&nbsp;       ktag="`cat /proc/version`"
+  19&nbsp;...
+  20&nbsp;fi
+  21&nbsp;#
+  22&nbsp;#
+  23&nbsp;if [ $usb = "1" ]; then
+  24&nbsp;    sleep 5
+  25&nbsp;    mouseoutput=`cat /proc/bus/usb/devices 2&#62;/dev/null|grep -E "^I.*Cls=03.*Prot=02"`
+  26&nbsp;    kbdoutput=`cat /proc/bus/usb/devices 2&#62;/dev/null|grep -E "^I.*Cls=03.*Prot=01"`
+  27&nbsp;...
+  28&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+>
+             </P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Do not set a variable to the contents of a
+	       <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>long</I
+></SPAN
+> text file unless you have a very good
+	       reason for doing so. Do not set a variable to the contents of a
+	       <I
+CLASS="FIRSTTERM"
+>binary</I
+> file, even as a joke.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="STUPSCR"
+></A
+><P
+><B
+>Example 12-1. Stupid script tricks</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# stupid-script-tricks.sh: Don't try this at home, folks.
+   3&nbsp;# From "Stupid Script Tricks," Volume I.
+   4&nbsp;
+   5&nbsp;exit 99  ### Comment out this line if you dare.
+   6&nbsp;
+   7&nbsp;dangerous_variable=`cat /boot/vmlinuz`   # The compressed Linux kernel itself.
+   8&nbsp;
+   9&nbsp;echo "string-length of \$dangerous_variable = ${#dangerous_variable}"
+  10&nbsp;# string-length of $dangerous_variable = 794151
+  11&nbsp;# (Newer kernels are bigger.)
+  12&nbsp;# Does not give same count as 'wc -c /boot/vmlinuz'.
+  13&nbsp;
+  14&nbsp;# echo "$dangerous_variable"
+  15&nbsp;# Don't try this! It would hang the script.
+  16&nbsp;
+  17&nbsp;
+  18&nbsp;#  The document author is aware of no useful applications for
+  19&nbsp;#+ setting a variable to the contents of a binary file.
+  20&nbsp;
+  21&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Notice that a <I
+CLASS="FIRSTTERM"
+>buffer overrun</I
+>
+	       does not occur. This is one instance where an interpreted
+	       language, such as Bash, provides more protection from
+	       programmer mistakes than a compiled language.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+><A
+NAME="CSVL"
+></A
+></P
+><P
+>Command substitution permits setting a variable to the
+		output of a <A
+HREF="loops.html#FORLOOPREF1"
+>loop</A
+>. The
+		key to this is grabbing the output of an <A
+HREF="internal.html#ECHOREF"
+>echo</A
+> command within the
+		loop.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="CSUBLOOP"
+></A
+><P
+><B
+>Example 12-2. Generating a variable from a loop</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# csubloop.sh: Setting a variable to the output of a loop.
+   3&nbsp;
+   4&nbsp;variable1=`for i in 1 2 3 4 5
+   5&nbsp;do
+   6&nbsp;  echo -n "$i"                 #  The 'echo' command is critical
+   7&nbsp;done`                          #+ to command substitution here.
+   8&nbsp;
+   9&nbsp;echo "variable1 = $variable1"  # variable1 = 12345
+  10&nbsp;
+  11&nbsp;
+  12&nbsp;i=0
+  13&nbsp;variable2=`while [ "$i" -lt 10 ]
+  14&nbsp;do
+  15&nbsp;  echo -n "$i"                 # Again, the necessary 'echo'.
+  16&nbsp;  let "i += 1"                 # Increment.
+  17&nbsp;done`
+  18&nbsp;
+  19&nbsp;echo "variable2 = $variable2"  # variable2 = 0123456789
+  20&nbsp;
+  21&nbsp;#  Demonstrates that it's possible to embed a loop
+  22&nbsp;#+ within a variable declaration.
+  23&nbsp;
+  24&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="CSTOOLSET"
+></A
+></P
+><TABLE
+CLASS="SIDEBAR"
+BORDER="1"
+CELLPADDING="5"
+><TR
+><TD
+><DIV
+CLASS="SIDEBAR"
+><A
+NAME="AEN7269"
+></A
+><P
+>Command substitution makes it possible to extend the
+		toolset available to Bash. It is simply a matter
+		of writing a program or script that outputs to
+		<TT
+CLASS="FILENAME"
+>stdout</TT
+> (like a well-behaved UNIX
+		tool should) and assigning that output to a variable.</P
+><P
+>		<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#include &#60;stdio.h&#62;
+   2&nbsp;
+   3&nbsp;/*  "Hello, world." C program  */		
+   4&nbsp;
+   5&nbsp;int main()
+   6&nbsp;{
+   7&nbsp;  printf( "Hello, world.\n" );
+   8&nbsp;  return (0);
+   9&nbsp;}</PRE
+></TD
+></TR
+></TABLE
+>
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>gcc -o hello hello.c</B
+></TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+		</P
+><P
+>                <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# hello.sh		
+   3&nbsp;
+   4&nbsp;greeting=`./hello`
+   5&nbsp;echo $greeting</PRE
+></TD
+></TR
+></TABLE
+>
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>sh hello.sh</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Hello, world.</TT
+>
+ 	        </PRE
+></TD
+></TR
+></TABLE
+>
+	        </P
+></DIV
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><A
+NAME="CSPARENS"
+></A
+>The <B
+CLASS="COMMAND"
+>$(...)</B
+>
+		form has superseded backticks for command
+		substitution.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;output=$(sed -n /"$1"/p $file)   # From "grp.sh"	example.
+   2&nbsp;	      
+   3&nbsp;# Setting a variable to the contents of a text file.
+   4&nbsp;File_contents1=$(cat $file1)      
+   5&nbsp;File_contents2=$(&#60;$file2)        # Bash permits this also.</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The <B
+CLASS="COMMAND"
+>$(...)</B
+> form of command substitution
+	        treats a double backslash in a different way than
+		<B
+CLASS="COMMAND"
+>`...`</B
+>.</P
+><P
+>		
+	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo `echo \\`</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+></TT
+>
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $(echo \\)</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>\</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+              </P
+><P
+><A
+NAME="CSNEST"
+></A
+></P
+><P
+>The <B
+CLASS="COMMAND"
+>$(...)</B
+> form of command
+                substitution permits nesting.
+		  <A
+NAME="AEN7304"
+HREF="#FTN.AEN7304"
+>[3]</A
+>
+		
+		</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;word_count=$( wc -w $(echo * | awk '{print $8}') )</PRE
+></TD
+></TR
+></TABLE
+>
+              </P
+><P
+>Or, for something a bit more elaborate . . .</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="AGRAM2"
+></A
+><P
+><B
+>Example 12-3. Finding anagrams</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# agram2.sh
+   3&nbsp;# Example of nested command substitution.
+   4&nbsp;
+   5&nbsp;#  Uses "anagram" utility
+   6&nbsp;#+ that is part of the author's "yawl" word list package.
+   7&nbsp;#  http://ibiblio.org/pub/Linux/libs/yawl-0.3.2.tar.gz
+   8&nbsp;#  http://bash.deta.in/yawl-0.3.2.tar.gz
+   9&nbsp;
+  10&nbsp;E_NOARGS=86
+  11&nbsp;E_BADARG=87
+  12&nbsp;MINLEN=7
+  13&nbsp;
+  14&nbsp;if [ -z "$1" ]
+  15&nbsp;then
+  16&nbsp;  echo "Usage $0 LETTERSET"
+  17&nbsp;  exit $E_NOARGS         # Script needs a command-line argument.
+  18&nbsp;elif [ ${#1} -lt $MINLEN ]
+  19&nbsp;then
+  20&nbsp;  echo "Argument must have at least $MINLEN letters."
+  21&nbsp;  exit $E_BADARG
+  22&nbsp;fi
+  23&nbsp;
+  24&nbsp;
+  25&nbsp;
+  26&nbsp;FILTER='.......'         # Must have at least 7 letters.
+  27&nbsp;#       1234567
+  28&nbsp;Anagrams=( $(echo $(anagram $1 | grep $FILTER) ) )
+  29&nbsp;#          $(     $(  nested command sub.    ) )
+  30&nbsp;#        (              array assignment         )
+  31&nbsp;
+  32&nbsp;echo
+  33&nbsp;echo "${#Anagrams[*]}  7+ letter anagrams found"
+  34&nbsp;echo
+  35&nbsp;echo ${Anagrams[0]}      # First anagram.
+  36&nbsp;echo ${Anagrams[1]}      # Second anagram.
+  37&nbsp;                         # Etc.
+  38&nbsp;
+  39&nbsp;# echo "${Anagrams[*]}"  # To list all the anagrams in a single line . . .
+  40&nbsp;
+  41&nbsp;#  Look ahead to the Arrays chapter for enlightenment on
+  42&nbsp;#+ what's going on here.
+  43&nbsp;
+  44&nbsp;# See also the agram.sh script for an exercise in anagram finding.
+  45&nbsp;
+  46&nbsp;exit $?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Examples of command substitution in shell scripts:
+       <OL
+TYPE="1"
+><LI
+><P
+><A
+HREF="loops.html#BINGREP"
+>Example 11-8</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="testbranch.html#CASECMD"
+>Example 11-27</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="randomvar.html#SEEDINGRANDOM"
+>Example 9-16</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="moreadv.html#EX57"
+>Example 16-3</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="textproc.html#LOWERCASE"
+>Example 16-22</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="textproc.html#GRP"
+>Example 16-17</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="extmisc.html#EX53"
+>Example 16-54</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="loops.html#EX24"
+>Example 11-14</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="loops.html#SYMLINKS"
+>Example 11-11</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="filearchiv.html#STRIPC"
+>Example 16-32</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="redircb.html#REDIR4"
+>Example 20-8</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="contributed-scripts.html#TREE"
+>Example A-16</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="procref1.html#PIDID"
+>Example 29-3</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="mathc.html#MONTHLYPMT"
+>Example 16-47</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="mathc.html#BASE"
+>Example 16-48</A
+></P
+></LI
+><LI
+><P
+><A
+HREF="mathc.html#ALTBC"
+>Example 16-49</A
+></P
+></LI
+></OL
+>
+     </P
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN7201"
+HREF="commandsub.html#AEN7201"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>For purposes of <I
+CLASS="FIRSTTERM"
+>command
+		substitution</I
+>, a <B
+CLASS="COMMAND"
+>command</B
+>
+		may be an external system command, an internal scripting
+		<A
+HREF="internal.html#BUILTINREF"
+>builtin</A
+>, or even <A
+HREF="assortedtips.html#RVT"
+>a script function</A
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN7207"
+HREF="commandsub.html#AEN7207"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>In a more technically correct sense,
+		<I
+CLASS="FIRSTTERM"
+>command substitution</I
+> extracts the
+		<TT
+CLASS="FILENAME"
+>stdout</TT
+> of a command, then assigns
+		it to a variable using the <SPAN
+CLASS="TOKEN"
+>=</SPAN
+>
+		operator.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN7304"
+HREF="commandsub.html#AEN7304"
+>[3]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>		    In fact, nesting with backticks is also possible,
+		    but only by escaping the inner backticks, as John
+		    Default points out.
+		      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;word_count=` wc -w \`echo * | awk '{print $8}'\` `</PRE
+></TD
+></TR
+></TABLE
+>
+		    </P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="testbranch.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="arithexp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Testing and Branching</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part3.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Arithmetic Expansion</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

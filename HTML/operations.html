@@ -1,0 +1,1443 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Operations and Related Topics</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Basics"
+HREF="part2.html"><LINK
+REL="PREVIOUS"
+TITLE="Testing Your Knowledge of Tests"
+HREF="testtest.html"><LINK
+REL="NEXT"
+TITLE="Numerical Constants"
+HREF="numerical-constants.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="testtest.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="numerical-constants.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="OPERATIONS"
+></A
+>Chapter 8. Operations and Related Topics</H1
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="OPS"
+></A
+>8.1. Operators</H1
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="ASNOP1"
+></A
+>assignment</B
+></P
+><DL
+><DT
+><TT
+CLASS="REPLACEABLE"
+><I
+>variable assignment</I
+></TT
+></DT
+><DD
+><P
+>Initializing or changing the value of a variable</P
+></DD
+><DT
+>=</DT
+><DD
+><P
+>All-purpose assignment operator, which works for both
+	    arithmetic and string assignments.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;var=27
+   2&nbsp;category=minerals  # No spaces allowed after the "=".</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Do not confuse the <SPAN
+CLASS="QUOTE"
+>"="</SPAN
+> assignment
+	      operator with the <A
+HREF="comparison-ops.html#EQUALSIGNREF"
+>= test
+	      operator</A
+>.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#   =  as a test operator
+   2&nbsp;
+   3&nbsp;if [ "$string1" = "$string2" ]
+   4&nbsp;then
+   5&nbsp;   command
+   6&nbsp;fi
+   7&nbsp;
+   8&nbsp;#  if [ "X$string1" = "X$string2" ] is safer,
+   9&nbsp;#+ to prevent an error message should one of the variables be empty.
+  10&nbsp;#  (The prepended "X" characters cancel out.)</PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+></DL
+></DIV
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="AROPS1"
+></A
+>arithmetic operators</B
+></P
+><DL
+><DT
+><SPAN
+CLASS="TOKEN"
+>+</SPAN
+></DT
+><DD
+><P
+>plus</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>-</SPAN
+></DT
+><DD
+><P
+>minus</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>*</SPAN
+></DT
+><DD
+><P
+>multiplication</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>/</SPAN
+></DT
+><DD
+><P
+>division</P
+></DD
+><DT
+><A
+NAME="EXPONENTIATIONREF"
+></A
+><SPAN
+CLASS="TOKEN"
+>**</SPAN
+></DT
+><DD
+><P
+>exponentiation</P
+><P
+>	    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;# Bash, version 2.02, introduced the "**" exponentiation operator.
+   2&nbsp;
+   3&nbsp;let "z=5**3"    # 5 * 5 * 5
+   4&nbsp;echo "z = $z"   # z = 125</PRE
+></TD
+></TR
+></TABLE
+>
+          </P
+></DD
+><DT
+><A
+NAME="MODULOREF"
+></A
+><SPAN
+CLASS="TOKEN"
+>%</SPAN
+></DT
+><DD
+><P
+>modulo, or mod (returns the
+	    <I
+CLASS="FIRSTTERM"
+>remainder</I
+> of an integer division
+	    operation)</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>expr 5 % 3</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>2</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>5/3 = 1, with remainder 2</I
+></SPAN
+>
+	    </P
+><P
+>This operator finds use in, among other things,
+	    generating numbers within a specific range (see <A
+HREF="randomvar.html#EX21"
+>Example 9-11</A
+> and <A
+HREF="randomvar.html#RANDOMTEST"
+>Example 9-15</A
+>) and
+	    formatting program output (see <A
+HREF="arrays.html#QFUNCTION"
+>Example 27-16</A
+> and
+	    <A
+HREF="contributed-scripts.html#COLLATZ"
+>Example A-6</A
+>). It can even be used to generate
+	    prime numbers, (see <A
+HREF="contributed-scripts.html#PRIMES"
+>Example A-15</A
+>). Modulo turns
+	    up surprisingly often in numerical recipes.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="GCD"
+></A
+><P
+><B
+>Example 8-1. Greatest common divisor</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# gcd.sh: greatest common divisor
+   3&nbsp;#         Uses Euclid's algorithm
+   4&nbsp;
+   5&nbsp;#  The "greatest common divisor" (gcd) of two integers
+   6&nbsp;#+ is the largest integer that will divide both, leaving no remainder.
+   7&nbsp;
+   8&nbsp;#  Euclid's algorithm uses successive division.
+   9&nbsp;#    In each pass,
+  10&nbsp;#+      dividend &#60;---  divisor
+  11&nbsp;#+      divisor  &#60;---  remainder
+  12&nbsp;#+   until remainder = 0.
+  13&nbsp;#    The gcd = dividend, on the final pass.
+  14&nbsp;#
+  15&nbsp;#  For an excellent discussion of Euclid's algorithm, see
+  16&nbsp;#+ Jim Loy's site, http://www.jimloy.com/number/euclids.htm.
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;# ------------------------------------------------------
+  20&nbsp;# Argument check
+  21&nbsp;ARGS=2
+  22&nbsp;E_BADARGS=85
+  23&nbsp;
+  24&nbsp;if [ $# -ne "$ARGS" ]
+  25&nbsp;then
+  26&nbsp;  echo "Usage: `basename $0` first-number second-number"
+  27&nbsp;  exit $E_BADARGS
+  28&nbsp;fi
+  29&nbsp;# ------------------------------------------------------
+  30&nbsp;
+  31&nbsp;
+  32&nbsp;gcd ()
+  33&nbsp;{
+  34&nbsp;
+  35&nbsp;  dividend=$1             #  Arbitrary assignment.
+  36&nbsp;  divisor=$2              #! It doesn't matter which of the two is larger.
+  37&nbsp;                          #  Why not?
+  38&nbsp;
+  39&nbsp;  remainder=1             #  If an uninitialized variable is used inside
+  40&nbsp;                          #+ test brackets, an error message results.
+  41&nbsp;
+  42&nbsp;  until [ "$remainder" -eq 0 ]
+  43&nbsp;  do    #  ^^^^^^^^^^  Must be previously initialized!
+  44&nbsp;    let "remainder = $dividend % $divisor"
+  45&nbsp;    dividend=$divisor     # Now repeat with 2 smallest numbers.
+  46&nbsp;    divisor=$remainder
+  47&nbsp;  done                    # Euclid's algorithm
+  48&nbsp;
+  49&nbsp;}                         # Last $dividend is the gcd.
+  50&nbsp;
+  51&nbsp;
+  52&nbsp;gcd $1 $2
+  53&nbsp;
+  54&nbsp;echo; echo "GCD of $1 and $2 = $dividend"; echo
+  55&nbsp;
+  56&nbsp;
+  57&nbsp;# Exercises :
+  58&nbsp;# ---------
+  59&nbsp;# 1) Check command-line arguments to make sure they are integers,
+  60&nbsp;#+   and exit the script with an appropriate error message if not.
+  61&nbsp;# 2) Rewrite the gcd () function to use local variables.
+  62&nbsp;
+  63&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="ARITHOPSCOMB"
+></A
+><SPAN
+CLASS="TOKEN"
+>+=</SPAN
+></DT
+><DD
+><P
+><I
+CLASS="FIRSTTERM"
+>plus-equal</I
+> (increment variable
+            by a constant)
+
+            <A
+NAME="AEN3904"
+HREF="#FTN.AEN3904"
+>[1]</A
+>
+
+	    </P
+><P
+><TT
+CLASS="USERINPUT"
+><B
+>let "var += 5"</B
+></TT
+> results in
+	      <TT
+CLASS="PARAMETER"
+><I
+>var</I
+></TT
+> being incremented by
+	      <TT
+CLASS="LITERAL"
+>5</TT
+>.</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>-=</SPAN
+></DT
+><DD
+><P
+><I
+CLASS="FIRSTTERM"
+>minus-equal</I
+> (decrement
+	    variable by a constant)</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>*=</SPAN
+></DT
+><DD
+><P
+><I
+CLASS="FIRSTTERM"
+>times-equal</I
+> (multiply
+	    variable by a constant)</P
+><P
+><TT
+CLASS="USERINPUT"
+><B
+>let "var *= 4"</B
+></TT
+> results in <TT
+CLASS="PARAMETER"
+><I
+>var</I
+></TT
+>
+	    being multiplied by <TT
+CLASS="LITERAL"
+>4</TT
+>.</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>/=</SPAN
+></DT
+><DD
+><P
+><I
+CLASS="FIRSTTERM"
+>slash-equal</I
+> (divide
+	    variable by a constant)</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>%=</SPAN
+></DT
+><DD
+><P
+><I
+CLASS="FIRSTTERM"
+>mod-equal</I
+>
+	    (<I
+CLASS="FIRSTTERM"
+>remainder</I
+>
+	    of dividing variable by a constant)</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Arithmetic operators often occur in an
+        <A
+HREF="moreadv.html#EXPRREF"
+>expr</A
+> or <A
+HREF="internal.html#LETREF"
+>let</A
+> expression.</I
+></SPAN
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ARITHOPS"
+></A
+><P
+><B
+>Example 8-2. Using Arithmetic Operations</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Counting to 11 in 10 different ways.
+   3&nbsp;
+   4&nbsp;n=1; echo -n "$n "
+   5&nbsp;
+   6&nbsp;let "n = $n + 1"   # let "n = n + 1"  also works.
+   7&nbsp;echo -n "$n "
+   8&nbsp;
+   9&nbsp;
+  10&nbsp;: $((n = $n + 1))
+  11&nbsp;#  ":" necessary because otherwise Bash attempts
+  12&nbsp;#+ to interpret "$((n = $n + 1))" as a command.
+  13&nbsp;echo -n "$n "
+  14&nbsp;
+  15&nbsp;(( n = n + 1 ))
+  16&nbsp;#  A simpler alternative to the method above.
+  17&nbsp;#  Thanks, David Lombard, for pointing this out.
+  18&nbsp;echo -n "$n "
+  19&nbsp;
+  20&nbsp;n=$(($n + 1))
+  21&nbsp;echo -n "$n "
+  22&nbsp;
+  23&nbsp;: $[ n = $n + 1 ]
+  24&nbsp;#  ":" necessary because otherwise Bash attempts
+  25&nbsp;#+ to interpret "$[ n = $n + 1 ]" as a command.
+  26&nbsp;#  Works even if "n" was initialized as a string.
+  27&nbsp;echo -n "$n "
+  28&nbsp;
+  29&nbsp;n=$[ $n + 1 ]
+  30&nbsp;#  Works even if "n" was initialized as a string.
+  31&nbsp;#* Avoid this type of construct, since it is obsolete and nonportable.
+  32&nbsp;#  Thanks, Stephane Chazelas.
+  33&nbsp;echo -n "$n "
+  34&nbsp;
+  35&nbsp;# Now for C-style increment operators.
+  36&nbsp;# Thanks, Frank Wang, for pointing this out.
+  37&nbsp;
+  38&nbsp;let "n++"          # let "++n"  also works.
+  39&nbsp;echo -n "$n "
+  40&nbsp;
+  41&nbsp;(( n++ ))          # (( ++n ))  also works.
+  42&nbsp;echo -n "$n "
+  43&nbsp;
+  44&nbsp;: $(( n++ ))       # : $(( ++n )) also works.
+  45&nbsp;echo -n "$n "
+  46&nbsp;
+  47&nbsp;: $[ n++ ]         # : $[ ++n ] also works
+  48&nbsp;echo -n "$n "
+  49&nbsp;
+  50&nbsp;echo
+  51&nbsp;
+  52&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+></DL
+></DIV
+><P
+><A
+NAME="INTVARREF"
+></A
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Integer variables in older versions of Bash were signed
+	<I
+CLASS="FIRSTTERM"
+>long</I
+> (32-bit) integers, in the range of
+	-2147483648 to 2147483647. An operation that took a variable
+	outside these limits gave an erroneous result.</P
+><P
+>	  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo $BASH_VERSION   # 1.14
+   2&nbsp;
+   3&nbsp;a=2147483646
+   4&nbsp;echo "a = $a"        # a = 2147483646
+   5&nbsp;let "a+=1"           # Increment "a".
+   6&nbsp;echo "a = $a"        # a = 2147483647
+   7&nbsp;let "a+=1"           # increment "a" again, past the limit.
+   8&nbsp;echo "a = $a"        # a = -2147483648
+   9&nbsp;                     #      ERROR: out of range,
+  10&nbsp;                     # +    and the leftmost bit, the sign bit,
+  11&nbsp;                     # +    has been set, making the result negative.</PRE
+></TD
+></TR
+></TABLE
+>
+	</P
+><P
+>As of version &#62;= 2.05b, Bash supports 64-bit integers.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="CAUTION"
+><TABLE
+CLASS="CAUTION"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/caution.png"
+HSPACE="5"
+ALT="Caution"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><A
+NAME="NOFLOATINGPOINT"
+></A
+></P
+><P
+>Bash does not understand floating point arithmetic. It
+        treats numbers containing a decimal point as strings.</P
+><P
+>        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;a=1.5
+   2&nbsp;
+   3&nbsp;let "b = $a + 1.3"  # Error.
+   4&nbsp;# t2.sh: let: b = 1.5 + 1.3: syntax error in expression
+   5&nbsp;#                            (error token is ".5 + 1.3")
+   6&nbsp;
+   7&nbsp;echo "b = $b"       # b=1</PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+><P
+>Use <A
+HREF="mathc.html#BCREF"
+>bc</A
+> in scripts that that need floating
+	point calculations or math library functions.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="FORMALPARA"
+><P
+><B
+>bitwise operators. </B
+>The bitwise operators seldom make an appearance in shell scripts.
+	Their chief use seems to be manipulating and testing values read
+	from ports or <A
+HREF="devproc.html#SOCKETREF"
+>sockets</A
+>. <SPAN
+CLASS="QUOTE"
+>"Bit
+	flipping"</SPAN
+> is more relevant to compiled languages, such
+	as C and C++, which provide direct access to system
+	hardware. However, see <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>vladz's</I
+></SPAN
+>
+	ingenious use of bitwise operators in his
+	<I
+CLASS="FIRSTTERM"
+>base64.sh</I
+> (<A
+HREF="contributed-scripts.html#BASE64"
+>Example A-54</A
+>)
+	script. </P
+></DIV
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="BITWSOPS1"
+></A
+>bitwise operators</B
+></P
+><DL
+><DT
+><SPAN
+CLASS="TOKEN"
+>&#60;&#60;</SPAN
+></DT
+><DD
+><P
+>bitwise left shift (multiplies by <TT
+CLASS="LITERAL"
+>2</TT
+>
+	      for each shift position)</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>&#60;&#60;=</SPAN
+></DT
+><DD
+><P
+><I
+CLASS="FIRSTTERM"
+>left-shift-equal</I
+></P
+><P
+><TT
+CLASS="USERINPUT"
+><B
+>let "var &#60;&#60;= 2"</B
+></TT
+> results in <TT
+CLASS="PARAMETER"
+><I
+>var</I
+></TT
+>
+	    left-shifted <TT
+CLASS="LITERAL"
+>2</TT
+> bits (multiplied by <TT
+CLASS="LITERAL"
+>4</TT
+>)</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>&#62;&#62;</SPAN
+></DT
+><DD
+><P
+>bitwise right shift (divides by <TT
+CLASS="LITERAL"
+>2</TT
+>
+	      for each shift position)</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>&#62;&#62;=</SPAN
+></DT
+><DD
+><P
+><I
+CLASS="FIRSTTERM"
+>right-shift-equal</I
+>
+	    (inverse of <SPAN
+CLASS="TOKEN"
+>&#60;&#60;=</SPAN
+>)</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>&#38;</SPAN
+></DT
+><DD
+><P
+>bitwise AND</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>&#38;=</SPAN
+></DT
+><DD
+><P
+>bitwise <I
+CLASS="FIRSTTERM"
+>AND-equal</I
+></P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>|</SPAN
+></DT
+><DD
+><P
+>bitwise OR</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>|=</SPAN
+></DT
+><DD
+><P
+>bitwise <I
+CLASS="FIRSTTERM"
+>OR-equal</I
+></P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>~</SPAN
+></DT
+><DD
+><P
+>bitwise NOT</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>^</SPAN
+></DT
+><DD
+><P
+>bitwise XOR</P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>^=</SPAN
+></DT
+><DD
+><P
+>bitwise <I
+CLASS="FIRSTTERM"
+>XOR-equal</I
+></P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="LOGOPS1"
+></A
+>logical (boolean) operators</B
+></P
+><DL
+><DT
+><SPAN
+CLASS="TOKEN"
+>!</SPAN
+></DT
+><DD
+><P
+>NOT</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if [ ! -f $FILENAME ]
+   2&nbsp;then
+   3&nbsp;  ...</PRE
+></TD
+></TR
+></TABLE
+></P
+></DD
+><DT
+><SPAN
+CLASS="TOKEN"
+>&#38;&#38;</SPAN
+></DT
+><DD
+><P
+>AND</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if [ $condition1 ] &#38;&#38; [ $condition2 ]
+   2&nbsp;#  Same as:  if [ $condition1 -a $condition2 ]
+   3&nbsp;#  Returns true if both condition1 and condition2 hold true...
+   4&nbsp;
+   5&nbsp;if [[ $condition1 &#38;&#38; $condition2 ]]    # Also works.
+   6&nbsp;#  Note that &#38;&#38; operator not permitted <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>inside brackets</I
+></SPAN
+>
+   7&nbsp;#+ of [ ... ] construct.</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+><SPAN
+CLASS="TOKEN"
+>&#38;&#38;</SPAN
+> may also be used, depending on context,
+	    in an <A
+HREF="list-cons.html#LISTCONSREF"
+>and list</A
+>
+	    to concatenate commands.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DD
+><DT
+><A
+NAME="ORREF"
+></A
+><SPAN
+CLASS="TOKEN"
+>||</SPAN
+></DT
+><DD
+><P
+>OR</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;if [ $condition1 ] || [ $condition2 ]
+   2&nbsp;# Same as:  if [ $condition1 -o $condition2 ]
+   3&nbsp;# Returns true if either condition1 or condition2 holds true...
+   4&nbsp;
+   5&nbsp;if [[ $condition1 || $condition2 ]]    # Also works.
+   6&nbsp;#  Note that || operator not permitted <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>inside brackets</I
+></SPAN
+>
+   7&nbsp;#+ of a [ ... ] construct.</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Bash tests the <A
+HREF="exit-status.html#EXITSTATUSREF"
+>exit
+	    status</A
+> of each statement linked with a logical
+	    operator.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ANDOR"
+></A
+><P
+><B
+>Example 8-3. Compound Condition Tests Using &#38;&#38; and ||</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;a=24
+   4&nbsp;b=47
+   5&nbsp;
+   6&nbsp;if [ "$a" -eq 24 ] &#38;&#38; [ "$b" -eq 47 ]
+   7&nbsp;then
+   8&nbsp;  echo "Test #1 succeeds."
+   9&nbsp;else
+  10&nbsp;  echo "Test #1 fails."
+  11&nbsp;fi
+  12&nbsp;
+  13&nbsp;# ERROR:   if [ "$a" -eq 24 &#38;&#38; "$b" -eq 47 ]
+  14&nbsp;#+         attempts to execute  ' [ "$a" -eq 24 '
+  15&nbsp;#+         and fails to finding matching ']'.
+  16&nbsp;#
+  17&nbsp;#  Note:  if [[ $a -eq 24 &#38;&#38; $b -eq 24 ]]  works.
+  18&nbsp;#  The double-bracket if-test is more flexible
+  19&nbsp;#+ than the single-bracket version.       
+  20&nbsp;#    (The "&#38;&#38;" has a different meaning in line 17 than in line 6.)
+  21&nbsp;#    Thanks, Stephane Chazelas, for pointing this out.
+  22&nbsp;
+  23&nbsp;
+  24&nbsp;if [ "$a" -eq 98 ] || [ "$b" -eq 47 ]
+  25&nbsp;then
+  26&nbsp;  echo "Test #2 succeeds."
+  27&nbsp;else
+  28&nbsp;  echo "Test #2 fails."
+  29&nbsp;fi
+  30&nbsp;
+  31&nbsp;
+  32&nbsp;#  The -a and -o options provide
+  33&nbsp;#+ an alternative compound condition test.
+  34&nbsp;#  Thanks to Patrick Callahan for pointing this out.
+  35&nbsp;
+  36&nbsp;
+  37&nbsp;if [ "$a" -eq 24 -a "$b" -eq 47 ]
+  38&nbsp;then
+  39&nbsp;  echo "Test #3 succeeds."
+  40&nbsp;else
+  41&nbsp;  echo "Test #3 fails."
+  42&nbsp;fi
+  43&nbsp;
+  44&nbsp;
+  45&nbsp;if [ "$a" -eq 98 -o "$b" -eq 47 ]
+  46&nbsp;then
+  47&nbsp;  echo "Test #4 succeeds."
+  48&nbsp;else
+  49&nbsp;  echo "Test #4 fails."
+  50&nbsp;fi
+  51&nbsp;
+  52&nbsp;
+  53&nbsp;a=rhino
+  54&nbsp;b=crocodile
+  55&nbsp;if [ "$a" = rhino ] &#38;&#38; [ "$b" = crocodile ]
+  56&nbsp;then
+  57&nbsp;  echo "Test #5 succeeds."
+  58&nbsp;else
+  59&nbsp;  echo "Test #5 fails."
+  60&nbsp;fi
+  61&nbsp;
+  62&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>The <SPAN
+CLASS="TOKEN"
+>&#38;&#38;</SPAN
+> and <SPAN
+CLASS="TOKEN"
+>||</SPAN
+> operators also
+	      find use in an arithmetic context.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo $(( 1 &#38;&#38; 2 )) $((3 &#38;&#38; 0)) $((4 || 0)) $((0 || 0))</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>1 0 1 0</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="MISCOP1"
+></A
+>miscellaneous operators</B
+></P
+><DL
+><DT
+><A
+NAME="COMMAOP"
+></A
+><SPAN
+CLASS="TOKEN"
+>,</SPAN
+></DT
+><DD
+><P
+>Comma operator</P
+><P
+>The <B
+CLASS="COMMAND"
+>comma operator</B
+> chains together
+	      two or more arithmetic operations. All the operations are
+	      evaluated (with possible <I
+CLASS="FIRSTTERM"
+>side
+	      effects</I
+>.
+	        <A
+NAME="AEN4239"
+HREF="#FTN.AEN4239"
+>[2]</A
+>
+             </P
+><P
+>	     <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;let "t1 = ((5 + 3, 7 - 1, 15 - 4))"
+   2&nbsp;echo "t1 = $t1"           ^^^^^^  # t1 = 11
+   3&nbsp;# Here t1 is set to the result of the last operation. Why?
+   4&nbsp;
+   5&nbsp;let "t2 = ((a = 9, 15 / 3))"      # Set "a" and calculate "t2".
+   6&nbsp;echo "t2 = $t2    a = $a"         # t2 = 5    a = 9</PRE
+></TD
+></TR
+></TABLE
+>
+	     </P
+><P
+>The comma operator finds use mainly in <A
+HREF="loops.html#FORLOOPREF1"
+>for loops</A
+>. See <A
+HREF="loops.html#FORLOOPC"
+>Example 11-13</A
+>.</P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN3904"
+HREF="operations.html#AEN3904"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>In a different context, <B
+CLASS="COMMAND"
+>+=</B
+> can
+              serve as a <I
+CLASS="FIRSTTERM"
+>string concatenation</I
+>
+              operator. This can be useful for <A
+HREF="bashver3.html#PATHAPPEND"
+>modifying <I
+CLASS="FIRSTTERM"
+>environmental
+              variables</I
+></A
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN4239"
+HREF="operations.html#AEN4239"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><I
+CLASS="FIRSTTERM"
+>Side effects</I
+>
+		are, of course, unintended -- and usually undesirable --
+		consequences.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="testtest.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="numerical-constants.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Testing Your Knowledge of Tests</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part2.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Numerical Constants</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,1294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>$RANDOM: generate random integer</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Another Look at Variables"
+HREF="variables2.html"><LINK
+REL="PREVIOUS"
+TITLE="Typing variables: declare or
+	  typeset"
+HREF="declareref.html"><LINK
+REL="NEXT"
+TITLE="Manipulating Variables"
+HREF="manipulatingvars.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="declareref.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Another Look at Variables</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="manipulatingvars.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RANDOMVAR"
+></A
+>9.3. $RANDOM: generate random integer</H1
+><TABLE
+BORDER="0"
+WIDTH="100%"
+CELLSPACING="0"
+CELLPADDING="0"
+CLASS="EPIGRAPH"
+><TR
+><TD
+WIDTH="45%"
+>&nbsp;</TD
+><TD
+WIDTH="45%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><I
+><P
+><I
+>Anyone who attempts to generate random numbers by
+        deterministic means is, of course, living in a state of
+        sin.</I
+></P
+><P
+><I
+>--John von Neumann</I
+></P
+></I
+></TD
+></TR
+></TABLE
+><P
+><A
+NAME="RANDOMVAR01"
+></A
+></P
+><P
+><TT
+CLASS="VARNAME"
+>$RANDOM</TT
+> is an internal Bash <A
+HREF="functions.html#FUNCTIONREF"
+>function</A
+> (not a constant) that
+	  returns a <I
+CLASS="FIRSTTERM"
+>pseudorandom</I
+>
+
+	    <A
+NAME="AEN5813"
+HREF="#FTN.AEN5813"
+>[1]</A
+>
+
+	  integer in the range 0 - 32767. It should
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>not</I
+></TT
+> be used to generate an encryption
+	  key.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="EX21"
+></A
+><P
+><B
+>Example 9-11. Generating random numbers</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;# $RANDOM returns a different random integer at each invocation.
+   4&nbsp;# Nominal range: 0 - 32767 (signed 16-bit integer).
+   5&nbsp;
+   6&nbsp;MAXCOUNT=10
+   7&nbsp;count=1
+   8&nbsp;
+   9&nbsp;echo
+  10&nbsp;echo "$MAXCOUNT random numbers:"
+  11&nbsp;echo "-----------------"
+  12&nbsp;while [ "$count" -le $MAXCOUNT ]      # Generate 10 ($MAXCOUNT) random integers.
+  13&nbsp;do
+  14&nbsp;  number=$RANDOM
+  15&nbsp;  echo $number
+  16&nbsp;  let "count += 1"  # Increment count.
+  17&nbsp;done
+  18&nbsp;echo "-----------------"
+  19&nbsp;
+  20&nbsp;# If you need a random int within a certain range, use the 'modulo' operator.
+  21&nbsp;# This returns the remainder of a division operation.
+  22&nbsp;
+  23&nbsp;RANGE=500
+  24&nbsp;
+  25&nbsp;echo
+  26&nbsp;
+  27&nbsp;number=$RANDOM
+  28&nbsp;let "number %= $RANGE"
+  29&nbsp;#           ^^
+  30&nbsp;echo "Random number less than $RANGE  ---  $number"
+  31&nbsp;
+  32&nbsp;echo
+  33&nbsp;
+  34&nbsp;
+  35&nbsp;
+  36&nbsp;#  If you need a random integer greater than a lower bound,
+  37&nbsp;#+ then set up a test to discard all numbers below that.
+  38&nbsp;
+  39&nbsp;FLOOR=200
+  40&nbsp;
+  41&nbsp;number=0   #initialize
+  42&nbsp;while [ "$number" -le $FLOOR ]
+  43&nbsp;do
+  44&nbsp;  number=$RANDOM
+  45&nbsp;done
+  46&nbsp;echo "Random number greater than $FLOOR ---  $number"
+  47&nbsp;echo
+  48&nbsp;
+  49&nbsp;   # Let's examine a simple alternative to the above loop, namely
+  50&nbsp;   #       let "number = $RANDOM + $FLOOR"
+  51&nbsp;   # That would eliminate the while-loop and run faster.
+  52&nbsp;   # But, there might be a problem with that. What is it?
+  53&nbsp;
+  54&nbsp;
+  55&nbsp;
+  56&nbsp;# Combine above two techniques to retrieve random number between two limits.
+  57&nbsp;number=0   #initialize
+  58&nbsp;while [ "$number" -le $FLOOR ]
+  59&nbsp;do
+  60&nbsp;  number=$RANDOM
+  61&nbsp;  let "number %= $RANGE"  # Scales $number down within $RANGE.
+  62&nbsp;done
+  63&nbsp;echo "Random number between $FLOOR and $RANGE ---  $number"
+  64&nbsp;echo
+  65&nbsp;
+  66&nbsp;
+  67&nbsp;
+  68&nbsp;# Generate binary choice, that is, "true" or "false" value.
+  69&nbsp;BINARY=2
+  70&nbsp;T=1
+  71&nbsp;number=$RANDOM
+  72&nbsp;
+  73&nbsp;let "number %= $BINARY"
+  74&nbsp;#  Note that    let "number &#62;&#62;= 14"    gives a better random distribution
+  75&nbsp;#+ (right shifts out everything except last binary digit).
+  76&nbsp;if [ "$number" -eq $T ]
+  77&nbsp;then
+  78&nbsp;  echo "TRUE"
+  79&nbsp;else
+  80&nbsp;  echo "FALSE"
+  81&nbsp;fi  
+  82&nbsp;
+  83&nbsp;echo
+  84&nbsp;
+  85&nbsp;
+  86&nbsp;# Generate a toss of the dice.
+  87&nbsp;SPOTS=6   # Modulo 6 gives range 0 - 5.
+  88&nbsp;          # Incrementing by 1 gives desired range of 1 - 6.
+  89&nbsp;          # Thanks, Paulo Marcel Coelho Aragao, for the simplification.
+  90&nbsp;die1=0
+  91&nbsp;die2=0
+  92&nbsp;# Would it be better to just set SPOTS=7 and not add 1? Why or why not?
+  93&nbsp;
+  94&nbsp;# Tosses each die separately, and so gives correct odds.
+  95&nbsp;
+  96&nbsp;    let "die1 = $RANDOM % $SPOTS +1" # Roll first one.
+  97&nbsp;    let "die2 = $RANDOM % $SPOTS +1" # Roll second one.
+  98&nbsp;    #  Which arithmetic operation, above, has greater precedence --
+  99&nbsp;    #+ modulo (%) or addition (+)?
+ 100&nbsp;
+ 101&nbsp;
+ 102&nbsp;let "throw = $die1 + $die2"
+ 103&nbsp;echo "Throw of the dice = $throw"
+ 104&nbsp;echo
+ 105&nbsp;
+ 106&nbsp;
+ 107&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="PICKCARD"
+></A
+><P
+><B
+>Example 9-12. Picking a random card from a deck</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# pick-card.sh
+   3&nbsp;
+   4&nbsp;# This is an example of choosing random elements of an array.
+   5&nbsp;
+   6&nbsp;
+   7&nbsp;# Pick a card, any card.
+   8&nbsp;
+   9&nbsp;Suites="Clubs
+  10&nbsp;Diamonds
+  11&nbsp;Hearts
+  12&nbsp;Spades"
+  13&nbsp;
+  14&nbsp;Denominations="2
+  15&nbsp;3
+  16&nbsp;4
+  17&nbsp;5
+  18&nbsp;6
+  19&nbsp;7
+  20&nbsp;8
+  21&nbsp;9
+  22&nbsp;10
+  23&nbsp;Jack
+  24&nbsp;Queen
+  25&nbsp;King
+  26&nbsp;Ace"
+  27&nbsp;
+  28&nbsp;# Note variables spread over multiple lines.
+  29&nbsp;
+  30&nbsp;
+  31&nbsp;suite=($Suites)                # Read into array variable.
+  32&nbsp;denomination=($Denominations)
+  33&nbsp;
+  34&nbsp;num_suites=${#suite[*]}        # Count how many elements.
+  35&nbsp;num_denominations=${#denomination[*]}
+  36&nbsp;
+  37&nbsp;echo -n "${denomination[$((RANDOM%num_denominations))]} of "
+  38&nbsp;echo ${suite[$((RANDOM%num_suites))]}
+  39&nbsp;
+  40&nbsp;
+  41&nbsp;# $bozo sh pick-cards.sh
+  42&nbsp;# Jack of Clubs
+  43&nbsp;
+  44&nbsp;
+  45&nbsp;# Thank you, "jipe," for pointing out this use of $RANDOM.
+  46&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="BROWNIANREF"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="BROWNIAN"
+></A
+><P
+><B
+>Example 9-13. Brownian Motion Simulation</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# brownian.sh
+   3&nbsp;# Author: Mendel Cooper
+   4&nbsp;# Reldate: 10/26/07
+   5&nbsp;# License: GPL3
+   6&nbsp;
+   7&nbsp;#  ----------------------------------------------------------------
+   8&nbsp;#  This script models Brownian motion:
+   9&nbsp;#+ the random wanderings of tiny particles in a fluid,
+  10&nbsp;#+ as they are buffeted by random currents and collisions.
+  11&nbsp;#+ This is colloquially known as the "Drunkard's Walk."
+  12&nbsp;
+  13&nbsp;#  It can also be considered as a stripped-down simulation of a
+  14&nbsp;#+ Galton Board, a slanted board with a pattern of pegs,
+  15&nbsp;#+ down which rolls a succession of marbles, one at a time.
+  16&nbsp;#+ At the bottom is a row of slots or catch basins in which
+  17&nbsp;#+ the marbles come to rest at the end of their journey.
+  18&nbsp;#  Think of it as a kind of bare-bones Pachinko game.
+  19&nbsp;#  As you see by running the script,
+  20&nbsp;#+ most of the marbles cluster around the center slot.
+  21&nbsp;#+ This is consistent with the expected binomial distribution.
+  22&nbsp;#  As a Galton Board simulation, the script
+  23&nbsp;#+ disregards such parameters as
+  24&nbsp;#+ board tilt-angle, rolling friction of the marbles,
+  25&nbsp;#+ angles of impact, and elasticity of the pegs.
+  26&nbsp;#  To what extent does this affect the accuracy of the simulation?
+  27&nbsp;#  ----------------------------------------------------------------
+  28&nbsp;
+  29&nbsp;PASSES=500            #  Number of particle interactions / marbles.
+  30&nbsp;ROWS=10               #  Number of "collisions" (or horiz. peg rows).
+  31&nbsp;RANGE=3               #  0 - 2 output range from $RANDOM.
+  32&nbsp;POS=0                 #  Left/right position.
+  33&nbsp;RANDOM=$$             #  Seeds the random number generator from PID
+  34&nbsp;                      #+ of script.
+  35&nbsp;
+  36&nbsp;declare -a Slots      # Array holding cumulative results of passes.
+  37&nbsp;NUMSLOTS=21           # Number of slots at bottom of board.
+  38&nbsp;
+  39&nbsp;
+  40&nbsp;Initialize_Slots () { # Zero out all elements of the array.
+  41&nbsp;for i in $( seq $NUMSLOTS )
+  42&nbsp;do
+  43&nbsp;  Slots[$i]=0
+  44&nbsp;done
+  45&nbsp;
+  46&nbsp;echo                  # Blank line at beginning of run.
+  47&nbsp;  }
+  48&nbsp;
+  49&nbsp;
+  50&nbsp;Show_Slots () {
+  51&nbsp;echo; echo
+  52&nbsp;echo -n " "
+  53&nbsp;for i in $( seq $NUMSLOTS )   # Pretty-print array elements.
+  54&nbsp;do
+  55&nbsp;  printf "%3d" ${Slots[$i]}   # Allot three spaces per result.
+  56&nbsp;done
+  57&nbsp;
+  58&nbsp;echo # Row of slots:
+  59&nbsp;echo " |__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|__|"
+  60&nbsp;echo "                                ||"
+  61&nbsp;echo #  Note that if the count within any particular slot exceeds 99,
+  62&nbsp;     #+ it messes up the display.
+  63&nbsp;     #  Running only(!) 500 passes usually avoids this.
+  64&nbsp;  }
+  65&nbsp;
+  66&nbsp;
+  67&nbsp;Move () {              # Move one unit right / left, or stay put.
+  68&nbsp;  Move=$RANDOM         # How random is $RANDOM? Well, let's see ...
+  69&nbsp;  let "Move %= RANGE"  # Normalize into range of 0 - 2.
+  70&nbsp;  case "$Move" in
+  71&nbsp;    0 ) ;;                   # Do nothing, i.e., stay in place.
+  72&nbsp;    1 ) ((POS--));;          # Left.
+  73&nbsp;    2 ) ((POS++));;          # Right.
+  74&nbsp;    * ) echo -n "Error ";;   # Anomaly! (Should never occur.)
+  75&nbsp;  esac
+  76&nbsp;  }
+  77&nbsp;
+  78&nbsp;
+  79&nbsp;Play () {                    # Single pass (inner loop).
+  80&nbsp;i=0
+  81&nbsp;while [ "$i" -lt "$ROWS" ]   # One event per row.
+  82&nbsp;do
+  83&nbsp;  Move
+  84&nbsp;  ((i++));
+  85&nbsp;done
+  86&nbsp;
+  87&nbsp;SHIFT=11                     # Why 11, and not 10?
+  88&nbsp;let "POS += $SHIFT"          # Shift "zero position" to center.
+  89&nbsp;(( Slots[$POS]++ ))          # DEBUG: echo $POS
+  90&nbsp;
+  91&nbsp;# echo -n "$POS "
+  92&nbsp;
+  93&nbsp;  }
+  94&nbsp;
+  95&nbsp;
+  96&nbsp;Run () {                     # Outer loop.
+  97&nbsp;p=0
+  98&nbsp;while [ "$p" -lt "$PASSES" ]
+  99&nbsp;do
+ 100&nbsp;  Play
+ 101&nbsp;  (( p++ ))
+ 102&nbsp;  POS=0                      # Reset to zero. Why?
+ 103&nbsp;done
+ 104&nbsp;  }
+ 105&nbsp;
+ 106&nbsp;
+ 107&nbsp;# --------------
+ 108&nbsp;# main ()
+ 109&nbsp;Initialize_Slots
+ 110&nbsp;Run
+ 111&nbsp;Show_Slots
+ 112&nbsp;# --------------
+ 113&nbsp;
+ 114&nbsp;exit $?
+ 115&nbsp;
+ 116&nbsp;#  Exercises:
+ 117&nbsp;#  ---------
+ 118&nbsp;#  1) Show the results in a vertical bar graph, or as an alternative,
+ 119&nbsp;#+    a scattergram.
+ 120&nbsp;#  2) Alter the script to use /dev/urandom instead of $RANDOM.
+ 121&nbsp;#     Will this make the results more random?
+ 122&nbsp;#  3) Provide some sort of "animation" or graphic output
+ 123&nbsp;#     for each marble played.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>	<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Jipe</I
+></SPAN
+> points out a set of techniques for
+	generating random numbers within a range.
+
+	<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#  Generate random number between 6 and 30.
+   2&nbsp;   rnumber=$((RANDOM%25+6))	
+   3&nbsp;
+   4&nbsp;#  Generate random number in the same 6 - 30 range,
+   5&nbsp;#+ but the number must be evenly divisible by 3.
+   6&nbsp;   rnumber=$(((RANDOM%30/3+1)*3))
+   7&nbsp;
+   8&nbsp;#  Note that this will not work all the time.
+   9&nbsp;#  It fails if $RANDOM%30 returns 0.
+  10&nbsp;
+  11&nbsp;#  Frank Wang suggests the following alternative:
+  12&nbsp;   rnumber=$(( RANDOM%27/3*3+6 ))</PRE
+></TD
+></TR
+></TABLE
+>
+	</P
+><P
+>	<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Bill Gradwohl</I
+></SPAN
+> came up with an improved
+	formula that works for positive numbers.
+	<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;rnumber=$(((RANDOM%(max-min+divisibleBy))/divisibleBy*divisibleBy+min))</PRE
+></TD
+></TR
+></TABLE
+>
+	</P
+><P
+>Here Bill presents a versatile function that returns
+	  a random number between two specified values.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RANDOMBETWEEN"
+></A
+><P
+><B
+>Example 9-14. Random between values</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# random-between.sh
+   3&nbsp;# Random number between two specified values. 
+   4&nbsp;# Script by Bill Gradwohl, with minor modifications by the document author.
+   5&nbsp;# Corrections in lines 187 and 189 by Anthony Le Clezio.
+   6&nbsp;# Used with permission.
+   7&nbsp;
+   8&nbsp;
+   9&nbsp;randomBetween() {
+  10&nbsp;   #  Generates a positive or negative random number
+  11&nbsp;   #+ between $min and $max
+  12&nbsp;   #+ and divisible by $divisibleBy.
+  13&nbsp;   #  Gives a "reasonably random" distribution of return values.
+  14&nbsp;   #
+  15&nbsp;   #  Bill Gradwohl - Oct 1, 2003
+  16&nbsp;
+  17&nbsp;   syntax() {
+  18&nbsp;   # Function embedded within function.
+  19&nbsp;      echo
+  20&nbsp;      echo    "Syntax: randomBetween [min] [max] [multiple]"
+  21&nbsp;      echo
+  22&nbsp;      echo -n "Expects up to 3 passed parameters, "
+  23&nbsp;      echo    "but all are completely optional."
+  24&nbsp;      echo    "min is the minimum value"
+  25&nbsp;      echo    "max is the maximum value"
+  26&nbsp;      echo -n "multiple specifies that the answer must be "
+  27&nbsp;      echo     "a multiple of this value."
+  28&nbsp;      echo    "    i.e. answer must be evenly divisible by this number."
+  29&nbsp;      echo    
+  30&nbsp;      echo    "If any value is missing, defaults area supplied as: 0 32767 1"
+  31&nbsp;      echo -n "Successful completion returns 0, "
+  32&nbsp;      echo     "unsuccessful completion returns"
+  33&nbsp;      echo    "function syntax and 1."
+  34&nbsp;      echo -n "The answer is returned in the global variable "
+  35&nbsp;      echo    "randomBetweenAnswer"
+  36&nbsp;      echo -n "Negative values for any passed parameter are "
+  37&nbsp;      echo    "handled correctly."
+  38&nbsp;   }
+  39&nbsp;
+  40&nbsp;   local min=${1:-0}
+  41&nbsp;   local max=${2:-32767}
+  42&nbsp;   local divisibleBy=${3:-1}
+  43&nbsp;   # Default values assigned, in case parameters not passed to function.
+  44&nbsp;
+  45&nbsp;   local x
+  46&nbsp;   local spread
+  47&nbsp;
+  48&nbsp;   # Let's make sure the divisibleBy value is positive.
+  49&nbsp;   [ ${divisibleBy} -lt 0 ] &#38;&#38; divisibleBy=$((0-divisibleBy))
+  50&nbsp;
+  51&nbsp;   # Sanity check.
+  52&nbsp;   if [ $# -gt 3 -o ${divisibleBy} -eq 0 -o  ${min} -eq ${max} ]; then 
+  53&nbsp;      syntax
+  54&nbsp;      return 1
+  55&nbsp;   fi
+  56&nbsp;
+  57&nbsp;   # See if the min and max are reversed.
+  58&nbsp;   if [ ${min} -gt ${max} ]; then
+  59&nbsp;      # Swap them.
+  60&nbsp;      x=${min}
+  61&nbsp;      min=${max}
+  62&nbsp;      max=${x}
+  63&nbsp;   fi
+  64&nbsp;
+  65&nbsp;   #  If min is itself not evenly divisible by $divisibleBy,
+  66&nbsp;   #+ then fix the min to be within range.
+  67&nbsp;   if [ $((min/divisibleBy*divisibleBy)) -ne ${min} ]; then 
+  68&nbsp;      if [ ${min} -lt 0 ]; then
+  69&nbsp;         min=$((min/divisibleBy*divisibleBy))
+  70&nbsp;      else
+  71&nbsp;         min=$((((min/divisibleBy)+1)*divisibleBy))
+  72&nbsp;      fi
+  73&nbsp;   fi
+  74&nbsp;
+  75&nbsp;   #  If max is itself not evenly divisible by $divisibleBy,
+  76&nbsp;   #+ then fix the max to be within range.
+  77&nbsp;   if [ $((max/divisibleBy*divisibleBy)) -ne ${max} ]; then 
+  78&nbsp;      if [ ${max} -lt 0 ]; then
+  79&nbsp;         max=$((((max/divisibleBy)-1)*divisibleBy))
+  80&nbsp;      else
+  81&nbsp;         max=$((max/divisibleBy*divisibleBy))
+  82&nbsp;      fi
+  83&nbsp;   fi
+  84&nbsp;
+  85&nbsp;   #  ---------------------------------------------------------------------
+  86&nbsp;   #  Now, to do the real work.
+  87&nbsp;
+  88&nbsp;   #  Note that to get a proper distribution for the end points,
+  89&nbsp;   #+ the range of random values has to be allowed to go between
+  90&nbsp;   #+ 0 and abs(max-min)+divisibleBy, not just abs(max-min)+1.
+  91&nbsp;
+  92&nbsp;   #  The slight increase will produce the proper distribution for the
+  93&nbsp;   #+ end points.
+  94&nbsp;
+  95&nbsp;   #  Changing the formula to use abs(max-min)+1 will still produce
+  96&nbsp;   #+ correct answers, but the randomness of those answers is faulty in
+  97&nbsp;   #+ that the number of times the end points ($min and $max) are returned
+  98&nbsp;   #+ is considerably lower than when the correct formula is used.
+  99&nbsp;   #  ---------------------------------------------------------------------
+ 100&nbsp;
+ 101&nbsp;   spread=$((max-min))
+ 102&nbsp;   #  Omair Eshkenazi points out that this test is unnecessary,
+ 103&nbsp;   #+ since max and min have already been switched around.
+ 104&nbsp;   [ ${spread} -lt 0 ] &#38;&#38; spread=$((0-spread))
+ 105&nbsp;   let spread+=divisibleBy
+ 106&nbsp;   randomBetweenAnswer=$(((RANDOM%spread)/divisibleBy*divisibleBy+min))   
+ 107&nbsp;
+ 108&nbsp;   return 0
+ 109&nbsp;
+ 110&nbsp;   #  However, Paulo Marcel Coelho Aragao points out that
+ 111&nbsp;   #+ when $max and $min are not divisible by $divisibleBy,
+ 112&nbsp;   #+ the formula fails.
+ 113&nbsp;   #
+ 114&nbsp;   #  He suggests instead the following formula:
+ 115&nbsp;   #    rnumber = $(((RANDOM%(max-min+1)+min)/divisibleBy*divisibleBy))
+ 116&nbsp;
+ 117&nbsp;}
+ 118&nbsp;
+ 119&nbsp;# Let's test the function.
+ 120&nbsp;min=-14
+ 121&nbsp;max=20
+ 122&nbsp;divisibleBy=3
+ 123&nbsp;
+ 124&nbsp;
+ 125&nbsp;#  Generate an array of expected answers and check to make sure we get
+ 126&nbsp;#+ at least one of each answer if we loop long enough.
+ 127&nbsp;
+ 128&nbsp;declare -a answer
+ 129&nbsp;minimum=${min}
+ 130&nbsp;maximum=${max}
+ 131&nbsp;   if [ $((minimum/divisibleBy*divisibleBy)) -ne ${minimum} ]; then 
+ 132&nbsp;      if [ ${minimum} -lt 0 ]; then
+ 133&nbsp;         minimum=$((minimum/divisibleBy*divisibleBy))
+ 134&nbsp;      else
+ 135&nbsp;         minimum=$((((minimum/divisibleBy)+1)*divisibleBy))
+ 136&nbsp;      fi
+ 137&nbsp;   fi
+ 138&nbsp;
+ 139&nbsp;
+ 140&nbsp;   #  If max is itself not evenly divisible by $divisibleBy,
+ 141&nbsp;   #+ then fix the max to be within range.
+ 142&nbsp;
+ 143&nbsp;   if [ $((maximum/divisibleBy*divisibleBy)) -ne ${maximum} ]; then 
+ 144&nbsp;      if [ ${maximum} -lt 0 ]; then
+ 145&nbsp;         maximum=$((((maximum/divisibleBy)-1)*divisibleBy))
+ 146&nbsp;      else
+ 147&nbsp;         maximum=$((maximum/divisibleBy*divisibleBy))
+ 148&nbsp;      fi
+ 149&nbsp;   fi
+ 150&nbsp;
+ 151&nbsp;
+ 152&nbsp;#  We need to generate only positive array subscripts,
+ 153&nbsp;#+ so we need a displacement that that will guarantee
+ 154&nbsp;#+ positive results.
+ 155&nbsp;
+ 156&nbsp;disp=$((0-minimum))
+ 157&nbsp;for ((i=${minimum}; i&#60;=${maximum}; i+=divisibleBy)); do
+ 158&nbsp;   answer[i+disp]=0
+ 159&nbsp;done
+ 160&nbsp;
+ 161&nbsp;
+ 162&nbsp;# Now loop a large number of times to see what we get.
+ 163&nbsp;loopIt=1000   #  The script author suggests 100000,
+ 164&nbsp;              #+ but that takes a good long while.
+ 165&nbsp;
+ 166&nbsp;for ((i=0; i&#60;${loopIt}; ++i)); do
+ 167&nbsp;
+ 168&nbsp;   #  Note that we are specifying min and max in reversed order here to
+ 169&nbsp;   #+ make the function correct for this case.
+ 170&nbsp;
+ 171&nbsp;   randomBetween ${max} ${min} ${divisibleBy}
+ 172&nbsp;
+ 173&nbsp;   # Report an error if an answer is unexpected.
+ 174&nbsp;   [ ${randomBetweenAnswer} -lt ${min} -o ${randomBetweenAnswer} -gt ${max} ] \
+ 175&nbsp;   &#38;&#38; echo MIN or MAX error - ${randomBetweenAnswer}!
+ 176&nbsp;   [ $((randomBetweenAnswer%${divisibleBy})) -ne 0 ] \
+ 177&nbsp;   &#38;&#38; echo DIVISIBLE BY error - ${randomBetweenAnswer}!
+ 178&nbsp;
+ 179&nbsp;   # Store the answer away statistically.
+ 180&nbsp;   answer[randomBetweenAnswer+disp]=$((answer[randomBetweenAnswer+disp]+1))
+ 181&nbsp;done
+ 182&nbsp;
+ 183&nbsp;
+ 184&nbsp;
+ 185&nbsp;# Let's check the results
+ 186&nbsp;
+ 187&nbsp;for ((i=${minimum}; i&#60;=${maximum}; i+=divisibleBy)); do
+ 188&nbsp;   [ ${answer[i+disp]} -eq 0 ] \
+ 189&nbsp;   &#38;&#38; echo "We never got an answer of $i." \
+ 190&nbsp;   || echo "${i} occurred ${answer[i+disp]} times."
+ 191&nbsp;done
+ 192&nbsp;
+ 193&nbsp;
+ 194&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Just how random is <TT
+CLASS="VARNAME"
+>$RANDOM</TT
+>? The best
+	  way to test this is to write a script that tracks
+	  the distribution of <SPAN
+CLASS="QUOTE"
+>"random"</SPAN
+> numbers
+	  generated by <TT
+CLASS="VARNAME"
+>$RANDOM</TT
+>. Let's roll a
+	  <TT
+CLASS="VARNAME"
+>$RANDOM</TT
+> die a few times . . .</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RANDOMTEST"
+></A
+><P
+><B
+>Example 9-15. Rolling a single die with RANDOM</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# How random is RANDOM?
+   3&nbsp;
+   4&nbsp;RANDOM=$$       # Reseed the random number generator using script process ID.
+   5&nbsp;
+   6&nbsp;PIPS=6          # A die has 6 pips.
+   7&nbsp;MAXTHROWS=600   # Increase this if you have nothing better to do with your time.
+   8&nbsp;throw=0         # Number of times the dice have been cast.
+   9&nbsp;
+  10&nbsp;ones=0          #  Must initialize counts to zero,
+  11&nbsp;twos=0          #+ since an uninitialized variable is null, NOT zero.
+  12&nbsp;threes=0
+  13&nbsp;fours=0
+  14&nbsp;fives=0
+  15&nbsp;sixes=0
+  16&nbsp;
+  17&nbsp;print_result ()
+  18&nbsp;{
+  19&nbsp;echo
+  20&nbsp;echo "ones =   $ones"
+  21&nbsp;echo "twos =   $twos"
+  22&nbsp;echo "threes = $threes"
+  23&nbsp;echo "fours =  $fours"
+  24&nbsp;echo "fives =  $fives"
+  25&nbsp;echo "sixes =  $sixes"
+  26&nbsp;echo
+  27&nbsp;}
+  28&nbsp;
+  29&nbsp;update_count()
+  30&nbsp;{
+  31&nbsp;case "$1" in
+  32&nbsp;  0) ((ones++));;   # Since a die has no "zero", this corresponds to 1.
+  33&nbsp;  1) ((twos++));;   # And this to 2.
+  34&nbsp;  2) ((threes++));; # And so forth.
+  35&nbsp;  3) ((fours++));;
+  36&nbsp;  4) ((fives++));;
+  37&nbsp;  5) ((sixes++));;
+  38&nbsp;esac
+  39&nbsp;}
+  40&nbsp;
+  41&nbsp;echo
+  42&nbsp;
+  43&nbsp;
+  44&nbsp;while [ "$throw" -lt "$MAXTHROWS" ]
+  45&nbsp;do
+  46&nbsp;  let "die1 = RANDOM % $PIPS"
+  47&nbsp;  update_count $die1
+  48&nbsp;  let "throw += 1"
+  49&nbsp;done  
+  50&nbsp;
+  51&nbsp;print_result
+  52&nbsp;
+  53&nbsp;exit $?
+  54&nbsp;
+  55&nbsp;#  The scores should distribute evenly, assuming RANDOM is random.
+  56&nbsp;#  With $MAXTHROWS at 600, all should cluster around 100,
+  57&nbsp;#+ plus-or-minus 20 or so.
+  58&nbsp;#
+  59&nbsp;#  Keep in mind that RANDOM is a ***pseudorandom*** generator,
+  60&nbsp;#+ and not a spectacularly good one at that.
+  61&nbsp;
+  62&nbsp;#  Randomness is a deep and complex subject.
+  63&nbsp;#  Sufficiently long "random" sequences may exhibit
+  64&nbsp;#+ chaotic and other "non-random" behavior.
+  65&nbsp;
+  66&nbsp;# Exercise (easy):
+  67&nbsp;# ---------------
+  68&nbsp;# Rewrite this script to flip a coin 1000 times.
+  69&nbsp;# Choices are "HEADS" and "TAILS."</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>As we have seen in the last example, it is best to
+	  <I
+CLASS="FIRSTTERM"
+>reseed</I
+> the <TT
+CLASS="PARAMETER"
+><I
+>RANDOM</I
+></TT
+>
+	  generator each time it is invoked. Using the same seed
+	  for <TT
+CLASS="PARAMETER"
+><I
+>RANDOM</I
+></TT
+> repeats the same series
+	  of numbers.
+	    <A
+NAME="AEN5853"
+HREF="#FTN.AEN5853"
+>[2]</A
+>
+	  (This mirrors the behavior of the
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>random()</I
+></TT
+> function in
+	  <I
+CLASS="FIRSTTERM"
+>C</I
+>.)</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="SEEDINGRANDOM"
+></A
+><P
+><B
+>Example 9-16. Reseeding RANDOM</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# seeding-random.sh: Seeding the RANDOM variable.
+   3&nbsp;
+   4&nbsp;MAXCOUNT=25       # How many numbers to generate.
+   5&nbsp;
+   6&nbsp;random_numbers ()
+   7&nbsp;{
+   8&nbsp;count=0
+   9&nbsp;while [ "$count" -lt "$MAXCOUNT" ]
+  10&nbsp;do
+  11&nbsp;  number=$RANDOM
+  12&nbsp;  echo -n "$number "
+  13&nbsp;  let "count += 1"
+  14&nbsp;done  
+  15&nbsp;}
+  16&nbsp;
+  17&nbsp;echo; echo
+  18&nbsp;
+  19&nbsp;RANDOM=1          # Setting RANDOM seeds the random number generator.
+  20&nbsp;random_numbers
+  21&nbsp;
+  22&nbsp;echo; echo "Trying again with same random seed ..."
+  23&nbsp;
+  24&nbsp;RANDOM=1          # Same seed for RANDOM . . .
+  25&nbsp;random_numbers    # . . . reproduces the exact same number series.
+  26&nbsp;                  #
+  27&nbsp;                  # When is it useful to duplicate a "random" series?
+  28&nbsp;
+  29&nbsp;echo; echo
+  30&nbsp;
+  31&nbsp;RANDOM=2          # Trying again, but with a different seed . . .
+  32&nbsp;random_numbers    # . . . gives a different number series.
+  33&nbsp;
+  34&nbsp;echo; echo
+  35&nbsp;
+  36&nbsp;# RANDOM=$$  seeds RANDOM from process id of script.
+  37&nbsp;# It is also possible to seed RANDOM from 'time' or 'date' commands.
+  38&nbsp;
+  39&nbsp;# Getting fancy...
+  40&nbsp;SEED=$(head -1 /dev/urandom | od -N 1 | awk '{ print $2 }')
+  41&nbsp;#  Pseudo-random output fetched
+  42&nbsp;#+ from /dev/urandom (system pseudo-random device-file),
+  43&nbsp;#+ then converted to line of printable (octal) numbers by "od",
+  44&nbsp;#+ finally "awk" retrieves just one number for SEED.
+  45&nbsp;RANDOM=$SEED
+  46&nbsp;random_numbers
+  47&nbsp;
+  48&nbsp;echo; echo
+  49&nbsp;
+  50&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="URANDOMREF"
+></A
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The <TT
+CLASS="FILENAME"
+>/dev/urandom</TT
+> pseudo-device file
+	  provides a method of generating much more <SPAN
+CLASS="QUOTE"
+>"random"</SPAN
+>
+	  pseudorandom numbers than the <TT
+CLASS="VARNAME"
+>$RANDOM</TT
+>
+	  variable.  <TT
+CLASS="USERINPUT"
+><B
+>dd if=/dev/urandom of=targetfile
+	  bs=1 count=XX</B
+></TT
+> creates a file of well-scattered
+	  pseudorandom numbers.  However, assigning these numbers
+	  to a variable in a script requires a workaround, such
+	  as filtering through <A
+HREF="extmisc.html#ODREF"
+>od</A
+>
+	  (as in above example, <A
+HREF="textproc.html#RND"
+>Example 16-14</A
+>, and
+	  <A
+HREF="contributed-scripts.html#INSERTIONSORT"
+>Example A-36</A
+>), or even piping to
+	  <A
+HREF="filearchiv.html#MD5SUMREF"
+>md5sum</A
+> (see <A
+HREF="colorizing.html#HORSERACE"
+>Example 36-14</A
+>).</P
+><P
+><A
+NAME="AWKRANDOMREF"
+></A
+></P
+><P
+>There are also other ways to generate pseudorandom
+          numbers in a script. <B
+CLASS="COMMAND"
+>Awk</B
+> provides a
+	  convenient means of doing this.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RANDOM2"
+></A
+><P
+><B
+>Example 9-17. Pseudorandom numbers, using <A
+HREF="awk.html#AWKREF"
+>awk</A
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;#  random2.sh: Returns a pseudorandom number in the range 0 - 1,
+   3&nbsp;#+ to 6 decimal places. For example: 0.822725
+   4&nbsp;#  Uses the awk rand() function.
+   5&nbsp;
+   6&nbsp;AWKSCRIPT=' { srand(); print rand() } '
+   7&nbsp;#           Command(s)/parameters passed to awk
+   8&nbsp;# Note that srand() reseeds awk's random number generator.
+   9&nbsp;
+  10&nbsp;
+  11&nbsp;echo -n "Random number between 0 and 1 = "
+  12&nbsp;
+  13&nbsp;echo | awk "$AWKSCRIPT"
+  14&nbsp;# What happens if you leave out the 'echo'?
+  15&nbsp;
+  16&nbsp;exit 0
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;# Exercises:
+  20&nbsp;# ---------
+  21&nbsp;
+  22&nbsp;# 1) Using a loop construct, print out 10 different random numbers.
+  23&nbsp;#      (Hint: you must reseed the srand() function with a different seed
+  24&nbsp;#+     in each pass through the loop. What happens if you omit this?)
+  25&nbsp;
+  26&nbsp;# 2) Using an integer multiplier as a scaling factor, generate random numbers 
+  27&nbsp;#+   in the range of 10 to 100.
+  28&nbsp;
+  29&nbsp;# 3) Same as exercise #2, above, but generate random integers this time.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>The <A
+HREF="timedate.html#DATEREF"
+>date</A
+> command also lends
+	  itself to <A
+HREF="timedate.html#DATERANDREF"
+>generating pseudorandom
+	  integer sequences</A
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN5813"
+HREF="randomvar.html#AEN5813"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>True <SPAN
+CLASS="QUOTE"
+>"randomness,"</SPAN
+> insofar as
+	    it exists at all, can only be found in certain incompletely
+	    understood natural phenomena, such as radioactive
+	    decay. Computers only <I
+CLASS="FIRSTTERM"
+>simulate</I
+>
+	    randomness, and computer-generated sequences of
+	    <SPAN
+CLASS="QUOTE"
+>"random"</SPAN
+> numbers are therefore referred to as
+	    <I
+CLASS="FIRSTTERM"
+>pseudorandom</I
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN5853"
+HREF="randomvar.html#AEN5853"
+>[2]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>The <I
+CLASS="FIRSTTERM"
+>seed</I
+> of a
+	      computer-generated pseudorandom number series
+	      can be considered an identification label. For
+	      example, think of the pseudorandom series with a
+	      seed of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>23</I
+></SPAN
+> as <TT
+CLASS="REPLACEABLE"
+><I
+>Series
+	      #23</I
+></TT
+>.</P
+><P
+>A property of a pseurandom number series is the length of
+	      the cycle before it starts repeating itself. A good pseurandom
+	      generator will produce series with very long cycles.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="declareref.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="manipulatingvars.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Typing variables: <B
+CLASS="COMMAND"
+>declare</B
+> or
+	  <B
+CLASS="COMMAND"
+>typeset</B
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="variables2.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Manipulating Variables</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

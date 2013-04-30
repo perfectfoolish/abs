@@ -1,0 +1,878 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>/proc</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="/dev and /proc"
+HREF="devproc.html"><LINK
+REL="PREVIOUS"
+TITLE="/dev and /proc"
+HREF="devproc.html"><LINK
+REL="NEXT"
+TITLE="Network Programming"
+HREF="networkprogramming.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="devproc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 29. <TT
+CLASS="FILENAME"
+>/dev</TT
+> and <TT
+CLASS="FILENAME"
+>/proc</TT
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="networkprogramming.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PROCREF1"
+></A
+>29.2. <TT
+CLASS="FILENAME"
+>/proc</TT
+></H1
+><P
+><A
+NAME="PROCREF2"
+></A
+></P
+><P
+>The <TT
+CLASS="FILENAME"
+>/proc</TT
+> directory
+	is actually a pseudo-filesystem.  The files in <TT
+CLASS="FILENAME"
+>/proc</TT
+> mirror currently running
+	system and kernel <A
+HREF="special-chars.html#PROCESSREF"
+>processes</A
+>
+	and contain information and statistics about them.</P
+><P
+>         <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat /proc/devices</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Character devices:
+   1 mem
+   2 pty
+   3 ttyp
+   4 ttyS
+   5 cua
+   7 vcs
+  10 misc
+  14 sound
+  29 fb
+  36 netlink
+ 128 ptm
+ 136 pts
+ 162 raw
+ 254 pcmcia
+
+ Block devices:
+   1 ramdisk
+   2 fd
+   3 ide0
+   9 md</TT
+>
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat /proc/interrupts</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>           CPU0       
+   0:      84505          XT-PIC  timer
+   1:       3375          XT-PIC  keyboard
+   2:          0          XT-PIC  cascade
+   5:          1          XT-PIC  soundblaster
+   8:          1          XT-PIC  rtc
+  12:       4231          XT-PIC  PS/2 Mouse
+  14:     109373          XT-PIC  ide0
+ NMI:          0 
+ ERR:          0</TT
+>
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat /proc/partitions</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>major minor  #blocks  name     rio rmerge rsect ruse wio wmerge wsect wuse running use aveq
+
+    3     0    3007872 hda 4472 22260 114520 94240 3551 18703 50384 549710 0 111550 644030
+    3     1      52416 hda1 27 395 844 960 4 2 14 180 0 800 1140
+    3     2          1 hda2 0 0 0 0 0 0 0 0 0 0 0
+    3     4     165280 hda4 10 0 20 210 0 0 0 0 0 210 210
+    ...</TT
+>
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat /proc/loadavg</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>0.13 0.42 0.27 2/44 1119</TT
+>
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat /proc/apm</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>1.16 1.2 0x03 0x01 0xff 0x80 -1% -1 ?</TT
+>
+ 
+ 
+ 
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>cat /proc/acpi/battery/BAT0/info</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>present:                 yes
+ design capacity:         43200 mWh
+ last full capacity:      36640 mWh
+ battery technology:      rechargeable
+ design voltage:          10800 mV
+ design capacity warning: 1832 mWh
+ design capacity low:     200 mWh
+ capacity granularity 1:  1 mWh
+ capacity granularity 2:  1 mWh
+ model number:            IBM-02K6897
+ serial number:            1133
+ battery type:            LION
+ OEM info:                Panasonic</TT
+>
+  
+  
+  
+ <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>fgrep Mem /proc/meminfo</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>MemTotal:       515216 kB
+ MemFree:        266248 kB</TT
+>
+          </PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+><P
+>Shell scripts may extract data from certain of the files in
+         <TT
+CLASS="FILENAME"
+>/proc</TT
+>.
+
+	   <A
+NAME="AEN19122"
+HREF="#FTN.AEN19122"
+>[1]</A
+></P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;FS=iso                       # ISO filesystem support in kernel?
+   2&nbsp;
+   3&nbsp;grep $FS /proc/filesystems   # iso9660</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;kernel_version=$( awk '{ print $3 }' /proc/version )</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;CPU=$( awk '/model name/ {print $5}' &#60; /proc/cpuinfo )
+   2&nbsp;
+   3&nbsp;if [ "$CPU" = "Pentium(R)" ]
+   4&nbsp;then
+   5&nbsp;  run_some_commands
+   6&nbsp;  ...
+   7&nbsp;else
+   8&nbsp;  run_other_commands
+   9&nbsp;  ...
+  10&nbsp;fi
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;
+  14&nbsp;cpu_speed=$( fgrep "cpu MHz" /proc/cpuinfo | awk '{print $4}' )
+  15&nbsp;#  Current operating speed (in MHz) of the cpu on your machine.
+  16&nbsp;#  On a laptop this may vary, depending on use of battery
+  17&nbsp;#+ or AC power.</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# get-commandline.sh
+   3&nbsp;# Get the command-line parameters of a process.
+   4&nbsp;
+   5&nbsp;OPTION=cmdline
+   6&nbsp;
+   7&nbsp;# Identify PID.
+   8&nbsp;pid=$( echo $(pidof "$1") | awk '{ print $1 }' )
+   9&nbsp;# Get only first            ^^^^^^^^^^^^^^^^^^ of multiple instances.
+  10&nbsp;
+  11&nbsp;echo
+  12&nbsp;echo "Process ID of (first instance of) "$1" = $pid"
+  13&nbsp;echo -n "Command-line arguments: "
+  14&nbsp;cat /proc/"$pid"/"$OPTION" | xargs -0 echo
+  15&nbsp;#   Formats output:        ^^^^^^^^^^^^^^^
+  16&nbsp;#   (Thanks, Han Holl, for the fixup!)
+  17&nbsp;
+  18&nbsp;echo; echo
+  19&nbsp;
+  20&nbsp;
+  21&nbsp;# For example:
+  22&nbsp;# sh get-commandline.sh xterm</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>+</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;devfile="/proc/bus/usb/devices"
+   2&nbsp;text="Spd"
+   3&nbsp;USB1="Spd=12"
+   4&nbsp;USB2="Spd=480"
+   5&nbsp;
+   6&nbsp;
+   7&nbsp;bus_speed=$(fgrep -m 1 "$text" $devfile | awk '{print $9}')
+   8&nbsp;#                 ^^^^ Stop after first match.
+   9&nbsp;
+  10&nbsp;if [ "$bus_speed" = "$USB1" ]
+  11&nbsp;then
+  12&nbsp;  echo "USB 1.1 port found."
+  13&nbsp;  # Do something appropriate for USB 1.1.
+  14&nbsp;fi</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>It is even possible to control certain peripherals with commands
+	  sent to the <TT
+CLASS="FILENAME"
+>/proc</TT
+> directory.
+
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> 	  <TT
+CLASS="PROMPT"
+>root# </TT
+><B
+CLASS="COMMAND"
+>echo on &#62; /proc/acpi/ibm/light</B
+>
+           </PRE
+></TD
+></TR
+></TABLE
+>
+
+	  This turns on the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Thinklight</I
+></SPAN
+> in certain models
+	  of IBM/Lenovo Thinkpads. (May not work on all Linux distros.)</P
+><P
+>Of course, caution is advised when writing to <TT
+CLASS="FILENAME"
+>/proc</TT
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+><A
+NAME="PROCRUNNING"
+></A
+></P
+><P
+>The <TT
+CLASS="FILENAME"
+>/proc</TT
+> directory
+	   contains subdirectories with unusual numerical
+	   names.  Every one of these names maps to the <A
+HREF="variables2.html#PPIDREF"
+>process ID</A
+> of a currently running
+	   process.  Within each of these subdirectories, there are
+	   a number of files that hold useful information about the
+	   corresponding process.  The <TT
+CLASS="FILENAME"
+>stat</TT
+> and
+	   <TT
+CLASS="FILENAME"
+>status</TT
+> files keep running statistics
+	   on the process, the <TT
+CLASS="FILENAME"
+>cmdline</TT
+> file holds
+	   the command-line arguments the process was invoked with, and
+	   the <TT
+CLASS="FILENAME"
+>exe</TT
+> file is a symbolic link to the
+	   complete path name of the invoking process. There are a few
+	   more such files, but these seem to be the most interesting
+	   from a scripting standpoint.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="PIDID"
+></A
+><P
+><B
+>Example 29-3. Finding the process associated with a PID</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# pid-identifier.sh:
+   3&nbsp;# Gives complete path name to process associated with pid.
+   4&nbsp;
+   5&nbsp;ARGNO=1  # Number of arguments the script expects.
+   6&nbsp;E_WRONGARGS=65
+   7&nbsp;E_BADPID=66
+   8&nbsp;E_NOSUCHPROCESS=67
+   9&nbsp;E_NOPERMISSION=68
+  10&nbsp;PROCFILE=exe
+  11&nbsp;
+  12&nbsp;if [ $# -ne $ARGNO ]
+  13&nbsp;then
+  14&nbsp;  echo "Usage: `basename $0` PID-number" &#62;&#38;2  # Error message &#62;stderr.
+  15&nbsp;  exit $E_WRONGARGS
+  16&nbsp;fi  
+  17&nbsp;
+  18&nbsp;pidno=$( ps ax | grep $1 | awk '{ print $1 }' | grep $1 )
+  19&nbsp;# Checks for pid in "ps" listing, field #1.
+  20&nbsp;# Then makes sure it is the actual process, not the process invoked by this script.
+  21&nbsp;# The last "grep $1" filters out this possibility.
+  22&nbsp;#
+  23&nbsp;#    pidno=$( ps ax | awk '{ print $1 }' | grep $1 )
+  24&nbsp;#    also works, as Teemu Huovila, points out.
+  25&nbsp;
+  26&nbsp;if [ -z "$pidno" ]  #  If, after all the filtering, the result is a zero-length string,
+  27&nbsp;then                #+ no running process corresponds to the pid given.
+  28&nbsp;  echo "No such process running."
+  29&nbsp;  exit $E_NOSUCHPROCESS
+  30&nbsp;fi  
+  31&nbsp;
+  32&nbsp;# Alternatively:
+  33&nbsp;#   if ! ps $1 &#62; /dev/null 2&#62;&#38;1
+  34&nbsp;#   then                # no running process corresponds to the pid given.
+  35&nbsp;#     echo "No such process running."
+  36&nbsp;#     exit $E_NOSUCHPROCESS
+  37&nbsp;#    fi
+  38&nbsp;
+  39&nbsp;# To simplify the entire process, use "pidof".
+  40&nbsp;
+  41&nbsp;
+  42&nbsp;if [ ! -r "/proc/$1/$PROCFILE" ]  # Check for read permission.
+  43&nbsp;then
+  44&nbsp;  echo "Process $1 running, but..."
+  45&nbsp;  echo "Can't get read permission on /proc/$1/$PROCFILE."
+  46&nbsp;  exit $E_NOPERMISSION  # Ordinary user can't access some files in /proc.
+  47&nbsp;fi  
+  48&nbsp;
+  49&nbsp;# The last two tests may be replaced by:
+  50&nbsp;#    if ! kill -0 $1 &#62; /dev/null 2&#62;&#38;1 # '0' is not a signal, but
+  51&nbsp;                                      # this will test whether it is possible
+  52&nbsp;                                      # to send a signal to the process.
+  53&nbsp;#    then echo "PID doesn't exist or you're not its owner" &#62;&#38;2
+  54&nbsp;#    exit $E_BADPID
+  55&nbsp;#    fi
+  56&nbsp;
+  57&nbsp;
+  58&nbsp;
+  59&nbsp;exe_file=$( ls -l /proc/$1 | grep "exe" | awk '{ print $11 }' )
+  60&nbsp;# Or       exe_file=$( ls -l /proc/$1/exe | awk '{print $11}' )
+  61&nbsp;#
+  62&nbsp;#  /proc/pid-number/exe is a symbolic link
+  63&nbsp;#+ to the complete path name of the invoking process.
+  64&nbsp;
+  65&nbsp;if [ -e "$exe_file" ]  #  If /proc/pid-number/exe exists,
+  66&nbsp;then                   #+ then the corresponding process exists.
+  67&nbsp;  echo "Process #$1 invoked by $exe_file."
+  68&nbsp;else
+  69&nbsp;  echo "No such process running."
+  70&nbsp;fi  
+  71&nbsp;
+  72&nbsp;
+  73&nbsp;#  This elaborate script can *almost* be replaced by
+  74&nbsp;#       ps ax | grep $1 | awk '{ print $5 }'
+  75&nbsp;#  However, this will not work...
+  76&nbsp;#+ because the fifth field of 'ps' is argv[0] of the process,
+  77&nbsp;#+ not the executable file path.
+  78&nbsp;#
+  79&nbsp;# However, either of the following would work.
+  80&nbsp;#       find /proc/$1/exe -printf '%l\n'
+  81&nbsp;#       lsof -aFn -p $1 -d txt | sed -ne 's/^n//p'
+  82&nbsp;
+  83&nbsp;# Additional commentary by Stephane Chazelas.
+  84&nbsp;
+  85&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="CONSTAT"
+></A
+><P
+><B
+>Example 29-4. On-line connect status</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# connect-stat.sh
+   3&nbsp;#  Note that this script may need modification
+   4&nbsp;#+ to work with a wireless connection.
+   5&nbsp;
+   6&nbsp;PROCNAME=pppd        # ppp daemon
+   7&nbsp;PROCFILENAME=status  # Where to look.
+   8&nbsp;NOTCONNECTED=85
+   9&nbsp;INTERVAL=2           # Update every 2 seconds.
+  10&nbsp;
+  11&nbsp;pidno=$( ps ax | grep -v "ps ax" | grep -v grep | grep $PROCNAME |
+  12&nbsp;awk '{ print $1 }' )
+  13&nbsp;
+  14&nbsp;# Finding the process number of 'pppd', the 'ppp daemon'.
+  15&nbsp;# Have to filter out the process lines generated by the search itself.
+  16&nbsp;#
+  17&nbsp;#  However, as Oleg Philon points out,
+  18&nbsp;#+ this could have been considerably simplified by using "pidof".
+  19&nbsp;#  pidno=$( pidof $PROCNAME )
+  20&nbsp;#
+  21&nbsp;#  Moral of the story:
+  22&nbsp;#+ When a command sequence gets too complex, look for a shortcut.
+  23&nbsp;
+  24&nbsp;
+  25&nbsp;if [ -z "$pidno" ]   # If no pid, then process is not running.
+  26&nbsp;then
+  27&nbsp;  echo "Not connected."
+  28&nbsp;# exit $NOTCONNECTED
+  29&nbsp;else
+  30&nbsp;  echo "Connected."; echo
+  31&nbsp;fi
+  32&nbsp;
+  33&nbsp;while [ true ]       # Endless loop, script can be improved here.
+  34&nbsp;do
+  35&nbsp;
+  36&nbsp;  if [ ! -e "/proc/$pidno/$PROCFILENAME" ]
+  37&nbsp;  # While process running, then "status" file exists.
+  38&nbsp;  then
+  39&nbsp;    echo "Disconnected."
+  40&nbsp;#   exit $NOTCONNECTED
+  41&nbsp;  fi
+  42&nbsp;
+  43&nbsp;netstat -s | grep "packets received"  # Get some connect statistics.
+  44&nbsp;netstat -s | grep "packets delivered"
+  45&nbsp;
+  46&nbsp;
+  47&nbsp;  sleep $INTERVAL
+  48&nbsp;  echo; echo
+  49&nbsp;
+  50&nbsp;done
+  51&nbsp;
+  52&nbsp;exit 0
+  53&nbsp;
+  54&nbsp;# As it stands, this script must be terminated with a Control-C.
+  55&nbsp;
+  56&nbsp;#    Exercises:
+  57&nbsp;#    ---------
+  58&nbsp;#    Improve the script so it exits on a "q" keystroke.
+  59&nbsp;#    Make the script more user-friendly in other ways.
+  60&nbsp;#    Fix the script to work with wireless/DSL connections.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="PROCWARNING"
+></A
+></P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/warning.png"
+HSPACE="5"
+ALT="Warning"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>In general, it is dangerous to
+	 <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>write</I
+></SPAN
+> to the files in <TT
+CLASS="FILENAME"
+>/proc</TT
+>, as this can corrupt the
+	 filesystem or crash the machine.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN19122"
+HREF="procref1.html#AEN19122"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>Certain system commands, such as
+	     <A
+HREF="system.html#PROCINFOREF"
+>procinfo</A
+>,
+	     <A
+HREF="system.html#FREEREF"
+>free</A
+>,
+	     <A
+HREF="system.html#VMSTATREF"
+>vmstat</A
+>,
+	     <A
+HREF="system.html#LSDEVREF"
+>lsdev</A
+>,
+	     and <A
+HREF="system.html#UPTIMEREF"
+>uptime</A
+>
+	     do this as well.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="devproc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="networkprogramming.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><TT
+CLASS="FILENAME"
+>/dev</TT
+> and <TT
+CLASS="FILENAME"
+>/proc</TT
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="devproc.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Network Programming</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

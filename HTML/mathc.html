@@ -1,0 +1,1256 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Math Commands</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="External Filters, Programs and Commands"
+HREF="external.html"><LINK
+REL="PREVIOUS"
+TITLE="Terminal Control Commands"
+HREF="terminalccmds.html"><LINK
+REL="NEXT"
+TITLE="Miscellaneous Commands"
+HREF="extmisc.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="terminalccmds.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 16. External Filters, Programs and Commands</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="extmisc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MATHC"
+></A
+>16.8. Math Commands</H1
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="MATHCOMMANDLISTING1"
+></A
+><SPAN
+CLASS="QUOTE"
+>"Doing the
+	   numbers"</SPAN
+></B
+></P
+><DL
+><DT
+><A
+NAME="FACTORREF"
+></A
+><B
+CLASS="COMMAND"
+>factor</B
+></DT
+><DD
+><P
+>Decompose an integer into prime factors.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>factor 27417</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>27417: 3 13 19 37</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	    </P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="PRIMES2"
+></A
+><P
+><B
+>Example 16-46. Generating prime numbers</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# primes2.sh
+   3&nbsp;
+   4&nbsp;#  Generating prime numbers the quick-and-easy way,
+   5&nbsp;#+ without resorting to fancy algorithms.
+   6&nbsp;
+   7&nbsp;CEILING=10000   # 1 to 10000
+   8&nbsp;PRIME=0
+   9&nbsp;E_NOTPRIME=
+  10&nbsp;
+  11&nbsp;is_prime ()
+  12&nbsp;{
+  13&nbsp;  local factors
+  14&nbsp;  factors=( $(factor $1) )  # Load output of `factor` into array.
+  15&nbsp;
+  16&nbsp;if [ -z "${factors[2]}" ]
+  17&nbsp;#  Third element of "factors" array:
+  18&nbsp;#+ ${factors[2]} is 2nd factor of argument.
+  19&nbsp;#  If it is blank, then there is no 2nd factor,
+  20&nbsp;#+ and the argument is therefore prime.
+  21&nbsp;then
+  22&nbsp;  return $PRIME             # 0
+  23&nbsp;else
+  24&nbsp;  return $E_NOTPRIME        # null
+  25&nbsp;fi
+  26&nbsp;}
+  27&nbsp;
+  28&nbsp;echo
+  29&nbsp;for n in $(seq $CEILING)
+  30&nbsp;do
+  31&nbsp;  if is_prime $n
+  32&nbsp;  then
+  33&nbsp;    printf %5d $n
+  34&nbsp;  fi   #    ^  Five positions per number suffices.
+  35&nbsp;done   #       For a higher $CEILING, adjust upward, as necessary.
+  36&nbsp;
+  37&nbsp;echo
+  38&nbsp;
+  39&nbsp;exit</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="BCREF"
+></A
+><B
+CLASS="COMMAND"
+>bc</B
+></DT
+><DD
+><P
+>Bash can't handle floating point calculations, and
+	      it lacks operators for certain important mathematical
+	      functions. Fortunately, <B
+CLASS="COMMAND"
+>bc</B
+> gallops to
+	      the rescue.</P
+><P
+>Not just a versatile, arbitrary precision calculation
+	      utility, <B
+CLASS="COMMAND"
+>bc</B
+> offers many of the facilities of
+	      a programming language. It has a syntax vaguely resembling
+	      <B
+CLASS="COMMAND"
+>C</B
+>.</P
+><P
+>Since it is a fairly well-behaved UNIX utility, and may
+	       therefore be used in a <A
+HREF="special-chars.html#PIPEREF"
+>pipe</A
+>,
+	       <B
+CLASS="COMMAND"
+>bc</B
+> comes in handy in scripts.</P
+><P
+><A
+NAME="BCTEMPLATE"
+></A
+></P
+><P
+>Here is a simple template for using
+	      <B
+CLASS="COMMAND"
+>bc</B
+> to calculate a script
+	      variable. This uses <A
+HREF="commandsub.html#COMMANDSUBREF"
+>command
+	      substitution</A
+>.</P
+><P
+>              <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> 	      <TT
+CLASS="USERINPUT"
+><B
+>variable=$(echo "OPTIONS; OPERATIONS" | bc)</B
+></TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	      </P
+><P
+><A
+NAME="MONTHLYPMT0"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="MONTHLYPMT"
+></A
+><P
+><B
+>Example 16-47. Monthly Payment on a Mortgage</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# monthlypmt.sh: Calculates monthly payment on a mortgage.
+   3&nbsp;
+   4&nbsp;
+   5&nbsp;#  This is a modification of code in the
+   6&nbsp;#+ "mcalc" (mortgage calculator) package,
+   7&nbsp;#+ by Jeff Schmidt
+   8&nbsp;#+ and
+   9&nbsp;#+ Mendel Cooper (yours truly, the ABS Guide author).
+  10&nbsp;#   http://www.ibiblio.org/pub/Linux/apps/financial/mcalc-1.6.tar.gz
+  11&nbsp;
+  12&nbsp;echo
+  13&nbsp;echo "Given the principal, interest rate, and term of a mortgage,"
+  14&nbsp;echo "calculate the monthly payment."
+  15&nbsp;
+  16&nbsp;bottom=1.0
+  17&nbsp;
+  18&nbsp;echo
+  19&nbsp;echo -n "Enter principal (no commas) "
+  20&nbsp;read principal
+  21&nbsp;echo -n "Enter interest rate (percent) "  # If 12%, enter "12", not ".12".
+  22&nbsp;read interest_r
+  23&nbsp;echo -n "Enter term (months) "
+  24&nbsp;read term
+  25&nbsp;
+  26&nbsp;
+  27&nbsp; interest_r=$(echo "scale=9; $interest_r/100.0" | bc) # Convert to decimal.
+  28&nbsp;                 #           ^^^^^^^^^^^^^^^^^  Divide by 100. 
+  29&nbsp;                 # "scale" determines how many decimal places.
+  30&nbsp;
+  31&nbsp; interest_rate=$(echo "scale=9; $interest_r/12 + 1.0" | bc)
+  32&nbsp; 
+  33&nbsp;
+  34&nbsp; top=$(echo "scale=9; $principal*$interest_rate^$term" | bc)
+  35&nbsp;          #           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  36&nbsp;          #           Standard formula for figuring interest.
+  37&nbsp;
+  38&nbsp; echo; echo "Please be patient. This may take a while."
+  39&nbsp;
+  40&nbsp; let "months = $term - 1"
+  41&nbsp;# ==================================================================== 
+  42&nbsp; for ((x=$months; x &#62; 0; x--))
+  43&nbsp; do
+  44&nbsp;   bot=$(echo "scale=9; $interest_rate^$x" | bc)
+  45&nbsp;   bottom=$(echo "scale=9; $bottom+$bot" | bc)
+  46&nbsp;#  bottom = $(($bottom + $bot"))
+  47&nbsp; done
+  48&nbsp;# ==================================================================== 
+  49&nbsp;
+  50&nbsp;# -------------------------------------------------------------------- 
+  51&nbsp;#  Rick Boivie pointed out a more efficient implementation
+  52&nbsp;#+ of the above loop, which decreases computation time by 2/3.
+  53&nbsp;
+  54&nbsp;# for ((x=1; x &#60;= $months; x++))
+  55&nbsp;# do
+  56&nbsp;#   bottom=$(echo "scale=9; $bottom * $interest_rate + 1" | bc)
+  57&nbsp;# done
+  58&nbsp;
+  59&nbsp;
+  60&nbsp;#  And then he came up with an even more efficient alternative,
+  61&nbsp;#+ one that cuts down the run time by about 95%!
+  62&nbsp;
+  63&nbsp;# bottom=`{
+  64&nbsp;#     echo "scale=9; bottom=$bottom; interest_rate=$interest_rate"
+  65&nbsp;#     for ((x=1; x &#60;= $months; x++))
+  66&nbsp;#     do
+  67&nbsp;#          echo 'bottom = bottom * interest_rate + 1'
+  68&nbsp;#     done
+  69&nbsp;#     echo 'bottom'
+  70&nbsp;#     } | bc`       # Embeds a 'for loop' within command substitution.
+  71&nbsp;# --------------------------------------------------------------------------
+  72&nbsp;#  On the other hand, Frank Wang suggests:
+  73&nbsp;#  bottom=$(echo "scale=9; ($interest_rate^$term-1)/($interest_rate-1)" | bc)
+  74&nbsp;
+  75&nbsp;#  Because . . .
+  76&nbsp;#  The algorithm behind the loop
+  77&nbsp;#+ is actually a sum of geometric proportion series.
+  78&nbsp;#  The sum formula is e0(1-q^n)/(1-q),
+  79&nbsp;#+ where e0 is the first element and q=e(n+1)/e(n)
+  80&nbsp;#+ and n is the number of elements.
+  81&nbsp;# --------------------------------------------------------------------------
+  82&nbsp;
+  83&nbsp;
+  84&nbsp; # let "payment = $top/$bottom"
+  85&nbsp; payment=$(echo "scale=2; $top/$bottom" | bc)
+  86&nbsp; # Use two decimal places for dollars and cents.
+  87&nbsp; 
+  88&nbsp; echo
+  89&nbsp; echo "monthly payment = \$$payment"  # Echo a dollar sign in front of amount.
+  90&nbsp; echo
+  91&nbsp;
+  92&nbsp;
+  93&nbsp; exit 0
+  94&nbsp;
+  95&nbsp;
+  96&nbsp; # Exercises:
+  97&nbsp; #   1) Filter input to permit commas in principal amount.
+  98&nbsp; #   2) Filter input to permit interest to be entered as percent or decimal.
+  99&nbsp; #   3) If you are really ambitious,
+ 100&nbsp; #+     expand this script to print complete amortization tables.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="BASE0"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="BASE"
+></A
+><P
+><B
+>Example 16-48. Base Conversion</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;###########################################################################
+   3&nbsp;# Shellscript:	base.sh - print number to different bases (Bourne Shell)
+   4&nbsp;# Author     :	Heiner Steven (heiner.steven@odn.de)
+   5&nbsp;# Date       :	07-03-95
+   6&nbsp;# Category   :	Desktop
+   7&nbsp;# $Id: base.sh,v 1.2 2000/02/06 19:55:35 heiner Exp $
+   8&nbsp;# ==&#62; Above line is RCS ID info.
+   9&nbsp;###########################################################################
+  10&nbsp;# Description
+  11&nbsp;#
+  12&nbsp;# Changes
+  13&nbsp;# 21-03-95 stv	fixed error occuring with 0xb as input (0.2)
+  14&nbsp;###########################################################################
+  15&nbsp;
+  16&nbsp;# ==&#62; Used in ABS Guide with the script author's permission.
+  17&nbsp;# ==&#62; Comments added by ABS Guide author.
+  18&nbsp;
+  19&nbsp;NOARGS=85
+  20&nbsp;PN=`basename "$0"`			       # Program name
+  21&nbsp;VER=`echo '$Revision: 1.2 $' | cut -d' ' -f2`  # ==&#62; VER=1.2
+  22&nbsp;
+  23&nbsp;Usage () {
+  24&nbsp;    echo "$PN - print number to different bases, $VER (stv '95)
+  25&nbsp;usage: $PN [number ...]
+  26&nbsp;
+  27&nbsp;If no number is given, the numbers are read from standard input.
+  28&nbsp;A number may be
+  29&nbsp;    binary (base 2)		starting with 0b (i.e. 0b1100)
+  30&nbsp;    octal (base 8)		starting with 0  (i.e. 014)
+  31&nbsp;    hexadecimal (base 16)	starting with 0x (i.e. 0xc)
+  32&nbsp;    decimal			otherwise (i.e. 12)" &#62;&#38;2
+  33&nbsp;    exit $NOARGS 
+  34&nbsp;}   # ==&#62; Prints usage message.
+  35&nbsp;
+  36&nbsp;Msg () {
+  37&nbsp;    for i   # ==&#62; in [list] missing. Why?
+  38&nbsp;    do echo "$PN: $i" &#62;&#38;2
+  39&nbsp;    done
+  40&nbsp;}
+  41&nbsp;
+  42&nbsp;Fatal () { Msg "$@"; exit 66; }
+  43&nbsp;
+  44&nbsp;PrintBases () {
+  45&nbsp;    # Determine base of the number
+  46&nbsp;    for i      # ==&#62; in [list] missing...
+  47&nbsp;    do         # ==&#62; so operates on command-line arg(s).
+  48&nbsp;	case "$i" in
+  49&nbsp;	    0b*)		ibase=2;;	# binary
+  50&nbsp;	    0x*|[a-f]*|[A-F]*)	ibase=16;;	# hexadecimal
+  51&nbsp;	    0*)			ibase=8;;	# octal
+  52&nbsp;	    [1-9]*)		ibase=10;;	# decimal
+  53&nbsp;	    *)
+  54&nbsp;		Msg "illegal number $i - ignored"
+  55&nbsp;		continue;;
+  56&nbsp;	esac
+  57&nbsp;
+  58&nbsp;	# Remove prefix, convert hex digits to uppercase (bc needs this).
+  59&nbsp;	number=`echo "$i" | sed -e 's:^0[bBxX]::' | tr '[a-f]' '[A-F]'`
+  60&nbsp;	# ==&#62; Uses ":" as sed separator, rather than "/".
+  61&nbsp;
+  62&nbsp;	# Convert number to decimal
+  63&nbsp;	dec=`echo "ibase=$ibase; $number" | bc`  # ==&#62; 'bc' is calculator utility.
+  64&nbsp;	case "$dec" in
+  65&nbsp;	    [0-9]*)	;;			 # number ok
+  66&nbsp;	    *)		continue;;		 # error: ignore
+  67&nbsp;	esac
+  68&nbsp;
+  69&nbsp;	# Print all conversions in one line.
+  70&nbsp;	# ==&#62; 'here document' feeds command list to 'bc'.
+  71&nbsp;	echo `bc &#60;&#60;!
+  72&nbsp;	    obase=16; "hex="; $dec
+  73&nbsp;	    obase=10; "dec="; $dec
+  74&nbsp;	    obase=8;  "oct="; $dec
+  75&nbsp;	    obase=2;  "bin="; $dec
+  76&nbsp;!
+  77&nbsp;    ` | sed -e 's: :	:g'
+  78&nbsp;
+  79&nbsp;    done
+  80&nbsp;}
+  81&nbsp;
+  82&nbsp;while [ $# -gt 0 ]
+  83&nbsp;# ==&#62;  Is a "while loop" really necessary here,
+  84&nbsp;# ==&#62;+ since all the cases either break out of the loop
+  85&nbsp;# ==&#62;+ or terminate the script.
+  86&nbsp;# ==&#62; (Above comment by Paulo Marcel Coelho Aragao.)
+  87&nbsp;do
+  88&nbsp;    case "$1" in
+  89&nbsp;	--)     shift; break;;
+  90&nbsp;	-h)     Usage;;                 # ==&#62; Help message.
+  91&nbsp;	-*)     Usage;;
+  92&nbsp;         *)     break;;                 # First number
+  93&nbsp;    esac   # ==&#62; Error checking for illegal input might be appropriate.
+  94&nbsp;    shift
+  95&nbsp;done
+  96&nbsp;
+  97&nbsp;if [ $# -gt 0 ]
+  98&nbsp;then
+  99&nbsp;    PrintBases "$@"
+ 100&nbsp;else					# Read from stdin.
+ 101&nbsp;    while read line
+ 102&nbsp;    do
+ 103&nbsp;	PrintBases $line
+ 104&nbsp;    done
+ 105&nbsp;fi
+ 106&nbsp;
+ 107&nbsp;
+ 108&nbsp;exit</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="BCHEREDOC"
+></A
+></P
+><P
+>An alternate method of invoking <B
+CLASS="COMMAND"
+>bc</B
+>
+		involves using a <A
+HREF="here-docs.html#HEREDOCREF"
+>here
+		document</A
+> embedded within a <A
+HREF="commandsub.html#COMMANDSUBREF"
+>command substitution</A
+>
+		block. This is especially appropriate when a script
+		needs to pass a list of options and commands to
+		<B
+CLASS="COMMAND"
+>bc</B
+>.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;variable=`bc &#60;&#60; LIMIT_STRING
+   2&nbsp;options
+   3&nbsp;statements
+   4&nbsp;operations
+   5&nbsp;LIMIT_STRING
+   6&nbsp;`
+   7&nbsp;
+   8&nbsp;...or...
+   9&nbsp;
+  10&nbsp;
+  11&nbsp;variable=$(bc &#60;&#60; LIMIT_STRING
+  12&nbsp;options
+  13&nbsp;statements
+  14&nbsp;operations
+  15&nbsp;LIMIT_STRING
+  16&nbsp;)</PRE
+></TD
+></TR
+></TABLE
+>
+              </P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="ALTBC"
+></A
+><P
+><B
+>Example 16-49. Invoking <I
+CLASS="FIRSTTERM"
+>bc</I
+> using a <I
+CLASS="FIRSTTERM"
+>here
+	        document</I
+></B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# Invoking 'bc' using command substitution
+   3&nbsp;# in combination with a 'here document'.
+   4&nbsp;
+   5&nbsp;
+   6&nbsp;var1=`bc &#60;&#60; EOF
+   7&nbsp;18.33 * 19.78
+   8&nbsp;EOF
+   9&nbsp;`
+  10&nbsp;echo $var1       # 362.56
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;#  $( ... ) notation also works.
+  14&nbsp;v1=23.53
+  15&nbsp;v2=17.881
+  16&nbsp;v3=83.501
+  17&nbsp;v4=171.63
+  18&nbsp;
+  19&nbsp;var2=$(bc &#60;&#60; EOF
+  20&nbsp;scale = 4
+  21&nbsp;a = ( $v1 + $v2 )
+  22&nbsp;b = ( $v3 * $v4 )
+  23&nbsp;a * b + 15.35
+  24&nbsp;EOF
+  25&nbsp;)
+  26&nbsp;echo $var2       # 593487.8452
+  27&nbsp;
+  28&nbsp;
+  29&nbsp;var3=$(bc -l &#60;&#60; EOF
+  30&nbsp;scale = 9
+  31&nbsp;s ( 1.7 )
+  32&nbsp;EOF
+  33&nbsp;)
+  34&nbsp;# Returns the sine of 1.7 radians.
+  35&nbsp;# The "-l" option calls the 'bc' math library.
+  36&nbsp;echo $var3       # .991664810
+  37&nbsp;
+  38&nbsp;
+  39&nbsp;# Now, try it in a function...
+  40&nbsp;hypotenuse ()    # Calculate hypotenuse of a right triangle.
+  41&nbsp;{                # c = sqrt( a^2 + b^2 )
+  42&nbsp;hyp=$(bc -l &#60;&#60; EOF
+  43&nbsp;scale = 9
+  44&nbsp;sqrt ( $1 * $1 + $2 * $2 )
+  45&nbsp;EOF
+  46&nbsp;)
+  47&nbsp;# Can't directly return floating point values from a Bash function.
+  48&nbsp;# But, can echo-and-capture:
+  49&nbsp;echo "$hyp"
+  50&nbsp;}
+  51&nbsp;
+  52&nbsp;hyp=$(hypotenuse 3.68 7.31)
+  53&nbsp;echo "hypotenuse = $hyp"    # 8.184039344
+  54&nbsp;
+  55&nbsp;
+  56&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+><A
+NAME="CANNONREF"
+></A
+></P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="CANNON"
+></A
+><P
+><B
+>Example 16-50. Calculating PI</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# cannon.sh: Approximating PI by firing cannonballs.
+   3&nbsp;
+   4&nbsp;# Author: Mendel Cooper
+   5&nbsp;# License: Public Domain
+   6&nbsp;# Version 2.2, reldate 13oct08.
+   7&nbsp;
+   8&nbsp;# This is a very simple instance of a "Monte Carlo" simulation:
+   9&nbsp;#+ a mathematical model of a real-life event,
+  10&nbsp;#+ using pseudorandom numbers to emulate random chance.
+  11&nbsp;
+  12&nbsp;#  Consider a perfectly square plot of land, 10000 units on a side.
+  13&nbsp;#  This land has a perfectly circular lake in its center,
+  14&nbsp;#+ with a diameter of 10000 units.
+  15&nbsp;#  The plot is actually mostly water, except for land in the four corners.
+  16&nbsp;#  (Think of it as a square with an inscribed circle.)
+  17&nbsp;#
+  18&nbsp;#  We will fire iron cannonballs from an old-style cannon
+  19&nbsp;#+ at the square.
+  20&nbsp;#  All the shots impact somewhere on the square,
+  21&nbsp;#+ either in the lake or on the dry corners.
+  22&nbsp;#  Since the lake takes up most of the area,
+  23&nbsp;#+ most of the shots will SPLASH! into the water.
+  24&nbsp;#  Just a few shots will THUD! into solid ground
+  25&nbsp;#+ in the four corners of the square.
+  26&nbsp;#
+  27&nbsp;#  If we take enough random, unaimed shots at the square,
+  28&nbsp;#+ Then the ratio of SPLASHES to total shots will approximate
+  29&nbsp;#+ the value of PI/4.
+  30&nbsp;#
+  31&nbsp;#  The simplified explanation is that the cannon is actually
+  32&nbsp;#+ shooting only at the upper right-hand quadrant of the square,
+  33&nbsp;#+ i.e., Quadrant I of the Cartesian coordinate plane.
+  34&nbsp;#
+  35&nbsp;#
+  36&nbsp;#  Theoretically, the more shots taken, the better the fit.
+  37&nbsp;#  However, a shell script, as opposed to a compiled language
+  38&nbsp;#+ with floating-point math built in, requires some compromises.
+  39&nbsp;#  This decreases the accuracy of the simulation.
+  40&nbsp;
+  41&nbsp;
+  42&nbsp;DIMENSION=10000  # Length of each side of the plot.
+  43&nbsp;                 # Also sets ceiling for random integers generated.
+  44&nbsp;
+  45&nbsp;MAXSHOTS=1000    # Fire this many shots.
+  46&nbsp;                 # 10000 or more would be better, but would take too long.
+  47&nbsp;PMULTIPLIER=4.0  # Scaling factor.
+  48&nbsp;
+  49&nbsp;declare -r M_PI=3.141592654
+  50&nbsp;                 # Actual 9-place value of PI, for comparison purposes.
+  51&nbsp;
+  52&nbsp;get_random ()
+  53&nbsp;{
+  54&nbsp;SEED=$(head -n 1 /dev/urandom | od -N 1 | awk '{ print $2 }')
+  55&nbsp;RANDOM=$SEED                                  #  From "seeding-random.sh"
+  56&nbsp;                                              #+ example script.
+  57&nbsp;let "rnum = $RANDOM % $DIMENSION"             #  Range less than 10000.
+  58&nbsp;echo $rnum
+  59&nbsp;}
+  60&nbsp;
+  61&nbsp;distance=        # Declare global variable.
+  62&nbsp;hypotenuse ()    # Calculate hypotenuse of a right triangle.
+  63&nbsp;{                # From "alt-bc.sh" example.
+  64&nbsp;distance=$(bc -l &#60;&#60; EOF
+  65&nbsp;scale = 0
+  66&nbsp;sqrt ( $1 * $1 + $2 * $2 )
+  67&nbsp;EOF
+  68&nbsp;)
+  69&nbsp;#  Setting "scale" to zero rounds down result to integer value,
+  70&nbsp;#+ a necessary compromise in this script.
+  71&nbsp;#  It decreases the accuracy of this simulation.
+  72&nbsp;}
+  73&nbsp;
+  74&nbsp;
+  75&nbsp;# ==========================================================
+  76&nbsp;# main() {
+  77&nbsp;# "Main" code block, mimicking a C-language main() function.
+  78&nbsp;
+  79&nbsp;# Initialize variables.
+  80&nbsp;shots=0
+  81&nbsp;splashes=0
+  82&nbsp;thuds=0
+  83&nbsp;Pi=0
+  84&nbsp;error=0
+  85&nbsp;
+  86&nbsp;while [ "$shots" -lt  "$MAXSHOTS" ]           # Main loop.
+  87&nbsp;do
+  88&nbsp;
+  89&nbsp;  xCoord=$(get_random)                        # Get random X and Y coords.
+  90&nbsp;  yCoord=$(get_random)
+  91&nbsp;  hypotenuse $xCoord $yCoord                  #  Hypotenuse of
+  92&nbsp;                                              #+ right-triangle = distance.
+  93&nbsp;  ((shots++))
+  94&nbsp;
+  95&nbsp;  printf "#%4d   " $shots
+  96&nbsp;  printf "Xc = %4d  " $xCoord
+  97&nbsp;  printf "Yc = %4d  " $yCoord
+  98&nbsp;  printf "Distance = %5d  " $distance         #   Distance from
+  99&nbsp;                                              #+  center of lake
+ 100&nbsp;                                              #+  -- the "origin" --
+ 101&nbsp;                                              #+  coordinate (0,0).
+ 102&nbsp;
+ 103&nbsp;  if [ "$distance" -le "$DIMENSION" ]
+ 104&nbsp;  then
+ 105&nbsp;    echo -n "SPLASH!  "
+ 106&nbsp;    ((splashes++))
+ 107&nbsp;  else
+ 108&nbsp;    echo -n "THUD!    "
+ 109&nbsp;    ((thuds++))
+ 110&nbsp;  fi
+ 111&nbsp;
+ 112&nbsp;  Pi=$(echo "scale=9; $PMULTIPLIER*$splashes/$shots" | bc)
+ 113&nbsp;  # Multiply ratio by 4.0.
+ 114&nbsp;  echo -n "PI ~ $Pi"
+ 115&nbsp;  echo
+ 116&nbsp;
+ 117&nbsp;done
+ 118&nbsp;
+ 119&nbsp;echo
+ 120&nbsp;echo "After $shots shots, PI looks like approximately   $Pi"
+ 121&nbsp;#  Tends to run a bit high,
+ 122&nbsp;#+ possibly due to round-off error and imperfect randomness of $RANDOM.
+ 123&nbsp;#  But still usually within plus-or-minus 5% . . .
+ 124&nbsp;#+ a pretty fair rough approximation.
+ 125&nbsp;error=$(echo "scale=9; $Pi - $M_PI" | bc)
+ 126&nbsp;pct_error=$(echo "scale=2; 100.0 * $error / $M_PI" | bc)
+ 127&nbsp;echo -n "Deviation from mathematical value of PI =        $error"
+ 128&nbsp;echo " ($pct_error% error)"
+ 129&nbsp;echo
+ 130&nbsp;
+ 131&nbsp;# End of "main" code block.
+ 132&nbsp;# }
+ 133&nbsp;# ==========================================================
+ 134&nbsp;
+ 135&nbsp;exit 0
+ 136&nbsp;
+ 137&nbsp;#  One might well wonder whether a shell script is appropriate for
+ 138&nbsp;#+ an application as complex and computation-intensive as a simulation.
+ 139&nbsp;#
+ 140&nbsp;#  There are at least two justifications.
+ 141&nbsp;#  1) As a proof of concept: to show it can be done.
+ 142&nbsp;#  2) To prototype and test the algorithms before rewriting
+ 143&nbsp;#+    it in a compiled high-level language.</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>See also <A
+HREF="contributed-scripts.html#STDDEV"
+>Example A-37</A
+>.</P
+></DD
+><DT
+><A
+NAME="DCREF"
+></A
+><B
+CLASS="COMMAND"
+>dc</B
+></DT
+><DD
+><P
+>The <B
+CLASS="COMMAND"
+>dc</B
+> (<B
+CLASS="COMMAND"
+>d</B
+>esk
+              <B
+CLASS="COMMAND"
+>c</B
+>alculator) utility is <A
+HREF="variables2.html#STACKDEFREF"
+>stack-oriented</A
+>
+              and uses RPN (<I
+CLASS="FIRSTTERM"
+>Reverse Polish Notation</I
+>).
+              Like <B
+CLASS="COMMAND"
+>bc</B
+>, it has much of the power of
+              a programming language.</P
+><P
+>Similar to the procedure with <B
+CLASS="COMMAND"
+>bc</B
+>,
+	      <A
+HREF="internal.html#ECHOREF"
+>echo</A
+> a command-string
+	      to <B
+CLASS="COMMAND"
+>dc</B
+>.</P
+><P
+>		     <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;echo "[Printing a string ... ]P" | dc
+   2&nbsp;# The P command prints the string between the preceding brackets.
+   3&nbsp;
+   4&nbsp;# And now for some simple arithmetic.
+   5&nbsp;echo "7 8 * p" | dc     # 56
+   6&nbsp;#  Pushes 7, then 8 onto the stack,
+   7&nbsp;#+ multiplies ("*" operator), then prints the result ("p" operator).</PRE
+></TD
+></TR
+></TABLE
+>
+             </P
+><P
+>Most persons avoid <B
+CLASS="COMMAND"
+>dc</B
+>, because
+                of its non-intuitive input and rather cryptic
+		operators. Yet, it has its uses.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="HEXCONVERT"
+></A
+><P
+><B
+>Example 16-51. Converting a decimal number to hexadecimal</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# hexconvert.sh: Convert a decimal number to hexadecimal.
+   3&nbsp;
+   4&nbsp;E_NOARGS=85 # Command-line arg missing.
+   5&nbsp;BASE=16     # Hexadecimal.
+   6&nbsp;
+   7&nbsp;if [ -z "$1" ]
+   8&nbsp;then        # Need a command-line argument.
+   9&nbsp;  echo "Usage: $0 number"
+  10&nbsp;  exit $E_NOARGS
+  11&nbsp;fi          # Exercise: add argument validity checking.
+  12&nbsp;
+  13&nbsp;
+  14&nbsp;hexcvt ()
+  15&nbsp;{
+  16&nbsp;if [ -z "$1" ]
+  17&nbsp;then
+  18&nbsp;  echo 0
+  19&nbsp;  return    # "Return" 0 if no arg passed to function.
+  20&nbsp;fi
+  21&nbsp;
+  22&nbsp;echo ""$1" "$BASE" o p" | dc
+  23&nbsp;#                  o    sets radix (numerical base) of output.
+  24&nbsp;#                    p  prints the top of stack.
+  25&nbsp;# For other options: 'man dc' ...
+  26&nbsp;return
+  27&nbsp;}
+  28&nbsp;
+  29&nbsp;hexcvt "$1"
+  30&nbsp;
+  31&nbsp;exit</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+><P
+>Studying the <A
+HREF="external.html#INFOREF"
+>info</A
+> page for
+		<B
+CLASS="COMMAND"
+>dc</B
+> is a painful path to understanding its
+		intricacies. There seems to be a small, select group of
+		<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>dc wizards</I
+></SPAN
+> who delight in showing off
+		their mastery of this powerful, but arcane utility.</P
+><P
+>	      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> <TT
+CLASS="PROMPT"
+>bash$ </TT
+><TT
+CLASS="USERINPUT"
+><B
+>echo "16i[q]sa[ln0=aln100%Pln100/snlbx]sbA0D68736142snlbxq" | dc</B
+></TT
+>
+ <TT
+CLASS="COMPUTEROUTPUT"
+>Bash</TT
+>
+ 	      </PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+><P
+><A
+NAME="GOLDENRATIO"
+></A
+>
+          <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;dc &#60;&#60;&#60; 10k5v1+2/p # 1.6180339887
+   2&nbsp;#  ^^^            Feed operations to dc using a Here String.
+   3&nbsp;#      ^^^        Pushes 10 and sets that as the precision (10k).
+   4&nbsp;#         ^^      Pushes 5 and takes its square root
+   5&nbsp;#                 (5v, v = square root).
+   6&nbsp;#           ^^    Pushes 1 and adds it to the running total (1+).
+   7&nbsp;#             ^^  Pushes 2 and divides the running total by that (2/).
+   8&nbsp;#               ^ Pops and prints the result (p)
+   9&nbsp;#  The result is  1.6180339887 ...
+  10&nbsp;#  ... which happens to be the Pythagorean Golden Ratio, to 10 places.</PRE
+></TD
+></TR
+></TABLE
+>
+	  </P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="FACTR"
+></A
+><P
+><B
+>Example 16-52. Factoring</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# factr.sh: Factor a number
+   3&nbsp;
+   4&nbsp;MIN=2       # Will not work for number smaller than this.
+   5&nbsp;E_NOARGS=85
+   6&nbsp;E_TOOSMALL=86
+   7&nbsp;
+   8&nbsp;if [ -z $1 ]
+   9&nbsp;then
+  10&nbsp;  echo "Usage: $0 number"
+  11&nbsp;  exit $E_NOARGS
+  12&nbsp;fi
+  13&nbsp;
+  14&nbsp;if [ "$1" -lt "$MIN" ]
+  15&nbsp;then
+  16&nbsp;  echo "Number to factor must be $MIN or greater."
+  17&nbsp;  exit $E_TOOSMALL
+  18&nbsp;fi  
+  19&nbsp;
+  20&nbsp;# Exercise: Add type checking (to reject non-integer arg).
+  21&nbsp;
+  22&nbsp;echo "Factors of $1:"
+  23&nbsp;# -------------------------------------------------------
+  24&nbsp;echo  "$1[p]s2[lip/dli%0=1dvsr]s12sid2%0=13sidvsr[dli%0=\
+  25&nbsp;1lrli2+dsi!&#62;.]ds.xd1&#60;2" | dc
+  26&nbsp;# -------------------------------------------------------
+  27&nbsp;#  Above code written by Michel Charpentier &#60;charpov@cs.unh.edu&#62;
+  28&nbsp;#  (as a one-liner, here broken into two lines for display purposes).
+  29&nbsp;#  Used in ABS Guide with permission (thanks!).
+  30&nbsp;
+  31&nbsp; exit
+  32&nbsp;
+  33&nbsp; # $ sh factr.sh 270138
+  34&nbsp; # 2
+  35&nbsp; # 3
+  36&nbsp; # 11
+  37&nbsp; # 4093</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+><DT
+><A
+NAME="AWKMATH"
+></A
+><B
+CLASS="COMMAND"
+>awk</B
+></DT
+><DD
+><P
+>Yet another way of doing floating point math in
+	      a script is using <A
+HREF="awk.html#AWKREF"
+>awk's</A
+>
+	      built-in math functions in a <A
+HREF="wrapper.html#SHWRAPPER"
+>shell
+	      wrapper</A
+>.</P
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="HYPOT"
+></A
+><P
+><B
+>Example 16-53. Calculating the hypotenuse of a triangle</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;# hypotenuse.sh: Returns the "hypotenuse" of a right triangle.
+   3&nbsp;#                (square root of sum of squares of the "legs")
+   4&nbsp;
+   5&nbsp;ARGS=2                # Script needs sides of triangle passed.
+   6&nbsp;E_BADARGS=85          # Wrong number of arguments.
+   7&nbsp;
+   8&nbsp;if [ $# -ne "$ARGS" ] # Test number of arguments to script.
+   9&nbsp;then
+  10&nbsp;  echo "Usage: `basename $0` side_1 side_2"
+  11&nbsp;  exit $E_BADARGS
+  12&nbsp;fi
+  13&nbsp;
+  14&nbsp;
+  15&nbsp;AWKSCRIPT=' { printf( "%3.7f\n", sqrt($1*$1 + $2*$2) ) } '
+  16&nbsp;#             command(s) / parameters passed to awk
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;# Now, pipe the parameters to awk.
+  20&nbsp;    echo -n "Hypotenuse of $1 and $2 = "
+  21&nbsp;    echo $1 $2 | awk "$AWKSCRIPT"
+  22&nbsp;#   ^^^^^^^^^^^^
+  23&nbsp;# An echo-and-pipe is an easy way of passing shell parameters to awk.
+  24&nbsp;
+  25&nbsp;exit
+  26&nbsp;
+  27&nbsp;# Exercise: Rewrite this script using 'bc' rather than awk.
+  28&nbsp;#           Which method is more intuitive?</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="terminalccmds.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="extmisc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Terminal Control Commands</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="external.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Miscellaneous Commands</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

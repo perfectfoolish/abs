@@ -1,0 +1,605 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Optimizations</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Miscellany"
+HREF="miscellany.html"><LINK
+REL="PREVIOUS"
+TITLE="Colorizing Scripts"
+HREF="colorizing.html"><LINK
+REL="NEXT"
+TITLE="Assorted Tips"
+HREF="assortedtips.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="colorizing.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 36. Miscellany</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="assortedtips.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="OPTIMIZATIONS"
+></A
+>36.6. Optimizations</H1
+><P
+>Most shell scripts are quick 'n dirty solutions to non-complex
+	  problems. As such, optimizing them for speed is not much of an
+	  issue.  Consider the case, though, where a script carries out
+	  an important task, does it well, but runs too slowly. Rewriting
+	  it in a compiled language may not be a palatable option. The
+	  simplest fix would be to rewrite the parts of the script
+	  that slow it down. Is it possible to apply principles of code
+	  optimization even to a lowly shell script?</P
+><P
+>Check the loops in the script. Time consumed by repetitive
+	  operations adds up quickly. If at all possible, remove
+	  time-consuming operations from within loops.</P
+><P
+>Use <A
+HREF="internal.html#BUILTINREF"
+>builtin</A
+> commands in
+	  preference to system commands. Builtins execute faster and
+	  usually do not launch a subshell when invoked.</P
+><P
+><A
+NAME="CATABUSE"
+></A
+></P
+><P
+>Avoid unnecessary commands, particularly in a <A
+HREF="special-chars.html#PIPEREF"
+>pipe</A
+>.
+	    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;cat "$file" | grep "$word"
+   2&nbsp;
+   3&nbsp;grep "$word" "$file"
+   4&nbsp;
+   5&nbsp;#  The above command-lines have an identical effect,
+   6&nbsp;#+ but the second runs faster since it launches one fewer subprocess.</PRE
+></TD
+></TR
+></TABLE
+>
+	  The <A
+HREF="external.html#CATREF"
+>cat</A
+> command seems especially
+	  prone to overuse in scripts.</P
+><P
+><A
+NAME="LCALL"
+></A
+></P
+><TABLE
+CLASS="SIDEBAR"
+BORDER="1"
+CELLPADDING="5"
+><TR
+><TD
+><DIV
+CLASS="SIDEBAR"
+><A
+NAME="AEN20341"
+></A
+><P
+>Disabling certain Bash options can speed up scripts.</P
+><P
+>As Erik Brandsberg points out:</P
+><P
+>If you don't need <A
+HREF="bashver4.html#UNICODEREF"
+>Unicode</A
+> support, you can
+                 get potentially a 2x or more improvement in speed by
+		 simply setting the <TT
+CLASS="USERINPUT"
+><B
+>LC_ALL</B
+></TT
+> variable.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;   export LC_ALL=C
+   2&nbsp;
+   3&nbsp;   [specifies the locale as ANSI C,
+   4&nbsp;   thereby disabling Unicode support]
+   5&nbsp;
+   6&nbsp;[In an example script ...]
+   7&nbsp;
+   8&nbsp;Without [Unicode support]:
+   9&nbsp;erik@erik-desktop:~/capture$ time ./cap-ngrep.sh
+  10&nbsp;live2.pcap &#62; out.txt
+  11&nbsp;
+  12&nbsp;  real        0m20.483s
+  13&nbsp;  user        1m34.470s
+  14&nbsp;  sys         0m12.869s
+  15&nbsp;
+  16&nbsp;With [Unicode support]:
+  17&nbsp;erik@erik-desktop:~/capture$ time ./cap-ngrep.sh
+  18&nbsp;live2.pcap &#62; out.txt
+  19&nbsp;
+  20&nbsp;  real        0m50.232s
+  21&nbsp;  user        3m51.118s
+  22&nbsp;  sys         0m11.221s
+  23&nbsp;
+  24&nbsp;A large part of the overhead that is optimized is, I believe,
+  25&nbsp;regex match using [[ string =~ REGEX ]],
+  26&nbsp;but it may help with other portions of the code as well.
+  27&nbsp;I hadn't [seen it] mentioned that this optimization helped
+  28&nbsp;with Bash, but I had seen it helped with "grep,"
+  29&nbsp;so why not try?</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+></TD
+></TR
+></TABLE
+><P
+><A
+NAME="OPTIMES"
+></A
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Certain operators, notably <A
+HREF="moreadv.html#EXPRREF"
+>expr</A
+>, are very inefficient
+          and might be replaced by <A
+HREF="dblparens.html"
+>double
+          parentheses</A
+> arithmetic expansion.
+          See <A
+HREF="contributed-scripts.html#TESTEXECTIME"
+>Example A-59</A
+>.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;Math tests
+   2&nbsp;
+   3&nbsp;math via $(( ))
+   4&nbsp;real          0m0.294s
+   5&nbsp;user          0m0.288s
+   6&nbsp;sys           0m0.008s
+   7&nbsp;
+   8&nbsp;math via expr:
+   9&nbsp;real          1m17.879s   # Much slower!
+  10&nbsp;user          0m3.600s
+  11&nbsp;sys           0m8.765s
+  12&nbsp;
+  13&nbsp;math via let:
+  14&nbsp;real          0m0.364s
+  15&nbsp;user          0m0.372s
+  16&nbsp;sys           0m0.000s</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+><A
+HREF="tests.html#IFTHEN"
+>Condition testing</A
+>
+            constructs in scripts deserve close scrutiny. Substitute
+	    <A
+HREF="testbranch.html#CASEESAC1"
+>case</A
+> for <A
+HREF="tests.html#IFTHEN"
+>if-then</A
+> constructs and combine tests
+	    when possible, to minimize script execution time. Again,
+	    refer to <A
+HREF="contributed-scripts.html#TESTEXECTIME"
+>Example A-59</A
+>.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;Test using "case" construct:
+   2&nbsp;real          0m0.329s
+   3&nbsp;user          0m0.320s
+   4&nbsp;sys           0m0.000s
+   5&nbsp;
+   6&nbsp;
+   7&nbsp;Test with if [], no quotes:
+   8&nbsp;real          0m0.438s
+   9&nbsp;user          0m0.432s
+  10&nbsp;sys           0m0.008s
+  11&nbsp;
+  12&nbsp;
+  13&nbsp;Test with if [], quotes:
+  14&nbsp;real          0m0.476s
+  15&nbsp;user          0m0.452s
+  16&nbsp;sys           0m0.024s
+  17&nbsp;
+  18&nbsp;
+  19&nbsp;Test with if [], using -eq:
+  20&nbsp;real          0m0.457s
+  21&nbsp;user          0m0.456s
+  22&nbsp;sys           0m0.000s</PRE
+></TD
+></TR
+></TABLE
+></P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+><A
+NAME="ASSOCARRTST"
+></A
+></P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="common/note.png"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Erik Brandsberg recommends using <A
+HREF="bashver4.html#ASSOCARR"
+>associative arrays</A
+> in preference to
+	  conventional numeric-indexed arrays in most cases. When
+	  overwriting values in a numeric array, there is a significant
+	  performance penalty vs. associative arrays. Running a test
+	  script confirms this. See <A
+HREF="contributed-scripts.html#ASSOCARRTEST"
+>Example A-60</A
+>.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;Assignment tests
+   2&nbsp;
+   3&nbsp;Assigning a simple variable
+   4&nbsp;real          0m0.418s
+   5&nbsp;user          0m0.416s
+   6&nbsp;sys           0m0.004s
+   7&nbsp;
+   8&nbsp;Assigning a numeric index array entry
+   9&nbsp;real          0m0.582s
+  10&nbsp;user          0m0.564s
+  11&nbsp;sys           0m0.016s
+  12&nbsp;
+  13&nbsp;Overwriting a numeric index array entry
+  14&nbsp;real          0m21.931s
+  15&nbsp;user          0m21.913s
+  16&nbsp;sys           0m0.016s
+  17&nbsp;
+  18&nbsp;Linear reading of numeric index array
+  19&nbsp;real          0m0.422s
+  20&nbsp;user          0m0.416s
+  21&nbsp;sys           0m0.004s
+  22&nbsp;
+  23&nbsp;Assigning an associative array entry
+  24&nbsp;real          0m1.800s
+  25&nbsp;user          0m1.796s
+  26&nbsp;sys           0m0.004s
+  27&nbsp;
+  28&nbsp;Overwriting an associative array entry
+  29&nbsp;real          0m1.798s
+  30&nbsp;user          0m1.784s
+  31&nbsp;sys           0m0.012s
+  32&nbsp;
+  33&nbsp;Linear reading an associative array entry
+  34&nbsp;real          0m0.420s
+  35&nbsp;user          0m0.420s
+  36&nbsp;sys           0m0.000s
+  37&nbsp;
+  38&nbsp;Assigning a random number to a simple variable
+  39&nbsp;real          0m0.402s
+  40&nbsp;user          0m0.388s
+  41&nbsp;sys           0m0.016s
+  42&nbsp;
+  43&nbsp;Assigning a sparse numeric index array entry randomly into 64k cells
+  44&nbsp;real          0m12.678s
+  45&nbsp;user          0m12.649s
+  46&nbsp;sys           0m0.028s
+  47&nbsp;
+  48&nbsp;Reading sparse numeric index array entry
+  49&nbsp;real          0m0.087s
+  50&nbsp;user          0m0.084s
+  51&nbsp;sys           0m0.000s
+  52&nbsp;
+  53&nbsp;Assigning a sparse associative array entry randomly into 64k cells
+  54&nbsp;real          0m0.698s
+  55&nbsp;user          0m0.696s
+  56&nbsp;sys           0m0.004s
+  57&nbsp;
+  58&nbsp;Reading sparse associative index array entry
+  59&nbsp;real          0m0.083s
+  60&nbsp;user          0m0.084s
+  61&nbsp;sys           0m0.000s</PRE
+></TD
+></TR
+></TABLE
+></P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Use the <A
+HREF="timedate.html#TIMREF"
+>time</A
+> and <A
+HREF="internal.html#TIMESREF"
+>times</A
+> tools to profile
+	  computation-intensive commands. Consider rewriting time-critical
+	  code sections in C, or even in assembler.</P
+><P
+>Try to minimize file I/O. Bash is not particularly
+	   efficient at handling files, so consider using
+	   more appropriate tools for this within the script,
+	   such as <A
+HREF="awk.html#AWKREF"
+>awk</A
+> or <A
+HREF="wrapper.html#PERLREF"
+>Perl</A
+>.</P
+><P
+>Write your scripts in a modular and coherent form,
+	   <A
+NAME="AEN20379"
+HREF="#FTN.AEN20379"
+>[1]</A
+>
+	   so they can be reorganized and tightened up as necessary. Some
+	   of the optimization techniques applicable to high-level
+	   languages may work for scripts, but others, such as
+	   <I
+CLASS="FIRSTTERM"
+>loop unrolling</I
+>, are mostly
+	   irrelevant. Above all, use common sense.</P
+><P
+>For an excellent demonstration of how optimization can
+	   dramatically reduce the  execution time of a script, see <A
+HREF="mathc.html#MONTHLYPMT"
+>Example 16-47</A
+>.</P
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN20379"
+HREF="optimizations.html#AEN20379"
+>[1]</A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>This usually means liberal use of
+	   <A
+HREF="functions.html#FUNCTIONREF"
+>functions</A
+>.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="colorizing.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="assortedtips.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><SPAN
+CLASS="QUOTE"
+>"Colorizing"</SPAN
+> Scripts</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="miscellany.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Assorted Tips</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

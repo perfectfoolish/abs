@@ -1,0 +1,439 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Exercises</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Converting DOS Batch Files to Shell Scripts"
+HREF="dosbatch.html"><LINK
+REL="NEXT"
+TITLE="Writing Scripts"
+HREF="writingscripts.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="APPENDIX"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="dosbatch.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="writingscripts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="APPENDIX"
+><H1
+><A
+NAME="EXERCISES"
+></A
+>Appendix O. Exercises</H1
+><P
+>The exercises that follow test and extend your knowledge
+	of scripting. Think of them as a challenge, as an entertaining way
+	to take you further along the stony path toward UNIX wizardry.</P
+><P
+>      <P
+CLASS="LITERALLAYOUT"
+>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On&nbsp;a&nbsp;dingy&nbsp;side&nbsp;street&nbsp;in&nbsp;a&nbsp;run-down&nbsp;section&nbsp;of&nbsp;Hoboken,&nbsp;New&nbsp;Jersey,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there&nbsp;sits&nbsp;a&nbsp;nondescript&nbsp;squat&nbsp;two-story&nbsp;brick&nbsp;building&nbsp;with&nbsp;an&nbsp;inscription<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;incised&nbsp;on&nbsp;a&nbsp;marble&nbsp;plate&nbsp;in&nbsp;its&nbsp;wall:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<TT
+CLASS="COMPUTEROUTPUT"
+>Bash Scripting Hall of Fame</TT
+>.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inside,&nbsp;among&nbsp;various&nbsp;dusty&nbsp;uninteresting&nbsp;exhibits&nbsp;is&nbsp;a&nbsp;corroding,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cobweb-festooned&nbsp;brass&nbsp;plaque&nbsp;inscribed&nbsp;with&nbsp;a&nbsp;short,&nbsp;very&nbsp;short<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;of&nbsp;those&nbsp;few&nbsp;persons&nbsp;who&nbsp;have&nbsp;successfully&nbsp;mastered&nbsp;the&nbsp;material<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;the&nbsp;<I
+CLASS="FIRSTTERM"
+>Advanced Bash Scripting Guide</I
+>,&nbsp;as&nbsp;evidenced&nbsp;by&nbsp;their&nbsp;performance<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on&nbsp;the&nbsp;following&nbsp;Exercise&nbsp;sections.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Alas,&nbsp;the&nbsp;author&nbsp;of&nbsp;the&nbsp;<I
+CLASS="FIRSTTERM"
+>ABS Guide</I
+>&nbsp;is&nbsp;not&nbsp;represented&nbsp;among&nbsp;the&nbsp;exhibits.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;possibly&nbsp;due&nbsp;to&nbsp;malicious&nbsp;rumors&nbsp;about&nbsp;<A
+HREF="aboutauthor.html#NOCREDS"
+>lack of credentials</A
+>&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A
+HREF="contributed-scripts.html#KTOUR0"
+>deficient scripting skills</A
+>.)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P
+>
+      </P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SCRIPTANALYSIS"
+></A
+>O.1. Analyzing Scripts</H1
+><P
+>Examine the following script. Run it, then explain what it
+        does.  Annotate the script and rewrite it in a more compact and
+        elegant manner.</P
+><P
+>       <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;MAX=10000
+   4&nbsp;
+   5&nbsp;
+   6&nbsp;  for((nr=1; nr&#60;$MAX; nr++))
+   7&nbsp;  do
+   8&nbsp;
+   9&nbsp;    let "t1 = nr % 5"
+  10&nbsp;    if [ "$t1" -ne 3 ]
+  11&nbsp;    then
+  12&nbsp;      continue
+  13&nbsp;    fi
+  14&nbsp;
+  15&nbsp;    let "t2 = nr % 7"
+  16&nbsp;    if [ "$t2" -ne 4 ]
+  17&nbsp;    then
+  18&nbsp;      continue
+  19&nbsp;    fi
+  20&nbsp;
+  21&nbsp;    let "t3 = nr % 9"
+  22&nbsp;    if [ "$t3" -ne 5 ]
+  23&nbsp;    then
+  24&nbsp;      continue
+  25&nbsp;    fi
+  26&nbsp;
+  27&nbsp;  break   # What happens when you comment out this line? Why?
+  28&nbsp;
+  29&nbsp;  done
+  30&nbsp;
+  31&nbsp;  echo "Number = $nr"
+  32&nbsp;
+  33&nbsp;
+  34&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+>
+       </P
+><P
+>---</P
+><P
+>Explain what the following script does. It is really just
+        a parameterized command-line pipe.</P
+><P
+>        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;DIRNAME=/usr/bin
+   4&nbsp;FILETYPE="shell script"
+   5&nbsp;LOGFILE=logfile
+   6&nbsp;
+   7&nbsp;file "$DIRNAME"/* | fgrep "$FILETYPE" | tee $LOGFILE | wc -l
+   8&nbsp;
+   9&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+><P
+>---</P
+><P
+>Examine and explain the following script. For hints, you
+        might refer to the listings for <A
+HREF="moreadv.html#FINDREF"
+>find</A
+> and <A
+HREF="system.html#STATREF"
+>stat</A
+>.</P
+><P
+>        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;# Author:  Nathan Coulter
+   4&nbsp;# This code is released to the public domain.
+   5&nbsp;# The author gave permission to use this code snippet in the ABS Guide.
+   6&nbsp;
+   7&nbsp;find -maxdepth 1 -type f -printf '%f\000'  | {
+   8&nbsp;   while read -d $'\000'; do
+   9&nbsp;      mv "$REPLY" "$(date -d "$(stat -c '%y' "$REPLY") " '+%Y%m%d%H%M%S'
+  10&nbsp;      )-$REPLY"
+  11&nbsp;   done
+  12&nbsp;}
+  13&nbsp;
+  14&nbsp;# Warning: Test-drive this script in a "scratch" directory.
+  15&nbsp;# It will somehow affect all the files there.</PRE
+></TD
+></TR
+></TABLE
+>
+      </P
+><P
+>---</P
+><P
+>A reader sent in the following code snippet.</P
+><P
+>         <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;while read LINE
+   2&nbsp;do
+   3&nbsp;  echo $LINE
+   4&nbsp;done &#60; `tail -f /var/log/messages`</PRE
+></TD
+></TR
+></TABLE
+>
+	 </P
+><P
+>He wished to write a script tracking changes to the system log
+	   file, <TT
+CLASS="FILENAME"
+>/var/log/messages</TT
+>. Unfortunately,
+	   the above code block hangs and does nothing
+	   useful. Why? Fix this so it does work. (Hint:
+	   rather than <A
+HREF="redircb.html#REDIRREF"
+>redirecting the
+	   <TT
+CLASS="FILENAME"
+>stdin</TT
+> of the loop</A
+>, try a <A
+HREF="special-chars.html#PIPEREF"
+>pipe</A
+>.)</P
+><P
+>---</P
+><P
+>Analyze the following <SPAN
+CLASS="QUOTE"
+>"one-liner"</SPAN
+> (here
+        split into two lines for clarity) contributed by Rory
+        Winston:</P
+><P
+>      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;export SUM=0; for f in $(find src -name "*.java");
+   2&nbsp;do export SUM=$(($SUM + $(wc -l $f | awk '{ print $1 }'))); done; echo $SUM</PRE
+></TD
+></TR
+></TABLE
+>
+	 </P
+><P
+>Hint: First, break the script up into bite-sized
+	sections. Then, carefully examine its use of <A
+HREF="dblparens.html"
+>double-parentheses</A
+> arithmetic,
+	the <A
+HREF="internal.html#EXPORTREF"
+>export</A
+> command,
+	the <A
+HREF="moreadv.html#FINDREF"
+>find</A
+> command, the
+	<A
+HREF="textproc.html#WCREF"
+>wc</A
+> command, and <A
+HREF="awk.html#AWKREF"
+>awk</A
+>.</P
+><P
+>---</P
+><P
+>Analyze <A
+HREF="contributed-scripts.html#LIFESLOW"
+>Example A-10</A
+>, and reorganize it in a
+	simplified and more logical style. See how many of the variables
+	can be eliminated, and try to optimize the script to speed up
+	its execution time.</P
+><P
+>Alter the script so that it accepts any ordinary ASCII
+	text file as input for its initial <SPAN
+CLASS="QUOTE"
+>"generation"</SPAN
+>. The
+	script will read the first <TT
+CLASS="PARAMETER"
+><I
+>$ROW*$COL</I
+></TT
+>
+	characters, and set the occurrences of vowels as
+	<SPAN
+CLASS="QUOTE"
+>"living"</SPAN
+> cells. Hint: be sure to translate the
+	spaces in the input file to underscore characters.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="dosbatch.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="writingscripts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Converting DOS Batch Files to Shell Scripts</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Writing Scripts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

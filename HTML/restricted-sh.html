@@ -1,0 +1,351 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Restricted Shells</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="Advanced Bash-Scripting Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Advanced Topics"
+HREF="part5.html"><LINK
+REL="PREVIOUS"
+TITLE="Subshells"
+HREF="subshells.html"><LINK
+REL="NEXT"
+TITLE="Process Substitution"
+HREF="process-sub.html"><META
+HTTP-EQUIV="Content-Style-Type"
+CONTENT="text/css"><LINK
+REL="stylesheet"
+HREF="common/kde-common.css"
+TYPE="text/css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=iso-8859-1"><META
+HTTP-EQUIV="Content-Language"
+CONTENT="en"><LINK
+REL="stylesheet"
+HREF="common/kde-localised.css"
+TYPE="text/css"
+TITLE="KDE-English"><LINK
+REL="stylesheet"
+HREF="common/kde-default.css"
+TYPE="text/css"
+TITLE="KDE-Default"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#AA0000"
+VLINK="#AA0055"
+ALINK="#AA0000"
+STYLE="font-family: sans-serif;"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Advanced Bash-Scripting Guide: An in-depth exploration of the art of shell scripting</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="subshells.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="process-sub.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="RESTRICTED-SH"
+></A
+>Chapter 22. Restricted Shells</H1
+><P
+><A
+NAME="RESTRICTEDSHREF"
+></A
+></P
+><DIV
+CLASS="VARIABLELIST"
+><P
+><B
+><A
+NAME="DISABLEDCOMMREF"
+></A
+>Disabled commands in restricted
+	  shells</B
+></P
+><DL
+><DT
+></DT
+><DD
+><DIV
+CLASS="FORMALPARA"
+><P
+><B
+> . </B
+>Running a script or portion of a script in
+        <I
+CLASS="FIRSTTERM"
+>restricted mode</I
+> disables certain commands
+        that would otherwise be available. This is a security measure
+        intended to limit the privileges of the script user and to
+        minimize possible damage from running the script.</P
+></DIV
+></DD
+></DL
+></DIV
+><P
+>The following commands and actions are disabled:</P
+><UL
+><LI
+><P
+>Using <TT
+CLASS="REPLACEABLE"
+><I
+>cd</I
+></TT
+> to change the working
+	  directory.</P
+></LI
+><LI
+><P
+>Changing the values of the
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>$PATH</I
+></TT
+>,
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>$SHELL</I
+></TT
+>,
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>$BASH_ENV</I
+></TT
+>,
+	  or <TT
+CLASS="REPLACEABLE"
+><I
+>$ENV</I
+></TT
+> <A
+HREF="othertypesv.html#ENVREF"
+>environmental variables</A
+>.</P
+></LI
+><LI
+><P
+>Reading or changing the <TT
+CLASS="REPLACEABLE"
+><I
+>$SHELLOPTS</I
+></TT
+>,
+	  shell environmental options.</P
+></LI
+><LI
+><P
+>Output redirection.</P
+></LI
+><LI
+><P
+>Invoking commands containing one or more
+	  <SPAN
+CLASS="TOKEN"
+>/</SPAN
+>'s.</P
+></LI
+><LI
+><P
+>Invoking <A
+HREF="internal.html#EXECREF"
+>exec</A
+> to substitute
+	  a different process for the shell.</P
+></LI
+><LI
+><P
+>Various other commands that would enable monkeying
+	  with or attempting to subvert the script for an unintended
+	  purpose.</P
+></LI
+><LI
+><P
+>Getting out of restricted mode within the script.</P
+></LI
+></UL
+><DIV
+CLASS="EXAMPLE"
+><HR><A
+NAME="RESTRICTED"
+></A
+><P
+><B
+>Example 22-1. Running a script in restricted mode</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>   1&nbsp;#!/bin/bash
+   2&nbsp;
+   3&nbsp;#  Starting the script with "#!/bin/bash -r"
+   4&nbsp;#+ runs entire script in restricted mode.
+   5&nbsp;
+   6&nbsp;echo
+   7&nbsp;
+   8&nbsp;echo "Changing directory."
+   9&nbsp;cd /usr/local
+  10&nbsp;echo "Now in `pwd`"
+  11&nbsp;echo "Coming back home."
+  12&nbsp;cd
+  13&nbsp;echo "Now in `pwd`"
+  14&nbsp;echo
+  15&nbsp;
+  16&nbsp;# Everything up to here in normal, unrestricted mode.
+  17&nbsp;
+  18&nbsp;set -r
+  19&nbsp;# set --restricted    has same effect.
+  20&nbsp;echo "==&#62; Now in restricted mode. &#60;=="
+  21&nbsp;
+  22&nbsp;echo
+  23&nbsp;echo
+  24&nbsp;
+  25&nbsp;echo "Attempting directory change in restricted mode."
+  26&nbsp;cd ..
+  27&nbsp;echo "Still in `pwd`"
+  28&nbsp;
+  29&nbsp;echo
+  30&nbsp;echo
+  31&nbsp;
+  32&nbsp;echo "\$SHELL = $SHELL"
+  33&nbsp;echo "Attempting to change shell in restricted mode."
+  34&nbsp;SHELL="/bin/ash"
+  35&nbsp;echo
+  36&nbsp;echo "\$SHELL= $SHELL"
+  37&nbsp;
+  38&nbsp;echo
+  39&nbsp;echo
+  40&nbsp;
+  41&nbsp;echo "Attempting to redirect output in restricted mode."
+  42&nbsp;ls -l /usr/bin &#62; bin.files
+  43&nbsp;ls -l bin.files    # Try to list attempted file creation effort.
+  44&nbsp;
+  45&nbsp;echo
+  46&nbsp;
+  47&nbsp;exit 0</PRE
+></TD
+></TR
+></TABLE
+><HR></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="subshells.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="process-sub.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Subshells</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="part5.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Process Substitution</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
